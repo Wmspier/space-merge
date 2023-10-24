@@ -158,7 +158,7 @@ namespace Hex.Grid
             return definitions;
         }
 
-        private void Clear()
+        public void Clear()
         {
             foreach (var (_, cell) in Registry)
             {

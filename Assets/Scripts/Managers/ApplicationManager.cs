@@ -38,7 +38,6 @@ namespace Hex.Managers
             return Model.ActiveMode switch
             {
                 GameMode.Merge => GetResource<MergeGameManager>(),
-                GameMode.Battle => GetResource<BattleGameManager>(),
                 _ => throw new NotSupportedException()
             };
         }

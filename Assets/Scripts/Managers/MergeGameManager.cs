@@ -34,6 +34,7 @@ namespace Hex.Managers
         [SerializeField] private HexGridInteractionManager interactionManager;
         [SerializeField] private CellDetailQueue detailQueue;
         [SerializeField] private HexGrid grid;
+        [SerializeField] private HexGrid enemyGrid;
         [SerializeField] private HexDetailConfiguration config;
 
         [Space] [Header("Cell Selecting")] 
@@ -89,6 +90,7 @@ namespace Hex.Managers
             gameUI.DetailQueue.gameObject.SetActive(true);
             
             var existingGrid = grid.Load(GameMode.Merge);
+            enemyGrid.Load(GameMode.Merge);
             
             _remainingDetails = startingDetailsCount;
             

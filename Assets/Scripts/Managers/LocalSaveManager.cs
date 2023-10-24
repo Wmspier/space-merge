@@ -27,7 +27,7 @@ namespace Hex.Managers
                 GameMode.Battle => GrowSaveKey,
                 _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
             };
-
+            
             return !PlayerPrefs.HasKey(key) 
                 ? null 
                 : BasicGridSerializer.Deserialize(PlayerPrefs.GetString(key));
