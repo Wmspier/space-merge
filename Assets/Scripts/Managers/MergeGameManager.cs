@@ -39,7 +39,6 @@ namespace Hex.Managers
         [SerializeField] private GameUI gameUI;
         [SerializeField] private PopupsUI popupUI;
         [SerializeField] private TopBarUI topBarUI;
-        [SerializeField] private Button moreTilesButton;
         [SerializeField] private GameObject noTilesLeftRoot;
         
         [SerializeField] private TownCompletePopup townCompletePopupPrefab;
@@ -81,13 +80,15 @@ namespace Hex.Managers
             deckPreviewQueue.Initialize(GetNextDetailAtIndex);
             
             deckPreviewQueue.gameObject.SetActive(true);
-            gameUI.DetailQueue.gameObject.SetActive(true);
+            gameUI.DeckPreviewQueue.gameObject.SetActive(true);
             
             var existingGrid = grid.Load(GameMode.Merge);
+            grid.Empty();
             enemyGrid.Load(GameMode.Merge);
+            enemyGrid.Empty();
 
             deckPreviewQueue.GeneratePreviewQueue();
-            gameUI.DetailQueue.Initialize(_deck.FirstOrDefault(), startingDeck.Count);
+            gameUI.DeckPreviewQueue.Initialize(_deck.FirstOrDefault(), startingDeck.Count);
         }
 
         public void Leave()
@@ -106,15 +107,14 @@ namespace Hex.Managers
         {
             ResetGrid();
             deckPreviewQueue.gameObject.SetActive(false);
-            gameUI.DetailQueue.gameObject.SetActive(false);
+            gameUI.DeckPreviewQueue.gameObject.SetActive(false);
 
             gameUI.TopBar.Clear();
             deckPreviewQueue.GeneratePreviewQueue();
-            gameUI.DetailQueue.Initialize(_deck.FirstOrDefault(), startingDeck.Count);
+            gameUI.DeckPreviewQueue.Initialize(_deck.FirstOrDefault(), startingDeck.Count);
             
             deckPreviewQueue.gameObject.SetActive(true);
-            gameUI.DetailQueue.gameObject.SetActive(true);
-            noTilesLeftRoot.SetActive(false);
+            gameUI.DeckPreviewQueue.gameObject.SetActive(true);
         }
 
         private void TownComplete()
@@ -219,7 +219,7 @@ namespace Hex.Managers
         
         private async void OnDetailDequeued()
         {
-            await gameUI.DetailQueue.SetNextAndDecrement(_deck.FirstOrDefault(), _deck.Count);
+            await gameUI.DeckPreviewQueue.SetNextAndDecrement(_deck.FirstOrDefault(), _deck.Count);
 
             if (!_deckRefilled) return;
             
@@ -228,7 +228,7 @@ namespace Hex.Managers
                 await Task.Delay(10);
             }
             deckPreviewQueue.GeneratePreviewQueue();
-            gameUI.DetailQueue.Initialize(GetNextDetailAtIndex(0), _deck.Count);
+            gameUI.DeckPreviewQueue.Initialize(GetNextDetailAtIndex(0), _deck.Count);
             _deckRefilled = false;
         }
         

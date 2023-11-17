@@ -13,7 +13,7 @@ namespace Hex.UI
         public Action ResetPressed;
         
         public TopBarUI TopBar => topBarUI;
-        public DeckQueueUI DetailQueue => _deckQueueUI;
+        public DeckQueueUI DeckPreviewQueue => _deckQueueUI;
 
         private void Awake()
         {

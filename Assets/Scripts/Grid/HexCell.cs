@@ -37,16 +37,12 @@ namespace Hex.Grid
         private Material _outlineMaterial;
         private bool _arrowOverHex;
 
-        private HexUnit _unit;
-        
         private readonly Dictionary<HexCellDirection, GameObject> _outlineByDirection = new();
 
         public Vector3Int Coordinates { get; private set; }
 
         public List<HexCell> Neighbors { get; } = new ();
 
-        public HexUnit Unit => _unit;
-        
         public void RegisterNeighbor(HexCell cell) => Neighbors.Add(cell);
 
         public HexCellDetail Detail => GetComponent<HexCellDetail>();
@@ -110,13 +106,6 @@ namespace Hex.Grid
                 }
                 _outlineByDirection[direction].SetActive(false);
             }
-        }
-
-        public bool AssignUnit(HexUnit unit)
-        {
-            if (_unit != null) return false;
-            _unit = unit;
-            return true;
         }
     }
 }

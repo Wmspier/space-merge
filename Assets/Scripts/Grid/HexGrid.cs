@@ -54,7 +54,7 @@ namespace Hex.Grid
         
         public bool Load(GameMode mode)
         {
-            Clear();
+            Destroy();
 
             var savedGrid = LocalSaveManager.LoadGridFromDisk(mode);
             if (savedGrid == null)
@@ -158,13 +158,21 @@ namespace Hex.Grid
             return definitions;
         }
 
-        public void Clear()
+        private void Destroy()
         {
             foreach (var (_, cell) in Registry)
             {
                 Destroy(cell.gameObject);
             }
             Registry.Clear();
+        }
+
+        public void Empty()
+        {
+            foreach (var (_, cell) in Registry)
+            {
+                cell.Detail.SetType(MergeCellDetailType.Empty);
+            }
         }
 
 #if UNITY_EDITOR
