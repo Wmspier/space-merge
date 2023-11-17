@@ -139,12 +139,6 @@ namespace Hex.UI
 
         private static string FormatScore(int flatScore, float multiplier, int combinedTiles, MergeCellDetailType type, ResourceType resource)
         {
-            if (type.IsSpecial())
-            {
-                return type == MergeCellDetailType.Castle 
-                    ? $"Castle!\n<size=75%><sprite={(int)resource}>{flatScore}" 
-                    : $"Special Tile!\n<size=75%><sprite={(int)resource}>{flatScore}";
-            }
             return combinedTiles switch
             {
                 4 => $"Extra Tile!\n<size=75%><sprite={(int)resource}>{flatScore} <size=100%>x{multiplier}",

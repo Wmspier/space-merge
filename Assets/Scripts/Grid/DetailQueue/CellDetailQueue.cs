@@ -120,11 +120,11 @@ namespace Hex.Grid.DetailQueue
             await Task.WhenAll(tasks);
 
             // Clean up preview list after lerp is finished
-            if (queueSnapshot[1] == MergeCellDetailType.Empty && _previews.ContainsKey(1))
+            if (_previews.ContainsKey(1) && queueSnapshot[1] == MergeCellDetailType.Empty)
             {
                 _previews.Remove(1);
             }
-            if (queueSnapshot[2] == MergeCellDetailType.Empty && _previews.ContainsKey(2))
+            if (_previews.ContainsKey(2) && queueSnapshot[2] == MergeCellDetailType.Empty)
             {
                 _previews.Remove(2);
             }

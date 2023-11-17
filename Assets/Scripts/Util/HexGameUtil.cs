@@ -20,7 +20,7 @@ namespace Hex.Util
                 return (false, null);
             }
 
-            var requiredToCombine = withDetails.First().Detail.Type > MergeCellDetailType.Stone ? 3 : 4;
+            const int requiredToCombine = 3;
             if (withDetails.Count < requiredToCombine)
             {
                 return (false, null);
@@ -68,10 +68,10 @@ namespace Hex.Util
         public static (bool canCombine, MergeCellDetailType? newType) TryCombine(IReadOnlyCollection<HexCell> toCombine, HexDetailConfiguration config)
         {
             var (canCombine, newType) = TryCombineBasic(toCombine);
-            if (!canCombine)
-            {
-                (canCombine, newType) = TryCombineSpecial(toCombine, config);
-            }
+            // if (!canCombine)
+            // {
+            //     (canCombine, newType) = TryCombineSpecial(toCombine, config);
+            // }
 
             return (canCombine, newType);
         }
@@ -137,8 +137,7 @@ namespace Hex.Util
                 foreach (var neighbor in cell.Neighbors)
                 {
                     // Avoid adding duplicate cells into list
-                    // Ignore stones because they break combos
-                    if (cellList.Contains(neighbor) || neighbor.Detail.Type == MergeCellDetailType.Stone)
+                    if (cellList.Contains(neighbor))
                     {
                         continue;
                     }

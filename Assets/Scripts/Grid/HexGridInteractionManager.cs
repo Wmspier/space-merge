@@ -96,8 +96,6 @@ namespace Hex.Grid
 
         private void OnDragOverCell(HexCell cell, Vector3 hitPoint)
         {
-            if (cell.Detail.Type == MergeCellDetailType.Mountain) return;
-            
             if (!allowDragSelect) return;
             
             if(Vector3.Distance(hitPoint, cell.transform.position) > minDistanceForDrag)  return;

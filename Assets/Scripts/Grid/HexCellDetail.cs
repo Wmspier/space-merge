@@ -29,10 +29,6 @@ namespace Hex.Grid
                 case MergeCellDetailType.Empty:
                     Type = MergeCellDetailType.Empty;
                     return;
-                case MergeCellDetailType.Mountain:
-                    Instantiate(config.Mountain, anchor);
-                    Type = type;
-                    return;
             }
 
             if (type.IsBasic())
@@ -75,17 +71,6 @@ namespace Hex.Grid
             await Task.Delay((int)effect.LifetimeSeconds * 1000);
             
             Destroy(effectInstance);
-        }
-
-        [ContextMenu("Make Castle")]
-        public void DebugMakeCastle()
-        {
-            SetType(MergeCellDetailType.Castle);
-        }
-        [ContextMenu("Make Windmill")]
-        public void DebugMakeWindmill()
-        {
-            SetType(MergeCellDetailType.WindMill);
         }
     }
 }

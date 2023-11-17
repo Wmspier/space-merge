@@ -13,42 +13,14 @@ MonoBehaviour:
   m_Name: Config_HexDetails
   m_EditorClassIdentifier: 
   detailPoints:
-  - type: 1
+  - type: 0
     resource: 1
     points: 10
-  - type: 2
-    resource: 1
-    points: 15
-  - type: 3
-    resource: 1
-    points: 20
-  - type: 4
-    resource: 1
-    points: 40
-  - type: 5
-    resource: 1
-    points: 80
-  - type: 6
-    resource: 2
-    points: 1
   basicDetailPrefabs:
-  - {fileID: 4959275583702973404, guid: c0db69e802c054a1daff7b8ec2b89a58, type: 3}
-  - {fileID: 5969910037248675172, guid: 58aa2eecc5d3c423ebe8c46277852006, type: 3}
-  - {fileID: 1733648284027901258, guid: 78dd8e0164f6b4f2d9729f377a6013f7, type: 3}
-  - {fileID: 3907471300332290981, guid: d805819ad71e74820b88648955e0ce1a, type: 3}
-  - {fileID: 5756339414398992337, guid: 5a3635a0476eb45c8928287cef68f71b, type: 3}
-  - {fileID: 6184873041603096596, guid: 16a23b402d77045078a5cc46b2c7f34a, type: 3}
-  - {fileID: 6184873041603096596, guid: 69a00134169ef49ec8df72d2ce2bb37e, type: 3}
-  - {fileID: 6184873041603096596, guid: 8cd8acf69330746c3ae515428263f2af, type: 3}
+  - {fileID: 1757021540552548034, guid: 0d8ce66d71cb047048aefadae54c438d, type: 3}
   specialDetails: []
-  effectDetails:
-  - id: stone_break
-    prefab: {fileID: 2284604415032602282, guid: 66250ff57f32a408094d63accf121434,
-      type: 3}
-    lifetimeSeconds: 1
+  effectDetails: []
   extraTileMultipliers:
   - 1.5
   - 2
   - 2.5
-  mountainPrefab: {fileID: 9081495690604124498, guid: 9bddb9f00669b416a920c4a148c652d1,
-    type: 3}

@@ -51,14 +51,12 @@ namespace Hex.Configuration
         [SerializeField] private List<SpecialDetail> specialDetails;
         [SerializeField] private List<EffectDetail> effectDetails;
         [SerializeField] private List<float> extraTileMultipliers;
-        [SerializeField] private GameObject mountainPrefab;
 
         private readonly Dictionary<MergeCellDetailType, (ResourceType resource, int amount)> _pointsByType = new();
         private bool _cacheInitialized;
 
         public IReadOnlyList<GameObject> BasicDetails => basicDetailPrefabs;
         public IEnumerable<SpecialDetail> SpecialDetails => specialDetails;
-        public GameObject Mountain => mountainPrefab;
 
         private void InitializeCache()
         {

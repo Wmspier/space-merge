@@ -30,16 +30,8 @@ namespace Hex.UI
             await MathUtil.DoInterpolation(lerpTimeSeconds, Grow);
             
             // Update text
-            if (remainingTiles > 0)
-            {
-                nextTileText.text = nextTileType.ToString();
-                remainingTilesText.text = $"{remainingTiles} tiles left";
-            }
-            else
-            {
-                nextTileText.gameObject.SetActive(false);
-                remainingTilesText.gameObject.SetActive(false);
-            }
+            nextTileText.text = nextTileType.ToString();
+            remainingTilesText.text = $"{remainingTiles} tiles left";
             
             // Shrink
             await MathUtil.DoInterpolation(lerpTimeSeconds, Shrink);
