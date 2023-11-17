@@ -7,13 +7,13 @@ namespace Hex.UI
     public class GameUI : MonoBehaviour
     {
         [SerializeField] private TopBarUI topBarUI;
-        [SerializeField] private CellDetailQueueUI cellDetailQueueUI;
+        [SerializeField] private DeckQueueUI _deckQueueUI;
         [SerializeField] private Button resetButton;
 
         public Action ResetPressed;
         
         public TopBarUI TopBar => topBarUI;
-        public CellDetailQueueUI DetailQueue => cellDetailQueueUI;
+        public DeckQueueUI DetailQueue => _deckQueueUI;
 
         private void Awake()
         {

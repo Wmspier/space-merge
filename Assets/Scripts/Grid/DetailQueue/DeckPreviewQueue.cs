@@ -7,7 +7,7 @@ using UnityEngine.Pool;
 
 namespace Hex.Grid.DetailQueue
 {
-    public class CellDetailQueue : MonoBehaviour
+    public class DeckPreviewQueue : MonoBehaviour
     {
         [SerializeField] private Transform anchorFirst;
         [SerializeField] private Transform anchorSecond;

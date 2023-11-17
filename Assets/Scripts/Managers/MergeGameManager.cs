@@ -26,7 +26,7 @@ namespace Hex.Managers
         
         [Space]
         [SerializeField] private HexGridInteractionManager interactionManager;
-        [SerializeField] private CellDetailQueue detailQueue;
+        [SerializeField] private DeckPreviewQueue deckPreviewQueue;
         [SerializeField] private HexGrid grid;
         [SerializeField] private HexGrid enemyGrid;
         [SerializeField] private HexDetailConfiguration config;
@@ -55,7 +55,7 @@ namespace Hex.Managers
             ApplicationManager.RegisterResource(this);
             _random = new Random();
 
-            detailQueue.DetailDequeued = OnDetailDequeued;
+            deckPreviewQueue.DetailDequeued = OnDetailDequeued;
             
             gameUI.ResetPressed = OnResetPressed;
             
@@ -78,15 +78,15 @@ namespace Hex.Managers
             gameUI.gameObject.SetActive(true);
 
             FillInitialDeck();
-            detailQueue.Initialize(GetNextDetailAtIndex);
+            deckPreviewQueue.Initialize(GetNextDetailAtIndex);
             
-            detailQueue.gameObject.SetActive(true);
+            deckPreviewQueue.gameObject.SetActive(true);
             gameUI.DetailQueue.gameObject.SetActive(true);
             
             var existingGrid = grid.Load(GameMode.Merge);
             enemyGrid.Load(GameMode.Merge);
 
-            detailQueue.GeneratePreviewQueue();
+            deckPreviewQueue.GeneratePreviewQueue();
             gameUI.DetailQueue.Initialize(_deck.FirstOrDefault(), startingDeck.Count);
         }
 
@@ -98,21 +98,21 @@ namespace Hex.Managers
             interactionManager.CellsDragReleased -= TryCombineCells;
             interactionManager.CellsDragContinue -= OnCellsDragContinued;
             
-            detailQueue.gameObject.SetActive(false);
+            deckPreviewQueue.gameObject.SetActive(false);
             gameUI.gameObject.SetActive(false);
         }
 
         private void OnResetPressed()
         {
             ResetGrid();
-            detailQueue.gameObject.SetActive(false);
+            deckPreviewQueue.gameObject.SetActive(false);
             gameUI.DetailQueue.gameObject.SetActive(false);
 
             gameUI.TopBar.Clear();
-            detailQueue.GeneratePreviewQueue();
+            deckPreviewQueue.GeneratePreviewQueue();
             gameUI.DetailQueue.Initialize(_deck.FirstOrDefault(), startingDeck.Count);
             
-            detailQueue.gameObject.SetActive(true);
+            deckPreviewQueue.gameObject.SetActive(true);
             gameUI.DetailQueue.gameObject.SetActive(true);
             noTilesLeftRoot.SetActive(false);
         }
@@ -196,7 +196,7 @@ namespace Hex.Managers
             {
                 queueSnapshot.Add(GetNextDetailAtIndex(i));
             }
-            detailQueue.Dequeue(queueSnapshot);
+            deckPreviewQueue.Dequeue(queueSnapshot);
             CheckGameOver();
             
             grid.Save(GameMode.Merge);
@@ -223,11 +223,11 @@ namespace Hex.Managers
 
             if (!_deckRefilled) return;
             
-            while (detailQueue.ProcessingDequeues)
+            while (deckPreviewQueue.ProcessingDequeues)
             {
                 await Task.Delay(10);
             }
-            detailQueue.GeneratePreviewQueue();
+            deckPreviewQueue.GeneratePreviewQueue();
             gameUI.DetailQueue.Initialize(GetNextDetailAtIndex(0), _deck.Count);
             _deckRefilled = false;
         }

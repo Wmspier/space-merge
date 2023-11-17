@@ -6,20 +6,20 @@ using UnityEngine;
 
 namespace Hex.UI
 {
-    public class CellDetailQueueUI : MonoBehaviour
+    public class DeckQueueUI : MonoBehaviour
     {
-        [SerializeField] private TMP_Text nextTileText;
-        [SerializeField] private TMP_Text remainingTilesText;
+        [SerializeField] private TMP_Text nextCardText;
+        [SerializeField] private TMP_Text remainingCardsText;
 
         public void Initialize(MergeCellDetailType nextTileType, int remainingTiles)
         {
-            nextTileText.gameObject.SetActive(true);
-            remainingTilesText.gameObject.SetActive(true);
-            nextTileText.text = nextTileType.ToString();
+            nextCardText.gameObject.SetActive(true);
+            remainingCardsText.gameObject.SetActive(true);
+            nextCardText.text = nextTileType.ToString();
             
-            remainingTilesText.text = $"{remainingTiles} units left";
-            remainingTilesText.gameObject.GetComponent<RectTransform>().pivot = new Vector2(0, .5f);
-            remainingTilesText.alignment = TextAlignmentOptions.MidlineLeft;
+            remainingCardsText.text = $"{remainingTiles} cards left";
+            remainingCardsText.gameObject.GetComponent<RectTransform>().pivot = new Vector2(0, .5f);
+            remainingCardsText.alignment = TextAlignmentOptions.MidlineLeft;
         }
 
         public async Task SetNextAndDecrement(MergeCellDetailType nextTileType, int remainingTiles)
@@ -30,8 +30,8 @@ namespace Hex.UI
             await MathUtil.DoInterpolation(lerpTimeSeconds, Grow);
             
             // Update text
-            nextTileText.text = nextTileType.ToString();
-            remainingTilesText.text = $"{remainingTiles} units left";
+            nextCardText.text = nextTileType.ToString();
+            remainingCardsText.text = $"{remainingTiles} cards left";
             
             // Shrink
             await MathUtil.DoInterpolation(lerpTimeSeconds, Shrink);
