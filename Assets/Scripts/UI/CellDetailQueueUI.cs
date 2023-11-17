@@ -17,7 +17,7 @@ namespace Hex.UI
             remainingTilesText.gameObject.SetActive(true);
             nextTileText.text = nextTileType.ToString();
             
-            remainingTilesText.text = $"{remainingTiles} tiles left";
+            remainingTilesText.text = $"{remainingTiles} units left";
             remainingTilesText.gameObject.GetComponent<RectTransform>().pivot = new Vector2(0, .5f);
             remainingTilesText.alignment = TextAlignmentOptions.MidlineLeft;
         }
@@ -31,7 +31,7 @@ namespace Hex.UI
             
             // Update text
             nextTileText.text = nextTileType.ToString();
-            remainingTilesText.text = $"{remainingTiles} tiles left";
+            remainingTilesText.text = $"{remainingTiles} units left";
             
             // Shrink
             await MathUtil.DoInterpolation(lerpTimeSeconds, Shrink);

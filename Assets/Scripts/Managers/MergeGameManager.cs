@@ -160,8 +160,9 @@ namespace Hex.Managers
         
         private void TryPlaceDetail(HexCell cell)
         {
+            // Don't try to place when deck is refilling
             // Can only place detail on empty tiles
-            if (cell.Detail.Type != MergeCellDetailType.Empty)
+            if (_deckRefilled || cell.Detail.Type != MergeCellDetailType.Empty)
             {
                 return;
             }
