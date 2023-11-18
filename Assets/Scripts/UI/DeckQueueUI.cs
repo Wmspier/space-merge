@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Hex.Grid;
+using Hex.Data;
 using Hex.Util;
 using TMPro;
 using UnityEngine;
@@ -11,18 +11,18 @@ namespace Hex.UI
         [SerializeField] private TMP_Text nextCardText;
         [SerializeField] private TMP_Text remainingCardsText;
 
-        public void Initialize(MergeCellDetailType nextTileType, int remainingTiles)
+        public void Initialize(UnitData nextUnit, int remainingTiles)
         {
             nextCardText.gameObject.SetActive(true);
             remainingCardsText.gameObject.SetActive(true);
-            nextCardText.text = nextTileType.ToString();
+            nextCardText.text = nextUnit.UniqueId;
             
             remainingCardsText.text = $"{remainingTiles} cards left";
             remainingCardsText.gameObject.GetComponent<RectTransform>().pivot = new Vector2(0, .5f);
             remainingCardsText.alignment = TextAlignmentOptions.MidlineLeft;
         }
 
-        public async Task SetNextAndDecrement(MergeCellDetailType nextTileType, int remainingTiles)
+        public async Task SetNextAndDecrement(UnitData nextUnit, int remainingTiles)
         {
             var t = transform;
             const float lerpTimeSeconds = .15f;
@@ -30,7 +30,7 @@ namespace Hex.UI
             await MathUtil.DoInterpolation(lerpTimeSeconds, Grow);
             
             // Update text
-            nextCardText.text = nextTileType.ToString();
+            nextCardText.text = nextUnit.UniqueId;
             remainingCardsText.text = $"{remainingTiles} cards left";
             
             // Shrink

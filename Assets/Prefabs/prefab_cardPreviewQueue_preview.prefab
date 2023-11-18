@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 470857170633898419}
   - component: {fileID: 9181230991757155261}
   m_Layer: 0
-  m_Name: prefab_detailQueue_preview
+  m_Name: prefab_cardPreviewQueue_preview
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 623c5a51bb2145a295f0ea3344ccd1eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detailAnchor: {fileID: 470857170928712514}
-  previewPrefab: {fileID: 4888996236743951264, guid: b45ddeb305a9543329da5acdc04de1f3,
+  previewAnchor: {fileID: 470857170928712514}
+  previewPrefab: {fileID: 417624291703324862, guid: b45ddeb305a9543329da5acdc04de1f3,
     type: 3}
   dequeueLerpCurve:
     serializedVersion: 2
@@ -83,7 +83,7 @@ GameObject:
   m_Component:
   - component: {fileID: 470857170928712514}
   m_Layer: 0
-  m_Name: Detail_Anchor
+  m_Name: PreviewAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

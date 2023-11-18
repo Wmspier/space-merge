@@ -1,4 +1,5 @@
 using Hex.Grid;
+using Hex.Grid.Cell;
 
 namespace Hex.Extensions
 {

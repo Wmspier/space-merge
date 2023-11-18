@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hex.Extensions;
 using Hex.Grid;
+using Hex.Grid.Cell;
 using Hex.Util;
 using TMPro;
 using UnityEngine;
@@ -64,18 +65,18 @@ namespace Hex.UI
         public async void AddResourceFromTile(HexCell cell, int combinedTiles, ResourceType resource, int scoreForType, float multiplierForCombine, int toAdd)
         {
             // No points added, don't instantiate UI
-            if (toAdd == 0)
-            {
-                return;
-            }
-            
-            // Get screen position from cell
-            var newAddition = Instantiate(scoreAdditionPrefab, additionOrigin);
-            newAddition.text = FormatScore(scoreForType, multiplierForCombine, combinedTiles, cell.Detail.Type, resource);
-            var rectTransform = newAddition.GetComponent<RectTransform>();
-            rectTransform.position = gridCamera.WorldToScreenPoint(cell.transform.position);
-
-            await DoResourceAddition(resource, rectTransform.position, rectTransform, toAdd, newAddition, combinedTiles > 3);
+           //  if (toAdd == 0)
+           //  {
+           //      return;
+           //  }
+           //  
+           //  // Get screen position from cell
+           //  var newAddition = Instantiate(scoreAdditionPrefab, additionOrigin);
+           //  newAddition.text = FormatScore(scoreForType, multiplierForCombine, combinedTiles, cell.Detail.Type, resource);
+           //  var rectTransform = newAddition.GetComponent<RectTransform>();
+           //  rectTransform.position = gridCamera.WorldToScreenPoint(cell.transform.position);
+// 
+           //  await DoResourceAddition(resource, rectTransform.position, rectTransform, toAdd, newAddition, combinedTiles > 3);
         }
 
         public async Task AddResource(ResourceType resource, int toAdd, Vector3 origin)
@@ -135,16 +136,6 @@ namespace Hex.UI
             {
                 resource.SetScoreImmediate(0);
             }
-        }
-
-        private static string FormatScore(int flatScore, float multiplier, int combinedTiles, MergeCellDetailType type, ResourceType resource)
-        {
-            return combinedTiles switch
-            {
-                4 => $"Extra Tile!\n<size=75%><sprite={(int)resource}>{flatScore} <size=100%>x{multiplier}",
-                > 4 => $"Extra Tiles!\n<size=75%><sprite={(int)resource}>{flatScore} <size=100%>x{multiplier}",
-                _ => $"<size=75%><sprite={(int)resource}>{flatScore}"
-            };
         }
 
         private static string FormatScore(int score, ResourceType resource) => $"<size=75%><sprite={(int)resource}>{score}";

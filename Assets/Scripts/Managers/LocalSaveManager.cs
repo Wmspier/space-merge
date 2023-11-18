@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Hex.Grid;
+using Hex.Grid.Cell;
 using Hex.Grid.Serialization;
 using Hex.UI;
 using UnityEditor;
@@ -46,21 +47,21 @@ namespace Hex.Managers
             PlayerPrefs.Save();
         }
         
-        public static void SaveDetailQueue(List<MergeCellDetailType> detailsList)
-        {
-            var details = new StringBuilder();
-            for (var i = 0; i < detailsList.Count; i++)
-            {
-                details.Append((int)detailsList[i]);
-                if (i < detailsList.Count - 1)
-                {
-                    details.Append(DetailDelimiter);
-                }
-            }
-            
-            PlayerPrefs.SetString(DetailListKey, details.ToString());
-            PlayerPrefs.Save();
-        }
+        // public static void SaveDetailQueue(List<MergeCellDetailType> detailsList)
+        // {
+        //     var details = new StringBuilder();
+        //     for (var i = 0; i < detailsList.Count; i++)
+        //     {
+        //         details.Append((int)detailsList[i]);
+        //         if (i < detailsList.Count - 1)
+        //         {
+        //             details.Append(DetailDelimiter);
+        //         }
+        //     }
+        //     
+        //     PlayerPrefs.SetString(DetailListKey, details.ToString());
+        //     PlayerPrefs.Save();
+        // }
 
         public static IEnumerable<int> LoadDetailQueue()
         {

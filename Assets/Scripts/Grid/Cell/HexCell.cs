@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using Hex.Extensions;
-using TMPro;
 using UnityEngine;
 
-namespace Hex.Grid
+namespace Hex.Grid.Cell
 {
     public enum HexCellDirection
     {
@@ -16,7 +15,7 @@ namespace Hex.Grid
         TopLeft
     }
     
-    [RequireComponent(typeof(HexCellDetail))]
+    [RequireComponent(typeof(HexCellInfoHolder))]
     public class HexCell : MonoBehaviour
     {
         [SerializeField] private MeshRenderer outline;
@@ -27,13 +26,6 @@ namespace Hex.Grid
         [SerializeField] private GameObject outlineBottomLeft;
         [SerializeField] private GameObject outlineTopLeft;
 
-        [Header("UI")] 
-        [SerializeField] private GameObject canvasRoot;
-        [SerializeField] private GameObject canCombineRoot;
-        [SerializeField] private GameObject cannotCombineRoot;
-        [SerializeField] private TMP_Text matchCountText;
-        [SerializeField] private TMP_Text matchRequirementText;
-        
         private Material _outlineMaterial;
         private bool _arrowOverHex;
 
@@ -45,10 +37,15 @@ namespace Hex.Grid
 
         public void RegisterNeighbor(HexCell cell) => Neighbors.Add(cell);
 
-        public HexCellDetail Detail => GetComponent<HexCellDetail>();
+        public HexCellInfoHolder InfoHolder { get; private set; }
+
+        public HexCellUI UI { get; private set; }
 
         private void Awake()
         {
+            InfoHolder = GetComponent<HexCellInfoHolder>();
+            UI = GetComponent<HexCellUI>(); 
+            
             _outlineMaterial = new Material(outline.material);
             
             _outlineByDirection[HexCellDirection.Top] = outlineTop;
@@ -68,19 +65,8 @@ namespace Hex.Grid
 
         public void SetOutlineColor(Color color) => _outlineMaterial.color = color;
 
-        public void ToggleCanvas(bool visible) => canvasRoot.SetActive(visible);
-
-        public void SetMatchCount(int count, int req)
-        {
-            matchCountText.text = count.ToString();
-            matchRequirementText.text = req.ToString();
-        }
-
-        public void ToggleCanCombine(bool canCombine)
-        {
-            canCombineRoot.SetActive(canCombine);
-            cannotCombineRoot.SetActive(!canCombine);
-        }
+        public void SetMatchCount(int count, int req) => UI.SetMatchCount(count, req);
+        public void ToggleCanCombine(bool canCombine) => UI.ToggleCanCombine(canCombine);
 
         public void ApplyCoordinates(int x, int y, int z) => Coordinates = new Vector3Int(x, y, z);
         

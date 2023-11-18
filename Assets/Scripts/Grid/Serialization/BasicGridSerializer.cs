@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using Hex.Grid.Cell;
 
 namespace Hex.Grid.Serialization
 {

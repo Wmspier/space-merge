@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Hex.Grid.Cell;
 using Hex.Managers;
 using UnityEditor;
 using UnityEngine;
@@ -26,29 +27,6 @@ namespace Hex.Grid
         [SerializeField] private Transform cellsAnchor;
 
         public Dictionary<int, HexCell> Registry { get; } = new();
-
-        #if UNITY_EDITOR
-        // private void OnValidate()
-        // {
-        //     void CleanupAndRegen()
-        //     {
-        //         if (this == null)
-        //         {
-        //             return;
-        //         }
-        //         var tempList = cellsAnchor.Cast<Transform>().ToList();
-        //         foreach(var child in tempList)
-        //         {
-        //             DestroyImmediate(child.gameObject);
-        //         }
-        //         Registry.Clear();
-        //         GenerateGrid();
-        //         EditorApplication.delayCall -= CleanupAndRegen;
-        //     }
-        // 
-        //     EditorApplication.delayCall += CleanupAndRegen;
-        // }
-        #endif
 
         public HexCell GetCenterCell() => Registry[(numEdgeCells, numEdgeCells, numEdgeCells).GetHashCode()];
         
@@ -105,10 +83,6 @@ namespace Hex.Grid
             
             cell.ApplyCoordinates(offsetX, offsetY, offsetZ);
             cell.name = $"Cell[{offsetX},{offsetY},{offsetZ}]";
-            if (initialDetail.HasValue)
-            {
-                cell.Detail.SetType((MergeCellDetailType)initialDetail);
-            }
 
             const float edgeW = GameConstants.HexMetrics.EdgeLength * 3f / 2f;
             var edgeH = GameConstants.HexMetrics.EdgeLength * Mathf.Sqrt(3) / 2f;
@@ -150,8 +124,7 @@ namespace Hex.Grid
             {
                 definitions.Add(new HexCellDefinition
                 {
-                    Coordinates = cell.Coordinates,
-                    Detail = (int)cell.Detail.Type
+                    Coordinates = cell.Coordinates
                 });
             }
 
@@ -171,7 +144,7 @@ namespace Hex.Grid
         {
             foreach (var (_, cell) in Registry)
             {
-                cell.Detail.SetType(MergeCellDetailType.Empty);
+                cell.InfoHolder.Clear();
             }
         }
 

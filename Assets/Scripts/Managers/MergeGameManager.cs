@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hex.Configuration;
-using Hex.Extensions;
+using Hex.Data;
 using Hex.Grid;
+using Hex.Grid.Cell;
 using Hex.Grid.DetailQueue;
 using Hex.Model;
 using Hex.UI;
@@ -11,7 +11,6 @@ using Hex.UI.Popup;
 using Hex.Util;
 using UnityEngine;
 using UnityEngine.Pool;
-using UnityEngine.UI;
 using static Hex.Grid.HexGridInteractionManager;
 using Random = System.Random;
 
@@ -22,14 +21,13 @@ namespace Hex.Managers
         private static Random _random;
         
         [Header("Starting Configuration")]
-        [SerializeField] private List<MergeCellDetailType> startingDeck;
+        [SerializeField] private List<UnitData> startingDeck;
         
         [Space]
         [SerializeField] private HexGridInteractionManager interactionManager;
         [SerializeField] private DeckPreviewQueue deckPreviewQueue;
         [SerializeField] private HexGrid grid;
         [SerializeField] private HexGrid enemyGrid;
-        [SerializeField] private HexDetailConfiguration config;
 
         [Space] [Header("Cell Selecting")] 
         [SerializeField] private Color cellOutlineCanCombine;
@@ -39,13 +37,12 @@ namespace Hex.Managers
         [SerializeField] private GameUI gameUI;
         [SerializeField] private PopupsUI popupUI;
         [SerializeField] private TopBarUI topBarUI;
-        [SerializeField] private GameObject noTilesLeftRoot;
         
         [SerializeField] private TownCompletePopup townCompletePopupPrefab;
 
         private readonly MergeGameModel _model = new();
-        private readonly List<MergeCellDetailType> _deck = new();
-        private readonly List<MergeCellDetailType> _discard = new();
+        private readonly List<UnitData> _deck = new();
+        private readonly List<UnitData> _discard = new();
         private bool _deckRefilled;
 
         #region Setup/Game State
@@ -77,7 +74,7 @@ namespace Hex.Managers
             gameUI.gameObject.SetActive(true);
 
             FillInitialDeck();
-            deckPreviewQueue.Initialize(GetNextDetailAtIndex);
+            deckPreviewQueue.Initialize(GetUnitAtIndex);
             
             deckPreviewQueue.gameObject.SetActive(true);
             gameUI.DeckPreviewQueue.gameObject.SetActive(true);
@@ -154,7 +151,7 @@ namespace Hex.Managers
         {
             foreach (var kvp in grid.Registry)
             {
-                kvp.Value.Detail.Clear();
+                kvp.Value.InfoHolder.Clear();
             }
         }
         
@@ -162,11 +159,11 @@ namespace Hex.Managers
         {
             // Don't try to place when deck is refilling
             // Can only place detail on empty tiles
-            if (_deckRefilled || cell.Detail.Type != MergeCellDetailType.Empty)
+            if (_deckRefilled || cell.InfoHolder.HeldUnit)
             {
                 return;
             }
-            cell.Detail.SetType(GetNextDetailAtIndex(0));
+            cell.InfoHolder.SpawnUnit(GetUnitAtIndex(0));
             
             var detail = _deck[0];
             _discard.Add(detail);
@@ -190,11 +187,11 @@ namespace Hex.Managers
             }
 
             // Try to create a snapshot of the next 3 details in the queue so they can be asynchronously processed
-            var queueSnapshot = ListPool<MergeCellDetailType>.Get();
+            var queueSnapshot = ListPool<UnitData>.Get();
             queueSnapshot.Clear();
             for (var i = 0; i < 3; i++)
             {
-                queueSnapshot.Add(GetNextDetailAtIndex(i));
+                queueSnapshot.Add(GetUnitAtIndex(i));
             }
             deckPreviewQueue.Dequeue(queueSnapshot);
             CheckGameOver();
@@ -204,11 +201,11 @@ namespace Hex.Managers
             void CheckGameOver()
             {
                 // Check Game Over
-                var allCells = grid.Registry.Values;
-                if (allCells.Any(c => c.Detail.Type == MergeCellDetailType.Empty))
-                {
-                    return;
-                }
+                // var allCells = grid.Registry.Values;
+                // if (allCells.Any(c => c.Detail.Type == MergeCellDetailType.Empty))
+                // {
+                //     return;
+                // }
                 // TODO Fix the can any combine check if needed
                 // if (!HexGameUtil.CanAnyCombineOnGrid(allCells.ToList(), config))
                 // {
@@ -228,16 +225,16 @@ namespace Hex.Managers
                 await Task.Delay(10);
             }
             deckPreviewQueue.GeneratePreviewQueue();
-            gameUI.DeckPreviewQueue.Initialize(GetNextDetailAtIndex(0), _deck.Count);
+            gameUI.DeckPreviewQueue.Initialize(GetUnitAtIndex(0), _deck.Count);
             _deckRefilled = false;
         }
         
         private async void TryCombineCells(List<HexCell> cells)
         {
-            var cellsWithDetails = cells.Where(c => c.Detail.Type > MergeCellDetailType.Empty);
+            var cellsWithDetails = cells.Where(c => c.InfoHolder.HeldUnit);
             var withDetails = cellsWithDetails as List<HexCell> ?? cellsWithDetails.ToList();
 
-            var (canCombine, newType) = HexGameUtil.TryCombine(withDetails, config);
+            var canCombine = false;//HexGameUtil.TryCombine(withDetails, config);
 
             if (!canCombine)
             {
@@ -254,39 +251,39 @@ namespace Hex.Managers
             }
                 
             await Task.WhenAll(tasks);
-            last.Detail.SetType(newType.Value);
-            var combinedTiles = withDetails.Count + 1;
+            //last.Detail.SetType(newType.Value);
+            //var combinedTiles = withDetails.Count + 1;
             
             // Get score for combined tiles
-            var (resource, amount) = config.GetPointsForType(last.Detail.Type);
-            var multiplierForCombine = config.GetMultiplierForCombination(combinedTiles);
-            var toAdd = Mathf.RoundToInt(amount * multiplierForCombine);
-            _model.ModifyResourceAmount(resource, toAdd);
-            
-            gameUI.TopBar.AddResourceFromTile(last, combinedTiles, resource, amount, multiplierForCombine, toAdd);
-
-            grid.Save(GameMode.Merge);
+            // var (resource, amount) = config.GetPointsForType(last.Detail.Type);
+            // var multiplierForCombine = config.GetMultiplierForCombination(combinedTiles);
+            // var toAdd = Mathf.RoundToInt(amount * multiplierForCombine);
+            // _model.ModifyResourceAmount(resource, toAdd);
+            // 
+            // gameUI.TopBar.AddResourceFromTile(last, combinedTiles, resource, amount, multiplierForCombine, toAdd);
+// 
+            // grid.Save(GameMode.Merge);
         }
 
-        private MergeCellDetailType GetNextDetailAtIndex(int index)
+        private UnitData GetUnitAtIndex(int index)
         {
             if (index < _deck.Count)
             {
                 return _deck[index];
             }
-            return MergeCellDetailType.Empty;
+            return null;
         }
 
         private void OnCellsDragContinued(List<HexCell> cells)
         {
-            var cellsWithDetails = cells.Where(c => c.Detail.Type > MergeCellDetailType.Empty);
+            var cellsWithDetails = cells.Where(c => c.InfoHolder.HeldUnit);
             var withDetails = cellsWithDetails as List<HexCell> ?? cellsWithDetails.ToList();
 
             // Check if the cells can combine
-            var (canCombine, _) = HexGameUtil.TryCombine(withDetails, config);
+            var canCombine = false;// HexGameUtil.TryCombine(withDetails, config);
 
-            // Check if the cells are all of the same time (to see if they can contribute to a combination)
-            var allSameType = withDetails.All(c => c.Detail.Type == withDetails.First().Detail.Type);
+            // Check if the cells are all of the same type (to see if they can contribute to a combination)
+            var allSameType = withDetails.All(c => c.InfoHolder.HeldUnit.UniqueId == withDetails.First().InfoHolder.HeldUnit.UniqueId);
             // Number to match is 3 for regular details and 4 for stones
             const int numToMatch = 3;
             // Iterate through all cells and set their outline color
@@ -294,21 +291,21 @@ namespace Hex.Managers
             {
                 var cell = cells[index];
                 cell.SetOutlineColor(canCombine ? cellOutlineCanCombine : cellOutlineCannotCombine);
-                cell.ToggleCanvas(false);
+                cell.UI.ToggleMergeCanvas(false);
 
                 if (!allSameType) continue;
                 
                 // increment the amount of cells contributing to a combination
                 cell.SetMatchCount(withDetailIndex + 1, numToMatch);
-                if (cell.Detail.Type > MergeCellDetailType.Empty) withDetailIndex++;
+                if (cell.InfoHolder.HeldUnit) withDetailIndex++;
             }
 
             // Toggle the canvas to display the match count over the last relevant cell
             for (var index = cells.Count - 1; index >= 0; index--)
             {
                 var cell = cells[index];
-                if (cell.Detail.Type == MergeCellDetailType.Empty) continue;
-                cell.ToggleCanvas(true);
+                if (cell.InfoHolder.HeldUnit) continue;
+                cell.UI.ToggleMergeCanvas(true);
                 cell.ToggleCanCombine(allSameType);
                 break;
             }
@@ -317,17 +314,17 @@ namespace Hex.Managers
         private static async Task MoveAndCombineDetail(HexCell fromCell, HexCell toCell)
         {
             const float lerpTimeSeconds = .25f;
-            var startPosition = fromCell.Detail.Anchor.position;
-            var endPosition = toCell.Detail.Anchor.position;
+            var startPosition = fromCell.InfoHolder.UnitAnchor.position;
+            var endPosition = toCell.InfoHolder.UnitAnchor.position;
 
             await MathUtil.DoInterpolation(lerpTimeSeconds, DoProgress);
 
-            fromCell.Detail.Anchor.transform.position = endPosition;
-            fromCell.Detail.Clear();
+            fromCell.InfoHolder.UnitAnchor.transform.position = endPosition;
+            fromCell.InfoHolder.Clear();
 
             void DoProgress(float progress)
             {
-                fromCell.Detail.Anchor.transform.position = MathUtil.SmoothLerp(startPosition, endPosition, progress);
+                fromCell.InfoHolder.UnitAnchor.transform.position = MathUtil.SmoothLerp(startPosition, endPosition, progress);
             }
         }
     }

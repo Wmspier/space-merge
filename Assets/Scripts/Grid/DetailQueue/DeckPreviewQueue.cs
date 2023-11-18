@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Hex.Data;
 using Hex.Extensions;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -13,18 +14,18 @@ namespace Hex.Grid.DetailQueue
         [SerializeField] private Transform anchorSecond;
         [SerializeField] private Transform anchorThird;
 
-        [SerializeField] private CellDetailPreview previewPrefab;
+        [SerializeField] private CardPreview previewPrefab;
 
-        private readonly Queue<List<MergeCellDetailType>> _queuedDequeueActions = new();
-        private readonly Dictionary<int, CellDetailPreview> _previews = new();
+        private readonly Queue<List<UnitData>> _queuedDequeueActions = new();
+        private readonly Dictionary<int, CardPreview> _previews = new();
         
-        private Func<int, MergeCellDetailType> _getNext;
+        private Func<int, UnitData> _getNext;
 
         public Action DetailDequeued;
         
         public bool ProcessingDequeues { get; private set; }
 
-        public void Initialize(Func<int, MergeCellDetailType> getNextFunc)
+        public void Initialize(Func<int, UnitData> getNextFunc)
         {
             _getNext = getNextFunc;
         }
@@ -36,9 +37,9 @@ namespace Hex.Grid.DetailQueue
             SetPreview(2, _getNext.Invoke(2));
         }
 
-        private void SetPreview(int anchorIndex, MergeCellDetailType type)
+        private void SetPreview(int anchorIndex, UnitData unitData)
         {
-            if (type == MergeCellDetailType.Empty)
+            if (unitData == null)
             {
                 return;
             }
@@ -58,11 +59,11 @@ namespace Hex.Grid.DetailQueue
 
             var newPreview = Instantiate(previewPrefab, anchor);
             newPreview.transform.Reset();
-            newPreview.ApplyPreview(type, anchorIndex == 0);
+            newPreview.ApplyPreview(unitData, anchorIndex == 0);
             _previews[anchorIndex] = newPreview;
         }
 
-        public void Dequeue(List<MergeCellDetailType> queueSnapshot)
+        public void Dequeue(List<UnitData> queueSnapshot)
         {
             _queuedDequeueActions.Enqueue(queueSnapshot);
 
@@ -83,7 +84,7 @@ namespace Hex.Grid.DetailQueue
             ProcessingDequeues = false;
         }
 
-        private async Task DequeueInternal(List<MergeCellDetailType> queueSnapshot)
+        private async Task DequeueInternal(List<UnitData> queueSnapshot)
         {
             DetailDequeued?.Invoke();
             if (!gameObject.activeSelf)
@@ -105,12 +106,12 @@ namespace Hex.Grid.DetailQueue
             }
 
             // If there is a third position lerp to second position
-            if (_previews.TryGetValue(2, out var third) && queueSnapshot[1] != MergeCellDetailType.Empty)
+            if (_previews.TryGetValue(2, out var third) && queueSnapshot[1] != null)
             {
                 tasks.Add(third.ApplyDetailAndLerp(queueSnapshot[1], anchorSecond, false, () =>
                 {
                     _previews[1] = third;
-                    if (queueSnapshot[2] != MergeCellDetailType.Empty)
+                    if (queueSnapshot[2] != null)
                     {
                         SetPreview(2, queueSnapshot[2]);
                     }
@@ -120,16 +121,16 @@ namespace Hex.Grid.DetailQueue
             await Task.WhenAll(tasks);
 
             // Clean up preview list after lerp is finished
-            if (_previews.ContainsKey(1) && queueSnapshot[1] == MergeCellDetailType.Empty)
+            if (_previews.ContainsKey(1) && queueSnapshot[1] == null)
             {
                 _previews.Remove(1);
             }
-            if (_previews.ContainsKey(2) && queueSnapshot[2] == MergeCellDetailType.Empty)
+            if (_previews.ContainsKey(2) && queueSnapshot[2] == null)
             {
                 _previews.Remove(2);
             }
             
-            ListPool<MergeCellDetailType>.Release(queueSnapshot);
+            ListPool<UnitData>.Release(queueSnapshot);
         }
     }
 }

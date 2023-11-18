@@ -1,19 +1,22 @@
 using System;
 using System.Collections;
 using System.Threading.Tasks;
+using Hex.Data;
+using Hex.Grid.Cell;
 using Hex.Util;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Hex.Grid.DetailQueue
 {
-    public class CellDetailPreview : MonoBehaviour
+    public class CardPreview : MonoBehaviour
     {
-        [SerializeField] private Transform detailAnchor;
-        [SerializeField] private HexCellDetail previewPrefab;
+        [SerializeField] private Transform previewAnchor;
+        [SerializeField] private HexCellInfoHolder previewPrefab;
         [SerializeField] private AnimationCurve dequeueLerpCurve;
         
         private Coroutine _rotateCoroutine;
+        private HexCellInfoHolder _cellInfoHolder;
 
         private void OnEnable()
         {
@@ -24,30 +27,20 @@ namespace Hex.Grid.DetailQueue
             _rotateCoroutine = StartCoroutine(RotateDetail());
         }
 
-        public void ApplyPreview(MergeCellDetailType type, bool isMain, bool applyScale = true)
+        public void ApplyPreview(UnitData unitData, bool isMain, bool applyScale = true)
         {
-            var needReplace = true;
-            
-            if (detailAnchor.childCount > 0)
+            if (previewAnchor.childCount > 0)
             {
-                var child = detailAnchor.GetChild(0).GetComponent<HexCellDetail>();
-                needReplace = child.Type != type;
-                if (needReplace)
-                {
-                    Destroy(detailAnchor.GetChild(0).gameObject);
-                }
+                Destroy(previewAnchor.GetChild(0).gameObject);
             }
-
-            if (needReplace)
-            {
-                var newPreview = Instantiate(previewPrefab, detailAnchor);
-                newPreview.SetType(type);
             
-                var renderers = GetComponentsInChildren<MeshRenderer>();
-                foreach (var r in renderers)
-                {
-                    r.shadowCastingMode = ShadowCastingMode.Off;
-                }
+            _cellInfoHolder = Instantiate(previewPrefab, previewAnchor);
+            _cellInfoHolder.SpawnUnit(unitData);
+            
+            var renderers = GetComponentsInChildren<MeshRenderer>();
+            foreach (var r in renderers)
+            {
+                r.shadowCastingMode = ShadowCastingMode.Off;
             }
 
             if (!applyScale) return;
@@ -56,7 +49,7 @@ namespace Hex.Grid.DetailQueue
             transform.localScale = new Vector3(scale, scale, scale);
         }
 
-        public async Task ApplyDetailAndLerp(MergeCellDetailType type, Transform newAnchor, bool isMain, Action completeAction = null)
+        public async Task ApplyDetailAndLerp(UnitData unitData, Transform newAnchor, bool isMain, Action completeAction = null)
         {
             const float duration = .25f;
             var t = transform;
@@ -85,7 +78,7 @@ namespace Hex.Grid.DetailQueue
 
                 if (progress >= .5f && !typeSwapped)
                 {
-                    ApplyPreview(type, isMain, false);
+                    ApplyPreview(unitData, isMain, false);
                     typeSwapped = true;
                 }
             }
@@ -114,9 +107,9 @@ namespace Hex.Grid.DetailQueue
         {
             while (true)
             {
-                if (detailAnchor.childCount > 0)
+                if (_cellInfoHolder != null && _cellInfoHolder.HeldUnit)
                 {
-                    var child = detailAnchor.transform.GetChild(0);
+                    var child = _cellInfoHolder.UnitAnchor;
                     child.Rotate(Vector3.up, Time.deltaTime * 15f);
                 }
                 yield return null;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hex.Extensions;
+using Hex.Grid.Cell;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -129,7 +130,7 @@ namespace Hex.Grid
             {
                 var last = _dragSelectedCells.Last();
                 last.ToggleOutline(false);
-                last.ToggleCanvas(false);
+                last.UI.ToggleMergeCanvas(false);
                 
                 _dragSelectedCells.Remove(last);
                 
@@ -212,7 +213,7 @@ namespace Hex.Grid
             foreach (var cell in _dragSelectedCells)
             {
                 cell.ToggleOutline(false);
-                cell.ToggleCanvas(false);
+                cell.UI.ToggleMergeCanvas(false);
             }
             _dragSelectedCells.Clear();
             lineDrawer.Clear();

@@ -2,7 +2,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Hex.Grid
+namespace Hex.Grid.Cell
 {
     public struct HexCellDefinition
     {
