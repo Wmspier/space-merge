@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hex.Data;
+using Hex.Extensions;
 using Hex.Grid;
 using Hex.Grid.Cell;
 using Hex.Grid.DetailQueue;
@@ -11,15 +12,11 @@ using Hex.Util;
 using UnityEngine;
 using UnityEngine.Pool;
 using static Hex.Grid.HexGridInteractionManager;
-using Random = System.Random;
 
 namespace Hex.Managers
 {
     public class MergeGameManager : MonoBehaviour, IGameManager
     {
-        private static Random _random;
-        
-        [Header("Starting Configuration")]
         [SerializeField] private List<UnitData> startingDeck;
         
         [Space]
@@ -45,10 +42,8 @@ namespace Hex.Managers
         private void Awake()
         {
             ApplicationManager.RegisterResource(this);
-            _random = new Random();
 
             deckPreviewQueue.DetailDequeued = OnDetailDequeued;
-            
             gameUI.ResetPressed = OnResetPressed;
             
             _model.Load();
@@ -63,7 +58,7 @@ namespace Hex.Managers
             interactionManager.BlockInteractions = false;
             interactionManager.SetSelectionMode(SelectionMode.Outline);
             
-            interactionManager.CellClicked += TryPlaceDetail;
+            interactionManager.CellClicked += TryPlaceUnit;
             interactionManager.CellsDragReleased += TryCombineCells;
             interactionManager.CellsDragContinue += OnCellsDragContinued;
             
@@ -86,7 +81,7 @@ namespace Hex.Managers
         {
             interactionManager.BlockInteractions = true;
             
-            interactionManager.CellClicked -= TryPlaceDetail;
+            interactionManager.CellClicked -= TryPlaceUnit;
             interactionManager.CellsDragReleased -= TryCombineCells;
             interactionManager.CellsDragContinue -= OnCellsDragContinued;
             
@@ -115,6 +110,7 @@ namespace Hex.Managers
             {
                 _deck.Add(detail);
             }
+            _deck.Shuffle();
         }
         
         private void ResetGrid()
@@ -125,7 +121,7 @@ namespace Hex.Managers
             }
         }
         
-        private void TryPlaceDetail(HexCell cell)
+        private void TryPlaceUnit(HexCell cell)
         {
             // Don't try to place when deck is refilling
             // Can only place detail on empty tiles
@@ -145,7 +141,7 @@ namespace Hex.Managers
                 // Shuffle discard into deck
                 for (var i = _discard.Count - 1; i >= 0; i--)
                 {
-                    var detailIndex = UnityEngine.Random.Range(0, _discard.Count);
+                    var detailIndex = Random.Range(0, _discard.Count);
                     _deck.Add(_discard[detailIndex]);
                     _discard.RemoveAt(detailIndex);
                 }

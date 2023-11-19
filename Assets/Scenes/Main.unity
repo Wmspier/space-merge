@@ -927,16 +927,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startingDeck:
   - {fileID: 11400000, guid: c8590a2ec191d49ccb24956376041225, type: 2}
-  - {fileID: 11400000, guid: 68e377ae89faf41479e5892a7ffb919f, type: 2}
+  - {fileID: 11400000, guid: c8590a2ec191d49ccb24956376041225, type: 2}
   - {fileID: 11400000, guid: c8590a2ec191d49ccb24956376041225, type: 2}
   - {fileID: 11400000, guid: 68e377ae89faf41479e5892a7ffb919f, type: 2}
-  - {fileID: 11400000, guid: c8590a2ec191d49ccb24956376041225, type: 2}
   - {fileID: 11400000, guid: 68e377ae89faf41479e5892a7ffb919f, type: 2}
+  - {fileID: 11400000, guid: 68e377ae89faf41479e5892a7ffb919f, type: 2}
+  - {fileID: 11400000, guid: fd4288cdc9a18460fbce7670194a346c, type: 2}
+  - {fileID: 11400000, guid: fd4288cdc9a18460fbce7670194a346c, type: 2}
+  - {fileID: 11400000, guid: fd4288cdc9a18460fbce7670194a346c, type: 2}
   interactionManager: {fileID: 707193174}
   deckPreviewQueue: {fileID: 1378272704}
   grid: {fileID: 707193171}
   cellOutlineCanCombine: {r: 0.5254902, g: 1, b: 0.54902506, a: 0}
-  cellOutlineCannotCombine: {r: 1, g: 0.7607843, b: 0.5254902, a: 0}
+  cellOutlineCannotCombine: {r: 1, g: 0.39168215, b: 0.23113209, a: 0}
   gameUI: {fileID: 1400717077}
   popupUI: {fileID: 1422174045}
   topBarUI: {fileID: 183852980}

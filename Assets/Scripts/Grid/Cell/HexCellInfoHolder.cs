@@ -1,4 +1,5 @@
 using Hex.Data;
+using Hex.Extensions;
 using Hex.Util;
 using UnityEngine;
 
@@ -79,19 +80,11 @@ namespace Hex.Grid.Cell
 			CurrentPower = 0;
 			CurrentRarity = -1;
 
-			DestroyUnitAnchorChildren();
+			UnitAnchor.DestroyAllChildGameObjects();
 			UnitAnchor.localPosition = _unitAnchorOrigin;
 			
 			_ui.SetPower(CurrentPower);
 			_ui.SetRarityBaseZero(CurrentRarity);
-		}
-
-		private void DestroyUnitAnchorChildren()
-		{
-			for (var i = UnitAnchor.childCount-1; i >= 0; i--)
-			{
-				Destroy(UnitAnchor.GetChild(i).gameObject);
-			}
 		}
 	}
 }
