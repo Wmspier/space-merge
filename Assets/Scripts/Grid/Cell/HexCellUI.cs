@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -7,18 +9,22 @@ namespace Hex.Grid.Cell
 	{
 		[Header("Merge UI")]
 		[SerializeField] private GameObject mergeCanvasRoot;
-		[SerializeField] private GameObject canCombineRoot;
-		[SerializeField] private GameObject cannotCombineRoot;
-		[SerializeField] private TMP_Text matchCountText;
-		[SerializeField] private TMP_Text matchRequirementText;
+		[SerializeField] private TMP_Text newPowerText;
+		[SerializeField] private TMP_Text upgradeText;
 		
 		[Header("Unit Info UI")] 
 		[SerializeField] private GameObject unitInfoCanvasRoot;
 		[SerializeField] private TMP_Text powerText;
+		[SerializeField] private List<GameObject> rarityObjects;
 		
 		public void ToggleMergeCanvas(bool visible) => mergeCanvasRoot.SetActive(visible);
 		public void ToggleUnitInfoCanvas(bool visible) => unitInfoCanvasRoot.SetActive(visible);
-		
+
+		private void Awake()
+		{
+			if(mergeCanvasRoot != null) ToggleMergeCanvas(false);
+		}
+
 		public void SetPower(int power)
 		{
 			if (power <= 0)
@@ -30,17 +36,19 @@ namespace Hex.Grid.Cell
 			powerText.gameObject.SetActive(true);
 			powerText.text = power.ToString();
 		}
-		
-		public void SetMatchCount(int count, int req)
+
+		public void SetRarityBaseZero(int rarityIndex)
 		{
-			matchCountText.text = count.ToString();
-			matchRequirementText.text = req.ToString();
+			for (var i = 0; i < rarityObjects.Count; i++)
+			{
+				rarityObjects[i].SetActive(rarityIndex >= i);
+			}
 		}
 
-		public void ToggleCanCombine(bool canCombine)
+		public void SetMergeInfo(int finalPower, bool resultsInUpgrade)
 		{
-			canCombineRoot.SetActive(canCombine);
-			cannotCombineRoot.SetActive(!canCombine);
+			newPowerText.text = finalPower.ToString();
+			upgradeText.gameObject.SetActive(resultsInUpgrade);
 		}
 	}
 }

@@ -229,98 +229,70 @@ namespace Hex.Managers
             _deckRefilled = false;
         }
         
-        private async void TryCombineCells(List<HexCell> cells)
+        private static async void TryCombineCells(List<HexCell> cells)
         {
-            var cellsWithDetails = cells.Where(c => c.InfoHolder.HeldUnit);
-            var withDetails = cellsWithDetails as List<HexCell> ?? cellsWithDetails.ToList();
-
-            var canCombine = false;//HexGameUtil.TryCombine(withDetails, config);
-
-            if (!canCombine)
+            // Check if the cells can combine
+            var (resultsInUpgrade, finalPower, finalRarity) = HexGameUtil.TryCombineUnits(cells);
+            
+            // Invalid combine
+            if (finalPower <= 0)
             {
                 return;
             }
             
+            var firstUnit = cells.First().InfoHolder.HeldUnit;
+            var last = cells.Last();
+            
             var tasks = ListPool<Task>.Get();
-            var last = withDetails.Last();
-            withDetails.Remove(last);
                 
-            foreach (var c in withDetails)
+            foreach (var c in cells)
             {
-                tasks.Add(MoveAndCombineDetail(c, last));
+                tasks.Add(MoveAndCombineDetail(c, last, c != last));
             }
                 
             await Task.WhenAll(tasks);
-            //last.Detail.SetType(newType.Value);
-            //var combinedTiles = withDetails.Count + 1;
             
-            // Get score for combined tiles
-            // var (resource, amount) = config.GetPointsForType(last.Detail.Type);
-            // var multiplierForCombine = config.GetMultiplierForCombination(combinedTiles);
-            // var toAdd = Mathf.RoundToInt(amount * multiplierForCombine);
-            // _model.ModifyResourceAmount(resource, toAdd);
-            // 
-            // gameUI.TopBar.AddResourceFromTile(last, combinedTiles, resource, amount, multiplierForCombine, toAdd);
-// 
-            // grid.Save(GameMode.Merge);
+            // Resolve the combination, using the first unit as a unit override
+            last.InfoHolder.ResolveCombine(finalPower, finalRarity, resultsInUpgrade, firstUnit);
         }
 
         private UnitData GetUnitAtIndex(int index)
         {
-            if (index < _deck.Count)
-            {
-                return _deck[index];
-            }
-            return null;
+            return index < _deck.Count ? _deck[index] : null;
         }
 
         private void OnCellsDragContinued(List<HexCell> cells)
         {
-            var cellsWithDetails = cells.Where(c => c.InfoHolder.HeldUnit);
-            var withDetails = cellsWithDetails as List<HexCell> ?? cellsWithDetails.ToList();
-
             // Check if the cells can combine
-            var canCombine = false;// HexGameUtil.TryCombine(withDetails, config);
+            var (resultsInUpgrade,finalPower, _) = HexGameUtil.TryCombineUnits(cells);
 
-            // Check if the cells are all of the same type (to see if they can contribute to a combination)
-            var allSameType = withDetails.All(c => c.InfoHolder.HeldUnit.UniqueId == withDetails.First().InfoHolder.HeldUnit.UniqueId);
-            // Number to match is 3 for regular details and 4 for stones
-            const int numToMatch = 3;
             // Iterate through all cells and set their outline color
-            for (int index = 0, withDetailIndex = 0; index < cells.Count; index++)
+            foreach (var cell in cells)
             {
-                var cell = cells[index];
-                cell.SetOutlineColor(canCombine ? cellOutlineCanCombine : cellOutlineCannotCombine);
+                cell.SetOutlineColor(finalPower > 0 ? cellOutlineCanCombine : cellOutlineCannotCombine);
                 cell.UI.ToggleMergeCanvas(false);
-
-                if (!allSameType) continue;
-                
-                // increment the amount of cells contributing to a combination
-                cell.SetMatchCount(withDetailIndex + 1, numToMatch);
-                if (cell.InfoHolder.HeldUnit) withDetailIndex++;
             }
 
-            // Toggle the canvas to display the match count over the last relevant cell
-            for (var index = cells.Count - 1; index >= 0; index--)
-            {
-                var cell = cells[index];
-                if (cell.InfoHolder.HeldUnit) continue;
-                cell.UI.ToggleMergeCanvas(true);
-                cell.ToggleCanCombine(allSameType);
-                break;
-            }
+            // Invalid combine, don't show any merge info
+            if (finalPower == -1) return;
+
+            var finalCell = cells.Last();
+            finalCell.UI.ToggleMergeCanvas(true);
+            finalCell.UI.SetMergeInfo(finalPower, resultsInUpgrade);
         }
         
-        private static async Task MoveAndCombineDetail(HexCell fromCell, HexCell toCell)
+        private static async Task MoveAndCombineDetail(HexCell fromCell, HexCell toCell, bool removeAsResult)
         {
             const float lerpTimeSeconds = .25f;
             var startPosition = fromCell.InfoHolder.UnitAnchor.position;
             var endPosition = toCell.InfoHolder.UnitAnchor.position;
+            
+            if (removeAsResult) fromCell.UI.ToggleUnitInfoCanvas(false);
 
             await MathUtil.DoInterpolation(lerpTimeSeconds, DoProgress);
-
             fromCell.InfoHolder.UnitAnchor.transform.position = endPosition;
-            fromCell.InfoHolder.Clear();
+            
+            if (removeAsResult) fromCell.InfoHolder.Clear();
 
             void DoProgress(float progress)
             {

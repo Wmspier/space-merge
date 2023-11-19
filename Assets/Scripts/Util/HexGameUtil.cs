@@ -1,84 +1,62 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Hex.Grid;
-using UnityEngine.Pool;
-using Debug = UnityEngine.Debug;
+using Hex.Grid.Cell;
 
 namespace Hex.Util
 {
     public static class HexGameUtil
     {
-       // private static (bool canCombine, MergeCellDetailType? newType) TryCombineBasic(IEnumerable<HexCell> toCombine)
-       // {
-       //     var cellsWithDetails = toCombine.Where(c => c.Detail.Type > MergeCellDetailType.Empty);
-       //     var withDetails = cellsWithDetails as List<HexCell> ?? cellsWithDetails.ToList();
-       //     if (withDetails.Count < 3 || withDetails.Any(c => !c.Detail.Type.IsCombinableBasic()))
-       //     {
-       //         return (false, null);
-       //     }
+	    public const int MaxRarityZeroBased = 2;
+	    
+	    public static (bool createsUpgrade, int finalPower, int finalRarity) TryCombineUnits(IEnumerable<HexCell> toCombine)
+	    {
+		    var hexCells = toCombine as HexCell[] ?? toCombine.ToArray();
+		    // Can't combine if list has one or fewer cells or there are any empty spaces
+		    if (hexCells.Length <= 1 || hexCells.Any(c => c.InfoHolder.HeldUnit == null))
+		    {
+			    return (false, -1, -1);
+		    }
 
-       //     const int requiredToCombine = 3;
-       //     if (withDetails.Count < requiredToCombine)
-       //     {
-       //         return (false, null);
-       //     }
+		    var createsUpgrade = false;
+		    var masterCellId = hexCells.First().InfoHolder.HeldUnit.UniqueId;
+		    var masterCellRarity = hexCells.First().InfoHolder.CurrentRarity;
+		    var finalPower = 0;
+		    var finalRarity = masterCellRarity;
+		    var currentRarity = masterCellRarity;
 
-       //     if (withDetails.Any(c => c.Detail.Type != withDetails.First().Detail.Type))
-       //     {
-       //         return (false, null);
-       //     }
+		    for (var index = 0; index < hexCells.Length; index++)
+		    {
+			    var cell = hexCells[index];
+			    if (index == 0)
+			    {
+				    finalPower += cell.InfoHolder.CurrentPower;
+				    continue;
+			    }
 
-       //     return (true, withDetails.First().Detail.Type + 1);
-       // }
+			    // Can't combine lower rarities with higher rarities
+			    if (cell.InfoHolder.CurrentRarity > currentRarity) return (false, -1, -1); 
 
-       // private static (bool canCombine, MergeCellDetailType? newType) TryCombineSpecial(IReadOnlyCollection<HexCell> toCombine, HexDetailConfiguration config)
-       // {
-       //     var typeListLeft = ListPool<MergeCellDetailType>.Get();
-       //     var typeListRight = ListPool<MergeCellDetailType>.Get();
-       //     foreach (var specialDetail in config.SpecialDetails)
-       //     {
-       //         typeListLeft.AddRange(toCombine.Select(c => c.Detail.Type));
-       //         typeListRight.AddRange(specialDetail.Components);
-       //         foreach (var c in toCombine)
-       //         {
-       //             var detail = c.Detail.Type;
-       //             if (typeListRight.Contains(detail))
-       //             {
-       //                 typeListLeft.Remove(detail);
-       //                 typeListRight.Remove(detail);
-       //             }
-       //         }
+			    // Add the cells power to the resulting power
+			    finalPower += cell.InfoHolder.CurrentPower;
+			    
+			    // If the cell shares a rarity with the rarity at this point in the merge,
+			    // and the cell shares the same type as the master,
+			    // and the master cell is not at max rarity,
+			    // this cell creates an upgrade and doubles the final power
+			    if (cell.InfoHolder.CurrentRarity == currentRarity &&
+			        cell.InfoHolder.HeldUnit.UniqueId == masterCellId &&
+			        currentRarity < MaxRarityZeroBased)
+			    {
+				    createsUpgrade = true;
+				    currentRarity++;
+				    finalRarity = currentRarity;
+				    finalPower *= 2;
+			    }
+		    }
 
-       //         if (typeListLeft.Count == 0 && typeListRight.Count == 0)
-       //         {
-       //             return (true, specialDetail.Type);
-       //         }
-       //         typeListLeft.Clear();
-       //         typeListRight.Clear();
-       //     }
-
-       //     ListPool<MergeCellDetailType>.Release(typeListLeft);
-       //     ListPool<MergeCellDetailType>.Release(typeListRight);
-       //     return (false, null);
-       // }
-
-       // public static (bool canCombine, MergeCellDetailType? newType) TryCombine(IReadOnlyCollection<HexCell> toCombine, HexDetailConfiguration config)
-       // {
-       //     var (canCombine, newType) = TryCombineBasic(toCombine);
-       //     // if (!canCombine)
-       //     // {
-       //     //     (canCombine, newType) = TryCombineSpecial(toCombine, config);
-       //     // }
-
-       //     return (canCombine, newType);
-       // }
-       // 
-       // private static bool CanCombine(IReadOnlyCollection<HexCell> toCombine, HexDetailConfiguration config)
-       // {
-       //     return TryCombineBasic(toCombine).canCombine || TryCombineSpecial(toCombine, config).canCombine;
-       // }
-       // 
+		    return (createsUpgrade, finalPower, finalRarity);
+	    }
+	    
        // // This is a very expensive check
        // public static bool CanAnyCombineOnGrid(List<HexCell> cellsInGrid, HexDetailConfiguration config)
        // {

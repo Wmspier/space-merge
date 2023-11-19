@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4701a9cb2484c2e94d658509b442a9d, type: 3}
+  m_Name: BasicUnit_Red_1
+  m_EditorClassIdentifier: 
+  <UniqueId>k__BackingField: Unit_Red
+  <BasePower>k__BackingField: 4
+  <BaseRarity>k__BackingField: 1
+  <Prefab>k__BackingField: {fileID: 1757021540552548034, guid: 741381b56ed1541b29b0b730895a5c6a,
+    type: 3}
+  <NextRarity>k__BackingField: {fileID: 11400000, guid: 9964c13d98ccd4343ad6f49469eb9ebc,
+    type: 2}

@@ -65,9 +65,6 @@ namespace Hex.Grid.Cell
 
         public void SetOutlineColor(Color color) => _outlineMaterial.color = color;
 
-        public void SetMatchCount(int count, int req) => UI.SetMatchCount(count, req);
-        public void ToggleCanCombine(bool canCombine) => UI.ToggleCanCombine(canCombine);
-
         public void ApplyCoordinates(int x, int y, int z) => Coordinates = new Vector3Int(x, y, z);
         
         public void ToggleOutline(bool visible, List<HexCell> connectedCells = null)
