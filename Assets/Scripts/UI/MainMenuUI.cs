@@ -32,8 +32,8 @@ namespace Hex.UI
 
         private void OnEnable() 
         {
-            topBarUI.ToggleResourceBar(ResourceType.CoinGold, true);
-            topBarUI.ToggleResourceBar(ResourceType.CoinSilver, false); 
+            // topBarUI.ToggleResourceBar(ResourceType.CoinGold, true);
+            // topBarUI.ToggleResourceBar(ResourceType.CoinSilver, false); 
         }
 
         private void OnTabPressed(MainGameContext context, BottomBarTab pressedTab)

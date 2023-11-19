@@ -22,8 +22,8 @@ namespace Hex.UI
 
         private void OnEnable()
         {
-            topBarUI.ToggleResourceBar(ResourceType.CoinGold, false);
-            topBarUI.ToggleResourceBar(ResourceType.CoinSilver, true);
+            // topBarUI.ToggleResourceBar(ResourceType.CoinGold, false);
+            // topBarUI.ToggleResourceBar(ResourceType.CoinSilver, true);
         }
     }
 }

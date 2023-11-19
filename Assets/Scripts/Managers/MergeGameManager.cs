@@ -7,7 +7,6 @@ using Hex.Grid.Cell;
 using Hex.Grid.DetailQueue;
 using Hex.Model;
 using Hex.UI;
-using Hex.UI.Popup;
 using Hex.Util;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -27,7 +26,6 @@ namespace Hex.Managers
         [SerializeField] private HexGridInteractionManager interactionManager;
         [SerializeField] private DeckPreviewQueue deckPreviewQueue;
         [SerializeField] private HexGrid grid;
-        [SerializeField] private HexGrid enemyGrid;
 
         [Space] [Header("Cell Selecting")] 
         [SerializeField] private Color cellOutlineCanCombine;
@@ -37,8 +35,6 @@ namespace Hex.Managers
         [SerializeField] private GameUI gameUI;
         [SerializeField] private PopupsUI popupUI;
         [SerializeField] private TopBarUI topBarUI;
-        
-        [SerializeField] private TownCompletePopup townCompletePopupPrefab;
 
         private readonly MergeGameModel _model = new();
         private readonly List<UnitData> _deck = new();
@@ -79,10 +75,8 @@ namespace Hex.Managers
             deckPreviewQueue.gameObject.SetActive(true);
             gameUI.DeckPreviewQueue.gameObject.SetActive(true);
             
-            var existingGrid = grid.Load(GameMode.Merge);
+            grid.Load(GameMode.Merge);
             grid.Empty();
-            enemyGrid.Load(GameMode.Merge);
-            enemyGrid.Empty();
 
             deckPreviewQueue.GeneratePreviewQueue();
             gameUI.DeckPreviewQueue.Initialize(_deck.FirstOrDefault(), startingDeck.Count);
@@ -112,30 +106,6 @@ namespace Hex.Managers
             
             deckPreviewQueue.gameObject.SetActive(true);
             gameUI.DeckPreviewQueue.gameObject.SetActive(true);
-        }
-
-        private void TownComplete()
-        {
-            var popup = Instantiate(townCompletePopupPrefab);
-            popup.TotalScore.SetScoreImmediate(_model.ResourceAmounts[ResourceType.CoinSilver], true);
-            popup.ClaimPressed = OnClaimPressed;
-            
-            popupUI.AddChild(popup);
-            popupUI.ToggleInputBlock(true);
-
-            async void OnClaimPressed()
-            {
-                await popup.DoClaim(topBarUI, _model);
-                
-                _model.SetResourceAmount(ResourceType.CoinGold, _model.ResourceAmounts[ResourceType.CoinSilver]);
-                _model.SetResourceAmount(ResourceType.CoinSilver, 0);
-                topBarUI.SetResourceImmediate(ResourceType.CoinSilver, 0);
-                
-                Destroy(popup.gameObject);
-                popupUI.ToggleInputBlock(false);
-                ResetGrid();
-                ApplicationManager.GetResource<NavigationManager>().GoToMainMenu();
-            }
         }
         #endregion
 
@@ -168,12 +138,10 @@ namespace Hex.Managers
             var detail = _deck[0];
             _discard.Add(detail);
             _deck.RemoveAt(0);
-            Debug.Log($"Removing detail. New deck size: {_deck.Count}");
             
             // Deck is empty
             if (_deck.Count == 0)
             {
-                Debug.Log("Deck is empty, shuffling in discard");
                 // Shuffle discard into deck
                 for (var i = _discard.Count - 1; i >= 0; i--)
                 {
@@ -183,7 +151,6 @@ namespace Hex.Managers
                 }
 
                 _deckRefilled = true;
-                Debug.Log($"New deck size: {_deck.Count}");
             }
 
             // Try to create a snapshot of the next 3 details in the queue so they can be asynchronously processed
@@ -194,24 +161,8 @@ namespace Hex.Managers
                 queueSnapshot.Add(GetUnitAtIndex(i));
             }
             deckPreviewQueue.Dequeue(queueSnapshot);
-            CheckGameOver();
             
             grid.Save(GameMode.Merge);
-
-            void CheckGameOver()
-            {
-                // Check Game Over
-                // var allCells = grid.Registry.Values;
-                // if (allCells.Any(c => c.Detail.Type == MergeCellDetailType.Empty))
-                // {
-                //     return;
-                // }
-                // TODO Fix the can any combine check if needed
-                // if (!HexGameUtil.CanAnyCombineOnGrid(allCells.ToList(), config))
-                // {
-                //     TownComplete();
-                // }
-            }
         }
         
         private async void OnDetailDequeued()

@@ -75,7 +75,6 @@ namespace Hex.UI
            //  newAddition.text = FormatScore(scoreForType, multiplierForCombine, combinedTiles, cell.Detail.Type, resource);
            //  var rectTransform = newAddition.GetComponent<RectTransform>();
            //  rectTransform.position = gridCamera.WorldToScreenPoint(cell.transform.position);
-// 
            //  await DoResourceAddition(resource, rectTransform.position, rectTransform, toAdd, newAddition, combinedTiles > 3);
         }
 
