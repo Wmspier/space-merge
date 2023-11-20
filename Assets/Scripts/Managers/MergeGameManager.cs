@@ -11,7 +11,7 @@ using Hex.UI;
 using Hex.Util;
 using UnityEngine;
 using UnityEngine.Pool;
-using static Hex.Grid.HexGridInteractionManager;
+using static Hex.Grid.HexGridInteractionHandler;
 
 namespace Hex.Managers
 {
@@ -20,7 +20,7 @@ namespace Hex.Managers
         [SerializeField] private List<UnitData> startingDeck;
         
         [Space]
-        [SerializeField] private HexGridInteractionManager interactionManager;
+        [SerializeField] private HexGridInteractionHandler _interactionHandler;
         [SerializeField] private DeckPreviewQueue deckPreviewQueue;
         [SerializeField] private HexGrid grid;
 
@@ -55,12 +55,12 @@ namespace Hex.Managers
         
         public void Play()
         {
-            interactionManager.BlockInteractions = false;
-            interactionManager.SetSelectionMode(SelectionMode.Outline);
+            _interactionHandler.BlockInteractions = false;
+            _interactionHandler.SetSelectionMode(SelectionMode.Outline);
             
-            interactionManager.CellClicked += TryPlaceUnit;
-            interactionManager.CellsDragReleased += TryCombineCells;
-            interactionManager.CellsDragContinue += OnCellsDragContinued;
+            _interactionHandler.CellClicked += TryPlaceUnit;
+            _interactionHandler.CellsDragReleased += TryCombineCells;
+            _interactionHandler.CellsDragContinue += OnCellsDragContinued;
             
             gameUI.gameObject.SetActive(true);
 
@@ -79,11 +79,11 @@ namespace Hex.Managers
 
         public void Leave()
         {
-            interactionManager.BlockInteractions = true;
+            _interactionHandler.BlockInteractions = true;
             
-            interactionManager.CellClicked -= TryPlaceUnit;
-            interactionManager.CellsDragReleased -= TryCombineCells;
-            interactionManager.CellsDragContinue -= OnCellsDragContinued;
+            _interactionHandler.CellClicked -= TryPlaceUnit;
+            _interactionHandler.CellsDragReleased -= TryCombineCells;
+            _interactionHandler.CellsDragContinue -= OnCellsDragContinued;
             
             deckPreviewQueue.gameObject.SetActive(false);
             gameUI.gameObject.SetActive(false);

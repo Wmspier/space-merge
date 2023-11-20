@@ -9,7 +9,7 @@ using UnityEngine.Pool;
 namespace Hex.Grid
 {
     [RequireComponent(typeof(HexPointerHandler))]
-    public class HexGridInteractionManager : MonoBehaviour
+    public class HexGridInteractionHandler : MonoBehaviour
     {
         public enum SelectionMode
         {

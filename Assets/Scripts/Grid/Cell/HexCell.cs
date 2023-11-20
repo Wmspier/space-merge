@@ -18,6 +18,8 @@ namespace Hex.Grid.Cell
     [RequireComponent(typeof(HexCellInfoHolder))]
     public class HexCell : MonoBehaviour
     {
+		private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
+		
         [SerializeField] private MeshRenderer outline;
         [SerializeField] private GameObject outlineTop;
         [SerializeField] private GameObject outlineTopRight;
@@ -63,7 +65,11 @@ namespace Hex.Grid.Cell
 
         public override string ToString() => $"[{Coordinates.x},{Coordinates.y},{Coordinates.z}]";
 
-        public void SetOutlineColor(Color color) => _outlineMaterial.color = color;
+        public void SetOutlineColor(Color color)
+        {
+            _outlineMaterial.color = color;
+            _outlineMaterial.SetColor(EmissionColor, color * 10);
+        }
 
         public void ApplyCoordinates(int x, int y, int z) => Coordinates = new Vector3Int(x, y, z);
         

@@ -935,7 +935,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fd4288cdc9a18460fbce7670194a346c, type: 2}
   - {fileID: 11400000, guid: fd4288cdc9a18460fbce7670194a346c, type: 2}
   - {fileID: 11400000, guid: fd4288cdc9a18460fbce7670194a346c, type: 2}
-  interactionManager: {fileID: 707193174}
+  _interactionHandler: {fileID: 707193174}
   deckPreviewQueue: {fileID: 1378272704}
   grid: {fileID: 707193171}
   cellOutlineCanCombine: {r: 0.5254902, g: 1, b: 0.54902506, a: 0}
@@ -2651,7 +2651,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.1
+    widthMultiplier: 1
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -2784,7 +2784,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1240430462}
   m_LocalRotation: {x: -0.24959122, y: -0, z: -0, w: 0.96835136}
-  m_LocalPosition: {x: 5.7, y: -8.728731, z: 37.1}
+  m_LocalPosition: {x: 5.7, y: 6.8, z: 65.2}
   m_LocalScale: {x: 6.0240974, y: 1, z: 7.30225}
   m_ConstrainProportionsScale: 0
   m_Children: []
