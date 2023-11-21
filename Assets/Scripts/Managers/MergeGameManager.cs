@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hex.Data;
+using Hex.Enemy;
 using Hex.Extensions;
 using Hex.Grid;
 using Hex.Grid.Cell;
@@ -30,8 +31,10 @@ namespace Hex.Managers
         
         [Header("UI")]
         [SerializeField] private GameUI gameUI;
-        [SerializeField] private PopupsUI popupUI;
         [SerializeField] private TopBarUI topBarUI;
+        
+        [Space]
+        [SerializeField] private EnemyAttackHandler attackHandler;
 
         private readonly MergeGameModel _model = new();
         private readonly List<UnitData> _deck = new();
@@ -55,6 +58,8 @@ namespace Hex.Managers
         
         public void Play()
         {
+            attackHandler.ResetTurns();
+            
             _interactionHandler.BlockInteractions = false;
             _interactionHandler.SetSelectionMode(SelectionMode.Outline);
             
@@ -125,10 +130,11 @@ namespace Hex.Managers
         {
             // Don't try to place when deck is refilling
             // Can only place detail on empty tiles
-            if (_deckRefilled || cell.InfoHolder.HeldUnit)
+            if (_deckRefilled || cell.InfoHolder.HeldUnit || attackHandler.IsAttackPhase)
             {
                 return;
             }
+            
             cell.InfoHolder.SpawnUnit(GetUnitAtIndex(0));
             
             var detail = _deck[0];
@@ -157,6 +163,11 @@ namespace Hex.Managers
                 queueSnapshot.Add(GetUnitAtIndex(i));
             }
             deckPreviewQueue.Dequeue(queueSnapshot);
+            
+            if (attackHandler.ElapseTurn())
+            {
+                Debug.Log("Attack Time!");
+            }
             
             grid.Save(GameMode.Merge);
         }
