@@ -163,12 +163,7 @@ namespace Hex.Managers
                 queueSnapshot.Add(GetUnitAtIndex(i));
             }
             deckPreviewQueue.Dequeue(queueSnapshot);
-            
-            if (attackHandler.ElapseTurn())
-            {
-                Debug.Log("Attack Time!");
-            }
-            
+
             grid.Save(GameMode.Merge);
         }
         
@@ -187,7 +182,7 @@ namespace Hex.Managers
             _deckRefilled = false;
         }
         
-        private static async void TryCombineCells(List<HexCell> cells)
+        private async void TryCombineCells(List<HexCell> cells)
         {
             // Check if the cells can combine
             var (resultsInUpgrade, finalPower, finalRarity) = HexGameUtil.TryCombineUnits(cells);
@@ -196,6 +191,11 @@ namespace Hex.Managers
             if (finalPower <= 0)
             {
                 return;
+            }
+            
+            if (attackHandler.ElapseTurn())
+            {
+                Debug.Log("Attack Time!");
             }
             
             var firstUnit = cells.First().InfoHolder.HeldUnit;
@@ -209,6 +209,7 @@ namespace Hex.Managers
             }
                 
             await Task.WhenAll(tasks);
+            last.Pulse();
             
             // Resolve the combination, using the first unit as a unit override
             last.InfoHolder.ResolveCombine(finalPower, finalRarity, resultsInUpgrade, firstUnit);

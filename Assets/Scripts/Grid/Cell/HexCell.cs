@@ -1,5 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using DG.Tweening;
 using Hex.Extensions;
+using UnityEditor;
 using UnityEngine;
 
 namespace Hex.Grid.Cell
@@ -20,6 +24,7 @@ namespace Hex.Grid.Cell
     {
 		private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
 		
+        [Header("Outlines")]
         [SerializeField] private MeshRenderer outline;
         [SerializeField] private GameObject outlineTop;
         [SerializeField] private GameObject outlineTopRight;
@@ -28,6 +33,9 @@ namespace Hex.Grid.Cell
         [SerializeField] private GameObject outlineBottomLeft;
         [SerializeField] private GameObject outlineTopLeft;
 
+        [Space] 
+        [SerializeField] private GameObject _attackIndicator;
+        
         private Material _outlineMaterial;
         private bool _arrowOverHex;
 
@@ -95,6 +103,33 @@ namespace Hex.Grid.Cell
                 }
                 _outlineByDirection[direction].SetActive(false);
             }
+        }
+
+        [ContextMenu("Test Attack")]
+        public void TestAttackIndicator()
+        {
+            _attackIndicator.gameObject.SetActive(true);
+        }
+        
+        public bool CanPulse = true;
+        public void Pulse(int intensityDecay = 0) => PulseInternal(intensityDecay);
+        private async void PulseInternal(int intensityDecay)
+        {
+            if (!CanPulse) return;
+
+            var intensity = .75 / (intensityDecay + 1);
+            transform.DOPunchPosition(new Vector3(0f, (float)intensity, 0f), .5f, 0, .25f);
+            
+            CanPulse = false;
+            await Task.Delay(100);
+            
+            foreach (var n in Neighbors.Where(n => n.CanPulse))
+            {
+                n.Pulse(intensityDecay+1);
+            }
+
+            await Task.Delay(500);
+            CanPulse = true;
         }
     }
 }
