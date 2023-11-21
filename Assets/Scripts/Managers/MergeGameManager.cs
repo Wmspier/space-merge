@@ -136,6 +136,7 @@ namespace Hex.Managers
             }
             
             cell.InfoHolder.SpawnUnit(GetUnitAtIndex(0));
+            cell.Impact();
             
             var detail = _deck[0];
             _discard.Add(detail);

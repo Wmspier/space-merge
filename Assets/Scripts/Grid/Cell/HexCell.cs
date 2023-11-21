@@ -112,8 +112,7 @@ namespace Hex.Grid.Cell
         }
         
         public bool CanPulse = true;
-        public void Pulse(int intensityDecay = 0) => PulseInternal(intensityDecay);
-        private async void PulseInternal(int intensityDecay)
+        public async void Pulse(int intensityDecay = 0)
         {
             if (!CanPulse) return;
 
@@ -130,6 +129,11 @@ namespace Hex.Grid.Cell
 
             await Task.Delay(500);
             CanPulse = true;
+        }
+
+        public void Impact()
+        {
+            transform.DOPunchPosition(new Vector3(0f, -.15f, 0f), .5f, 0, .25f);
         }
     }
 }
