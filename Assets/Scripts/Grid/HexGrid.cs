@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Hex.Extensions;
 using Hex.Grid.Cell;
 using Hex.Managers;
 using UnityEditor;
@@ -30,10 +31,10 @@ namespace Hex.Grid
 
         public HexCell GetCenterCell() => Registry[(numEdgeCells, numEdgeCells, numEdgeCells).GetHashCode()];
         
-        public bool Load(GameMode mode)
+        public bool Load(GameMode mode = GameMode.Merge, bool immediateDestroy = false)
         {
-            Destroy();
-
+            DestroyGrid(immediateDestroy);
+            
             var savedGrid = LocalSaveManager.LoadGridFromDisk(mode);
             if (savedGrid == null)
             {
@@ -131,13 +132,21 @@ namespace Hex.Grid
             return definitions;
         }
 
-        private void Destroy()
+        private void DestroyGrid(bool immediate = false)
         {
             foreach (var (_, cell) in Registry)
             {
-                Destroy(cell.gameObject);
+                if (immediate)
+                {
+                    DestroyImmediate(cell.gameObject);
+                }
+                else
+                {
+                    Destroy(cell.gameObject);
+                }
             }
             Registry.Clear();
+            cellsAnchor.DestroyAllChildGameObjects(immediate);
         }
 
         public void Empty()
@@ -149,6 +158,11 @@ namespace Hex.Grid
         }
 
 #if UNITY_EDITOR
+        [ContextMenu("Clear Grid")]
+        public void ForceClear() => DestroyGrid(true);
+        [ContextMenu("Spawn Grid")]
+        public void SpawnGrid() => Load(GameMode.Merge, true);
+        
         private void OnDrawGizmos()
         {
             if (!showGizmos)

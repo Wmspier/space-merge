@@ -100,7 +100,7 @@ namespace Hex.Grid
             if (!allowDragSelect) return;
             
             if(Vector3.Distance(hitPoint, cell.transform.position) > minDistanceForDrag)  return;
-
+            
             // Begin drag chain
             if (_dragSelectedCells.Count == 0)
             {

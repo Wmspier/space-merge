@@ -75,8 +75,7 @@ namespace Hex.Managers
             deckPreviewQueue.gameObject.SetActive(true);
             gameUI.DeckPreviewQueue.gameObject.SetActive(true);
             
-            grid.Load(GameMode.Merge);
-            grid.Empty();
+            grid.Load();
 
             deckPreviewQueue.GeneratePreviewQueue();
             gameUI.DeckPreviewQueue.Initialize(_deck.FirstOrDefault(), startingDeck.Count);

@@ -1,5 +1,4 @@
 using System.Collections;
-using Hex.Extensions;
 using Hex.UI;
 using UnityEngine;
 
@@ -10,12 +9,6 @@ namespace Hex.Managers
         [SerializeField] private TopBarUI topBarUI;
         [SerializeField] private MainMenuUI mainMenuUI;
         [SerializeField] private GameObject splashUI;
-        
-        [Header("Camera")] 
-        [SerializeField] private Transform cameraTransform;
-
-        [SerializeField] private Transform gamePositionRoot;
-        [SerializeField] private Transform mainMenuPositionRoot;
         [SerializeField] private GameObject gridRoot;
 
         private void Awake()
@@ -40,9 +33,6 @@ namespace Hex.Managers
             mainMenuUI.gameObject.SetActive(false);
             gridRoot.SetActive(true);
             ApplicationManager.GetGameManager().Play();
-
-            cameraTransform.parent = gamePositionRoot;
-            cameraTransform.Reset();
             
             topBarUI.ToggleHomeButton(true);
         }
@@ -52,9 +42,6 @@ namespace Hex.Managers
             mainMenuUI.gameObject.SetActive(true);
             gridRoot.SetActive(false);
             ApplicationManager.GetGameManager().Leave();
-
-            cameraTransform.parent = mainMenuPositionRoot;
-            cameraTransform.Reset();
             
             topBarUI.ToggleHomeButton(false);
         }
