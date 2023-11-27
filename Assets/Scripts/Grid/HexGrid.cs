@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Hex.Extensions;
 using Hex.Grid.Cell;
 using Hex.Managers;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Hex.Grid
 {
@@ -29,8 +31,34 @@ namespace Hex.Grid
 
         public Dictionary<int, HexCell> Registry { get; } = new();
 
+        #region Grid Accessing
+         
         public HexCell GetCenterCell() => Registry[(numEdgeCells, numEdgeCells, numEdgeCells).GetHashCode()];
-        
+ 
+        public HexCell GetRandomCell()
+        {
+            var allCells = Registry.Values.ToList();
+            return allCells[Random.Range(0, allCells.Count)];
+        }
+         
+        public IEnumerable<List<HexCell>> GetCellsByRow()
+        {
+            var cellsByRow = new List<List<HexCell>>();
+            for (var i = 0; i < numEdgeCells*2-1; i++)
+            {
+                cellsByRow.Add(new List<HexCell>());
+            }
+ 
+            foreach (var (_, cell) in Registry)
+            {
+                cellsByRow[cell.Coordinates.x-1].Add(cell);
+            }
+ 
+            return cellsByRow;
+        }
+         
+        #endregion
+
         public bool Load(GameMode mode = GameMode.Merge, bool immediateDestroy = false)
         {
             DestroyGrid(immediateDestroy);
@@ -148,15 +176,7 @@ namespace Hex.Grid
             Registry.Clear();
             cellsAnchor.DestroyAllChildGameObjects(immediate);
         }
-
-        public void Empty()
-        {
-            foreach (var (_, cell) in Registry)
-            {
-                cell.InfoHolder.Clear();
-            }
-        }
-
+        
 #if UNITY_EDITOR
         [ContextMenu("Clear Grid")]
         public void ForceClear() => DestroyGrid(true);

@@ -17,12 +17,30 @@ namespace Hex.Grid.Cell
 		[SerializeField] private TMP_Text powerText;
 		[SerializeField] private List<GameObject> rarityObjects;
 		
+		[Header("Enemy Attack UI")]
+		[SerializeField] private GameObject enemyAttackCanvasRoot;
+		[SerializeField] private TMP_Text enemyPowerText;
+		
 		public void ToggleMergeCanvas(bool visible) => mergeCanvasRoot.SetActive(visible);
 		public void ToggleUnitInfoCanvas(bool visible) => unitInfoCanvasRoot.SetActive(visible);
+		public void ToggleEnemyAttackCanvas(bool visible) => enemyAttackCanvasRoot.SetActive(visible);
 
 		private void Awake()
 		{
 			if(mergeCanvasRoot != null) ToggleMergeCanvas(false);
+			if(enemyAttackCanvasRoot != null) ToggleEnemyAttackCanvas(false);
+		}
+
+		public void SetEnemyAttackPower(int power)
+		{
+			if (power <= 0)
+			{
+				enemyPowerText.gameObject.SetActive(false);
+				return;
+			}
+			
+			enemyPowerText.gameObject.SetActive(true);
+			enemyPowerText.text = power.ToString();
 		}
 
 		public void SetPower(int power)

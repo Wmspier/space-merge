@@ -33,9 +33,6 @@ namespace Hex.Grid.Cell
         [SerializeField] private GameObject outlineBottomLeft;
         [SerializeField] private GameObject outlineTopLeft;
 
-        [Space] 
-        [SerializeField] private GameObject _attackIndicator;
-        
         private Material _outlineMaterial;
         private bool _arrowOverHex;
 
@@ -50,6 +47,8 @@ namespace Hex.Grid.Cell
         public HexCellInfoHolder InfoHolder { get; private set; }
 
         public HexCellUI UI { get; private set; }
+        
+        public bool HoldingEnemyAttack { get; private set; }
 
         private void Awake()
         {
@@ -105,26 +104,27 @@ namespace Hex.Grid.Cell
             }
         }
 
-        [ContextMenu("Test Attack")]
-        public void TestAttackIndicator()
+        public void HoldEnemyAttack(int attackPower)
         {
-            _attackIndicator.gameObject.SetActive(true);
+            HoldingEnemyAttack = true;
+            UI.ToggleEnemyAttackCanvas(true);
+            UI.SetEnemyAttackPower(attackPower);
         }
         
         public bool CanPulse = true;
-        public async void Pulse(int intensityDecay = 0)
+        public async void Pulse(float maxIntensity, int intensityDecay = 0)
         {
             if (!CanPulse) return;
 
-            var intensity = .75 / (intensityDecay + 1);
-            transform.DOPunchPosition(new Vector3(0f, (float)intensity, 0f), .5f, 0, .25f);
+            var intensity = maxIntensity / (intensityDecay + 1);
+            transform.DOPunchPosition(new Vector3(0f, intensity, 0f), .5f, 0, .25f);
             
             CanPulse = false;
             await Task.Delay(100);
             
             foreach (var n in Neighbors.Where(n => n.CanPulse))
             {
-                n.Pulse(intensityDecay+1);
+                n.Pulse(maxIntensity, intensityDecay+1);
             }
 
             await Task.Delay(500);

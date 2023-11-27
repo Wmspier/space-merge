@@ -14,5 +14,15 @@ namespace Hex.Extensions
 			}
 			return values;
 		}
+
+		public static IList<T> FillWithDefault<T>(this IList<T> list, int amount)
+		{
+			for (var i = 0; i < amount; i++)
+			{
+				list.Add(default);
+			}
+
+			return list;
+		}
 	}
 }

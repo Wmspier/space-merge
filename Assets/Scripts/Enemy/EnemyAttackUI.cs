@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Hex.Enemy
 {
@@ -9,11 +11,19 @@ namespace Hex.Enemy
 	{
 		[SerializeField] private TMP_Text _turnsBeforeAttackPhaseText;
 		[SerializeField] private List<Transform> _turnTrackerDots;
-		[SerializeField] private Transform _attackPhaseIcon;
-		
+		[SerializeField] private Transform _resolveAttackRoot;
+		[SerializeField] private Button _resolveAttackButton;
+
+		public Action ResolveAttackPressed;
+
 		private int _elapsedTurns;
 		public int TurnsBeforeAttack => _turnTrackerDots.Count - _elapsedTurns;
-		
+
+		private void Awake()
+		{
+			_resolveAttackButton.onClick.AddListener(() => ResolveAttackPressed?.Invoke());
+		}
+
 		public bool ElapseTurn()
 		{
 			if (TurnsBeforeAttack == 0)
@@ -34,15 +44,15 @@ namespace Hex.Enemy
 			// Update text
 			_turnsBeforeAttackPhaseText.text = TurnsBeforeAttack == 0
 				? "Enemy is Attacking!"
-				: $"Enemy Attack in {TurnsBeforeAttack} Turns";
+				: $"Enemy will Attack in {TurnsBeforeAttack} Turns";
 			_turnsBeforeAttackPhaseText.transform.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), .25f);
 				
 			// If it's the attack phase, show icon
 			if (TurnsBeforeAttack == 0)
 			{
 				DOTween.Sequence()
-					.Append(_attackPhaseIcon.DOScale(Vector3.one, .25f))
-					.Append(_attackPhaseIcon.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), .15f))
+					.Append(_resolveAttackRoot.DOScale(Vector3.one, .25f))
+					.Append(_resolveAttackRoot.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), .15f))
 					.Play();
 			}
 
@@ -55,7 +65,7 @@ namespace Hex.Enemy
 			{
 				dot.localScale = Vector3.zero;
 			}
-			_attackPhaseIcon.localScale = Vector3.zero;
+			_resolveAttackRoot.localScale = Vector3.zero;
 
 			_elapsedTurns = 0;
 			_turnsBeforeAttackPhaseText.text = $"Enemy Attack in {TurnsBeforeAttack} Turns";

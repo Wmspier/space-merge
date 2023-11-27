@@ -36,6 +36,9 @@ namespace Hex.Managers
         [Space]
         [SerializeField] private EnemyAttackHandler attackHandler;
 
+        [SerializeField] private float mergePulseIntensity = .75f;
+        [SerializeField] private float mergeUpgradePulseIntensity = 1.5f;
+
         private readonly MergeGameModel _model = new();
         private readonly List<UnitData> _deck = new();
         private readonly List<UnitData> _discard = new();
@@ -79,6 +82,9 @@ namespace Hex.Managers
 
             deckPreviewQueue.GeneratePreviewQueue();
             gameUI.DeckPreviewQueue.Initialize(_deck.FirstOrDefault(), startingDeck.Count);
+
+            attackHandler.Initialize(grid);
+            attackHandler.AssignAttacksToGrid();
         }
 
         public void Leave()
@@ -165,6 +171,12 @@ namespace Hex.Managers
             deckPreviewQueue.Dequeue(queueSnapshot);
 
             grid.Save(GameMode.Merge);
+            
+            if (attackHandler.ElapseTurn())
+            {
+                deckPreviewQueue.gameObject.SetActive(false);
+                gameUI.DeckPreviewQueue.gameObject.SetActive(false);
+            }
         }
         
         private async void OnDetailDequeued()
@@ -193,11 +205,6 @@ namespace Hex.Managers
                 return;
             }
             
-            if (attackHandler.ElapseTurn())
-            {
-                Debug.Log("Attack Time!");
-            }
-            
             var firstUnit = cells.First().InfoHolder.HeldUnit;
             var last = cells.Last();
             
@@ -209,7 +216,7 @@ namespace Hex.Managers
             }
                 
             await Task.WhenAll(tasks);
-            last.Pulse();
+            last.Pulse(resultsInUpgrade ? mergeUpgradePulseIntensity : mergePulseIntensity);
             
             // Resolve the combination, using the first unit as a unit override
             last.InfoHolder.ResolveCombine(finalPower, finalRarity, resultsInUpgrade, firstUnit);
