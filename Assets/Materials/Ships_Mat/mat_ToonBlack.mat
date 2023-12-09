@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: mat_Toon
+  m_Name: mat_ToonBlack
   m_Shader: {fileID: -6465566751694194690, guid: da7a74817401cb045b029695dfad8ee5,
     type: 3}
   m_Parent: {fileID: 0}

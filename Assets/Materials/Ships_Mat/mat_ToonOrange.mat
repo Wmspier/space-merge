@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: mat_Toon
+  m_Name: mat_ToonOrange
   m_Shader: {fileID: -6465566751694194690, guid: da7a74817401cb045b029695dfad8ee5,
     type: 3}
   m_Parent: {fileID: 0}
@@ -73,7 +73,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture2D:
-        m_Texture: {fileID: 2800000, guid: c12adf5d647f9475b9ba3d00c337b940, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7c7a2e313dd9c4e1390d91077353abf7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
