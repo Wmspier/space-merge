@@ -11,12 +11,12 @@ namespace Hex.Grid.Cell
     public enum HexCellDirection
     {
         None,
-        Top,
+        TopLeft,
         TopRight,
-        BottomRight,
-        Bottom,
+        Right,
         BottomLeft,
-        TopLeft
+        BottomRight,
+        Left
     }
     
     [RequireComponent(typeof(HexCellInfoHolder))]
@@ -26,12 +26,12 @@ namespace Hex.Grid.Cell
 		
         [Header("Outlines")]
         [SerializeField] private MeshRenderer outline;
-        [SerializeField] private GameObject outlineTop;
-        [SerializeField] private GameObject outlineTopRight;
-        [SerializeField] private GameObject outlineBottomRight;
-        [SerializeField] private GameObject outlineBottom;
-        [SerializeField] private GameObject outlineBottomLeft;
         [SerializeField] private GameObject outlineTopLeft;
+        [SerializeField] private GameObject outlineTopRight;
+        [SerializeField] private GameObject outlineRight;
+        [SerializeField] private GameObject outlineBottomLeft;
+        [SerializeField] private GameObject outlineBottomRight;
+        [SerializeField] private GameObject outlineLeft;
 
         private Material _outlineMaterial;
         private bool _arrowOverHex;
@@ -57,11 +57,12 @@ namespace Hex.Grid.Cell
             
             _outlineMaterial = new Material(outline.material);
             
-            _outlineByDirection[HexCellDirection.Top] = outlineTop;
+            _outlineByDirection[HexCellDirection.TopLeft] = outlineTopLeft;
             _outlineByDirection[HexCellDirection.TopRight] = outlineTopRight;
+            _outlineByDirection[HexCellDirection.Right] = outlineRight;
             _outlineByDirection[HexCellDirection.BottomRight] = outlineBottomRight;
-            _outlineByDirection[HexCellDirection.Bottom] = outlineBottom;
             _outlineByDirection[HexCellDirection.BottomLeft] = outlineBottomLeft;
+            _outlineByDirection[HexCellDirection.Left] = outlineLeft;
             _outlineByDirection[HexCellDirection.TopLeft] = outlineTopLeft;
 
             foreach (var (_, o) in _outlineByDirection)

@@ -1,4 +1,3 @@
-using Hex.Grid;
 using Hex.Grid.Cell;
 
 namespace Hex.Extensions
@@ -12,11 +11,11 @@ namespace Hex.Extensions
             var leftCoord = left.Coordinates;
             var rightCoord = right.Coordinates;
 
-            if (leftCoord.x == rightCoord.x && 
-                leftCoord.y > rightCoord.y && 
-                leftCoord.z < rightCoord.z)
+            if (leftCoord.x < rightCoord.x && 
+                leftCoord.y == rightCoord.y && 
+                leftCoord.z > rightCoord.z)
             {
-                return HexCellDirection.Top;
+                return HexCellDirection.TopLeft;
             }
 
             if (leftCoord.x < rightCoord.x &&
@@ -26,18 +25,18 @@ namespace Hex.Extensions
                 return HexCellDirection.TopRight;
             }
 
-            if (leftCoord.x < rightCoord.x &&
-                leftCoord.y == rightCoord.y &&
-                leftCoord.z > rightCoord.z)
+            if (leftCoord.x == rightCoord.x &&
+                leftCoord.y > rightCoord.y &&
+                leftCoord.z < rightCoord.z)
             {
-                return HexCellDirection.BottomRight;
+                return HexCellDirection.Right;
             }
 
-            if (leftCoord.x == rightCoord.x &&
-                leftCoord.y < rightCoord.y &&
-                leftCoord.z > rightCoord.z)
+            if (leftCoord.x > rightCoord.x &&
+                leftCoord.y == rightCoord.y &&
+                leftCoord.z < rightCoord.z)
             {
-                return HexCellDirection.Bottom;
+                return HexCellDirection.BottomRight;
             }
 
             if (leftCoord.x > rightCoord.x &&
@@ -47,11 +46,11 @@ namespace Hex.Extensions
                 return HexCellDirection.BottomLeft;
             }
 
-            if (leftCoord.x > rightCoord.x &&
-                leftCoord.y == rightCoord.y &&
-                leftCoord.z < rightCoord.z)
+            if (leftCoord.x == rightCoord.x &&
+                leftCoord.y < rightCoord.y &&
+                leftCoord.z > rightCoord.z)
             {
-                return HexCellDirection.TopLeft;
+                return HexCellDirection.Left;
             }
 
             return HexCellDirection.None;

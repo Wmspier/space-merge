@@ -49,7 +49,7 @@ namespace Hex.Enemy
 			attackList.Shuffle();
 
 			var cellsByRowWithNoAttack = _grid.GetCellsByRow()
-				.Where(cells => cells.All(c => !c.HoldingEnemyAttack))
+				// .Where(cells => cells.All(c => !c.HoldingEnemyAttack)) // Need to fix this later
 				.ToList()
 				.Shuffle();
 

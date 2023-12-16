@@ -44,7 +44,7 @@ namespace Hex.Grid
         public IEnumerable<List<HexCell>> GetCellsByRow()
         {
             var cellsByRow = new List<List<HexCell>>();
-            for (var i = 0; i < numEdgeCells*2-1; i++)
+            for (var i = 0; i < numEdgeCells*2-numEdgeCells%2; i++)
             {
                 cellsByRow.Add(new List<HexCell>());
             }
@@ -52,6 +52,11 @@ namespace Hex.Grid
             foreach (var (_, cell) in Registry)
             {
                 cellsByRow[cell.Coordinates.x-1].Add(cell);
+            }
+
+            for (var i = cellsByRow.Count - 1; i >= 0; i--)
+            {
+                if (cellsByRow[i].Count == 0) cellsByRow.RemoveAt(i);
             }
  
             return cellsByRow;
@@ -117,9 +122,9 @@ namespace Hex.Grid
             var edgeH = GameConstants.HexMetrics.EdgeLength * Mathf.Sqrt(3) / 2f;
             
             var position = new Vector3(
-                x * edgeW, 
+                (-y + z) * edgeH, 
                 0f, 
-                (-y + z) * edgeH);
+                x * edgeW);
             
             Transform cellTransform;
             (cellTransform = cell.transform).SetParent(cellsAnchor, false);
