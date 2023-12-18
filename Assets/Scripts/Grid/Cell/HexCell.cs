@@ -47,8 +47,9 @@ namespace Hex.Grid.Cell
         public HexCellInfoHolder InfoHolder { get; private set; }
 
         public HexCellUI UI { get; private set; }
-        
-        public bool HoldingEnemyAttack { get; private set; }
+
+        public bool HoldingEnemyAttack => InfoHolder.HeldEnemyAttack > 0;
+        public bool HoldingUnit => InfoHolder.HeldUnit != null;
 
         private void Awake()
         {
@@ -103,13 +104,6 @@ namespace Hex.Grid.Cell
                 }
                 _outlineByDirection[direction].SetActive(false);
             }
-        }
-
-        public void HoldEnemyAttack(int attackPower)
-        {
-            HoldingEnemyAttack = true;
-            UI.ToggleEnemyAttackCanvas(true);
-            UI.SetEnemyAttackPower(attackPower);
         }
         
         public bool CanPulse = true;

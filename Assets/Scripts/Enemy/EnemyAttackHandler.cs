@@ -3,6 +3,7 @@ using System.Linq;
 using Hex.Extensions;
 using Hex.Grid;
 using Hex.Grid.Cell;
+using Hex.UI;
 using UnityEngine;
 
 namespace Hex.Enemy
@@ -12,7 +13,9 @@ namespace Hex.Enemy
 		private static readonly int[] AttackPowerList = { 3, 5, 8, 12, 17, 23, 30, 38, 47 };
 
 		[SerializeField] private EnemyAttackUI _ui;
-
+		[SerializeField] private HealthBar _enemyHealthBar;
+		[SerializeField] private HealthBar _playerHealthBar;
+		
 		private int _attackPhaseCount;
 		private int _staggeredPhaseCount;
 		private HexGrid _grid;
@@ -26,6 +29,10 @@ namespace Hex.Enemy
 		{
 			_grid = grid;
 			_ui.ResolveAttackPressed = ResolveAttacks;
+			_attackPhaseCount = _staggeredPhaseCount = 0;
+			
+			_playerHealthBar.SetHealthToMax(50);;
+			_enemyHealthBar.SetHealthToMax(100);
 		}
 		
 		public void AssignAttacksToGrid()
@@ -71,7 +78,7 @@ namespace Hex.Enemy
 				}
 				
 				// Assign attack 
-				randomCell.HoldEnemyAttack(attackList[0]);
+				randomCell.InfoHolder.HoldEnemyAttack(attackList[0]);
 				// Remove attack
 				attackList.RemoveAt(0);
 			}
@@ -80,9 +87,37 @@ namespace Hex.Enemy
 			if (isEvenAttack) _staggeredPhaseCount++;
 		}
 
-		public void ResolveAttacks()
+		private void ResolveAttacks()
 		{
+			var cellsByRow = _grid.GetCellsByRow();
+			foreach (var row in cellsByRow)
+			{
+				foreach (var cell in row)
+				{
+					var cellHoldingUint = cell.HoldingUnit;
+					if (!cell.HoldingEnemyAttack && !cellHoldingUint) continue; // Empty cell
+
+					var powerDifference = cell.InfoHolder.ResolveAttack();
+					if (powerDifference > 0)
+					{
+						// Player unit is stronger
+						_enemyHealthBar.ModifyValue(-powerDifference);
+					}
+					else if (powerDifference < 0)
+					{
+						// Enemy Attack is stronger
+						_playerHealthBar.ModifyValue(powerDifference);
+					}
+
+					if (cellHoldingUint)
+					{
+						cell.InfoHolder.ClearEnemyAttack();
+					}
+				}
+			}
 			
+			_ui.ResetTurns();
+			AssignAttacksToGrid();
 		}
 	}
 }

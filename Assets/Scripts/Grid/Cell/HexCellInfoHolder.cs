@@ -11,6 +11,7 @@ namespace Hex.Grid.Cell
 		
 		[field: SerializeField] public Transform UnitAnchor { get; private set; }
 		public UnitData HeldUnit { get; private set; }
+		public int HeldEnemyAttack { get; private set; } = -1;
 		public int CurrentPower { get; private set; }
 		public int CurrentRarity { get; private set; }
 
@@ -42,11 +43,18 @@ namespace Hex.Grid.Cell
 			_ui.SetRarityBaseZero(CurrentRarity);
 		}
 
+		public void HoldEnemyAttack(int attackPower)
+		{
+			HeldEnemyAttack = attackPower;
+			_ui.ToggleEnemyAttackCanvas(true);
+			_ui.SetEnemyAttackPower(attackPower);
+		}
+		
 		public void ResolveCombine(int newPower, int finalRarity, bool resultsInUpgrade, UnitData finalUnitData)
 		{
 			Debug.Log($"Resolving Combine: NewPower={newPower} | FinalRarity={finalRarity} | ResultsInUpgrade={resultsInUpgrade}");
 			
-			Clear();
+			ClearUnit();
 			SpawnUnit(finalUnitData, newPower);
 
 			if (!resultsInUpgrade || CurrentRarity == HexGameUtil.MaxRarityZeroBased)
@@ -61,7 +69,7 @@ namespace Hex.Grid.Cell
 			{
 				var nextRarity = HeldUnit.NextRarity;
 				
-				Clear();
+				ClearUnit();
 				SpawnUnit(nextRarity, newPower);
 			}
 			
@@ -69,13 +77,26 @@ namespace Hex.Grid.Cell
 			_ui.SetRarityBaseZero(CurrentRarity);
 		}
 
-		public void Clear()
+		public int ResolveAttack()
 		{
-			if (HeldUnit == null)
+			var powerDifference = CurrentPower - HeldEnemyAttack;
+			
+			if (powerDifference <= 0)
 			{
-				return;
+				// Unit is destroyed
+				ClearUnit();
 			}
+			else
+			{
+				CurrentPower -= HeldEnemyAttack;
+				_ui.SetPower(CurrentPower);
+			}
+			
+			return powerDifference;
+		}
 
+		public void ClearUnit()
+		{
 			HeldUnit = null;
 			CurrentPower = 0;
 			CurrentRarity = -1;
@@ -85,6 +106,19 @@ namespace Hex.Grid.Cell
 			
 			_ui.SetPower(CurrentPower);
 			_ui.SetRarityBaseZero(CurrentRarity);
+		}
+
+		public void ClearEnemyAttack()
+		{
+			HeldEnemyAttack = 0;
+			_ui.SetEnemyAttackPower(HeldEnemyAttack);
+			_ui.ToggleEnemyAttackCanvas(false);
+		}
+		
+		public void Clear()
+		{
+			ClearUnit();
+			ClearEnemyAttack();
 		}
 	}
 }

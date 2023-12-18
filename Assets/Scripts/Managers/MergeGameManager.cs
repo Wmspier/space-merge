@@ -258,7 +258,7 @@ namespace Hex.Managers
             await MathUtil.DoInterpolation(lerpTimeSeconds, DoProgress);
             fromCell.InfoHolder.UnitAnchor.transform.position = endPosition;
             
-            if (removeAsResult) fromCell.InfoHolder.Clear();
+            if (removeAsResult) fromCell.InfoHolder.ClearUnit();
 
             void DoProgress(float progress)
             {
