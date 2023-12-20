@@ -191,6 +191,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ProceduralPlanet1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e48342bd9caae66429845cb22a1a4bac,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -214,7 +219,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!135 &785338451
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -364,6 +369,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Spaceship_Human_V5
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e51741b90f8ba44689524fc5a53e1d1e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -436,6 +446,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ProceduralPlanet1 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e48342bd9caae66429845cb22a1a4bac,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -715,7 +730,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!135 &1524788352
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -863,7 +878,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2381434b72c2d4b30b98953045d3e085, type: 2}
+  - {fileID: 2100000, guid: 96d443143ca439d4aa32e18a1c8653fb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -940,89 +955,6 @@ Transform:
   - {fileID: 1385948316}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &2140699740
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: fc9a74b6277544c75b4d705bbb88f91a, type: 2}
-    - target: {fileID: -7511558181221131132, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_Materials.Array.data[1]
-      value: 
-      objectReference: {fileID: 2100000, guid: e3613a4ab9bdf44c5af2785578571536, type: 2}
-    - target: {fileID: -7511558181221131132, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_Materials.Array.data[2]
-      value: 
-      objectReference: {fileID: 2100000, guid: 6dd7cda2ce915463ca6ebbb41afd3d35, type: 2}
-    - target: {fileID: 919132149155446097, guid: 42c2a902e23dc4fd48ff700c95652d3d,
-        type: 3}
-      propertyPath: m_Name
-      value: Spaceship_Human_V5 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 42c2a902e23dc4fd48ff700c95652d3d, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1032,7 +964,6 @@ SceneRoots:
   - {fileID: 1722061287}
   - {fileID: 1524788355}
   - {fileID: 943065686}
-  - {fileID: 2140699740}
   - {fileID: 517820548}
   - {fileID: 1140499104}
   - {fileID: 785338454}
