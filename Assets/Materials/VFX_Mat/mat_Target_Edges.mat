@@ -100,7 +100,7 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FresnelPower: 1.64
+    - _FresnelPower: 0.82
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -122,9 +122,9 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FresnelColor: {r: 0.49957052, g: 0.36206996, b: 1.0811101, a: 0.3921569}
+    - _FresnelColor: {r: 0.2735849, g: 0, b: 0, a: 0.33333334}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _TargetBackColor: {r: 0.039215688, g: 0.078431375, b: 0.19215687, a: 0.39215687}
+    - _TargetBackColor: {r: 0, g: 0, b: 0, a: 1}
     - _TargetFrontColor: {r: 10.432955, g: 0, b: 0, a: 0.39215687}
   m_BuildTextureStacks: []
 --- !u!114 &4331467141265175162

@@ -100,7 +100,7 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FresnelPower: 3.52
+    - _FresnelPower: 6.39
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -117,6 +117,7 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _VertexFrequency: 1
+    - _VertexOffset: 8.21
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
@@ -125,9 +126,10 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FresnelColor: {r: 0.49957052, g: 0.36206996, b: 1.0811101, a: 0.3921569}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _TargetBackColor: {r: 0.038679037, g: 0.07702827, b: 0.19069666, a: 0.3921569}
-    - _TargetFrontColor: {r: 67.79352, g: 0, b: 0, a: 0.39215687}
-    - _VectorAmount: {r: 0.5, g: 0, b: 0.5, a: 0}
+    - _TargetBackColor: {r: 0.00048828125, g: 0.0002240089, b: 0.00008061246, a: 0.3921569}
+    - _TargetFrontColor: {r: 137.97083, g: 18.059011, b: 20.456732, a: 0.39215687}
+    - _VectorAmount: {r: 0, g: 0, b: 0, a: 0}
+    - _VectorOffset: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &4331467141265175162
 MonoBehaviour:
