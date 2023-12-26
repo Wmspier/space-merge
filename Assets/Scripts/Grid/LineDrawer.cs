@@ -21,6 +21,8 @@ namespace Hex.Grid
 
         public void AddCellToLine(HexCell cell)
         {
+            if (_lineRenderer == null) return;
+            
             var position = cell.transform.position;
             position.y = 1.25f;
             
@@ -35,6 +37,8 @@ namespace Hex.Grid
 
         public void RemoveFromEnd()
         {
+            if (_lineRenderer == null) return;
+            
             if (_points.Count == 0)
             {
                 return;
@@ -50,6 +54,8 @@ namespace Hex.Grid
 
         public void Clear()
         {
+            if (_lineRenderer == null) return;
+            
             _points.Clear();
             _lineRenderer.positionCount = _points.Count;
             _lineRenderer.SetPositions(_points.ToArray());
@@ -58,6 +64,8 @@ namespace Hex.Grid
 
         private void RotateAndPositionTriangle()
         {
+            if (_lineRenderer == null) return;
+            
             if (_points.Count <= 1) return;
             
             var v1 = Vector3.forward;

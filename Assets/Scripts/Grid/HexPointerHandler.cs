@@ -11,7 +11,6 @@ namespace Hex.Grid
     public class HexPointerHandler : PointerHandler
     {
         private const string HexCellTag = "HexCell";
-        private const string WindmillTag = "Windmill";
         private const float CellCheckMinDistance = .5f; // Distance in screen-space since last check before a new raycast can be made.
         private const float PointerClickThreshold = .25f; // Time in seconds before a pointer click is considered pointer up.
         private const float PointerDownThreshold = .2f; // Time in seconds before pointer down over cell is allowed to fire.
@@ -127,11 +126,6 @@ namespace Hex.Grid
             for (var i = hits-1; i >= 0; i--)
             {
                 var hit = _raycastHits[i];
-                if (hit.transform.gameObject.CompareTag(WindmillTag))
-                {
-                    // If a windmill is hit return so we don't hit the cell behind it
-                    return (false, null, null);
-                }
                 if (hit.transform.parent == null || !hit.transform.gameObject.CompareTag(HexCellTag))
                 {
                     continue;

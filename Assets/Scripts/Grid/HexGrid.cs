@@ -29,6 +29,8 @@ namespace Hex.Grid
         [Space] 
         [SerializeField] private Transform cellsAnchor;
 
+        public Action GridInitialized;
+        
         public Dictionary<int, HexCell> Registry { get; } = new();
 
         #region Grid Accessing
@@ -95,6 +97,7 @@ namespace Hex.Grid
             }
             
             RegisterCellNeighbors();
+            GridInitialized?.Invoke();
             return savedGrid != null;
         }
         
