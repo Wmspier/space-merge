@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.334
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.061401285, g: 0.076516695, b: 0.10146353, a: 0.334}
+  m_IndirectSpecularColor: {r: 0.06136658, g: 0.076476924, b: 0.10141888, a: 0.334}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1683,38 +1683,6 @@ Transform:
   - {fileID: 1204551470}
   m_Father: {fileID: 1331272414}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!1 &75888504
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 75888505}
-  m_Layer: 0
-  m_Name: GameCamera_Rotation
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &75888505
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 75888504}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1010254556}
-  m_Father: {fileID: 1250840734}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &78903754
 GameObject:
   m_ObjectHideFlags: 0
@@ -9202,7 +9170,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &328782005
 Transform:
   m_ObjectHideFlags: 0
@@ -23959,7 +23927,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pinching: 0
   dragging: 0
-  gridCamera: {fileID: 0}
+  gridCamera: {fileID: 1010254559}
 --- !u!114 &707193174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32104,7 +32072,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 75888505}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 53.323, y: 0, z: 0}
 --- !u!114 &1010254557
 MonoBehaviour:
@@ -40765,38 +40733,6 @@ Transform:
   - {fileID: 427643808}
   m_Father: {fileID: 1723778181}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!1 &1250840733
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1250840734}
-  m_Layer: 0
-  m_Name: GameCamera_Position
-  m_TagString: Untagged
-  m_Icon: {fileID: 2800000, guid: e89a31db98e403b40af1a8f0ef9ae1ef, type: 3}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1250840734
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1250840733}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 75888505}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1251676725
 GameObject:
   m_ObjectHideFlags: 0
@@ -43718,7 +43654,7 @@ VFXRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1359123100}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -44659,7 +44595,7 @@ Transform:
   m_GameObject: {fileID: 1378272702}
   serializedVersion: 2
   m_LocalRotation: {x: 0.20608465, y: 0, z: 0, w: 0.97853416}
-  m_LocalPosition: {x: 4.53, y: 3.5, z: -8.14}
+  m_LocalPosition: {x: 5.85, y: 7.88, z: -9.78}
   m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -52879,7 +52815,7 @@ VFXRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1617377764}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -66368,7 +66304,7 @@ VFXRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2072060812}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -69075,4 +69011,4 @@ SceneRoots:
   - {fileID: 1644872239}
   - {fileID: 328782005}
   - {fileID: 1191124996}
-  - {fileID: 1250840734}
+  - {fileID: 1010254556}
