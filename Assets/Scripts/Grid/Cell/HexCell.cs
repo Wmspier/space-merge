@@ -35,6 +35,7 @@ namespace Hex.Grid.Cell
 
         private Material _outlineMaterial;
         private bool _arrowOverHex;
+        private Vector3 _originLocal;
 
         private readonly Dictionary<HexCellDirection, GameObject> _outlineByDirection = new();
 
@@ -81,6 +82,7 @@ namespace Hex.Grid.Cell
         }
 
         public void ApplyCoordinates(int x, int y, int z) => Coordinates = new Vector3Int(x, y, z);
+        public void SetLocalOrigin(Vector3 origin) => _originLocal = origin;
         
         public void ToggleOutline(bool visible, List<HexCell> connectedCells = null)
         {
@@ -110,6 +112,8 @@ namespace Hex.Grid.Cell
         public async void Pulse(float maxIntensity, int intensityDecay = 0)
         {
             if (!CanPulse) return;
+            
+            transform.localPosition = _originLocal;
 
             var intensity = maxIntensity / (intensityDecay + 1);
             transform.DOPunchPosition(new Vector3(0f, intensity, 0f), .5f, 0, .25f);

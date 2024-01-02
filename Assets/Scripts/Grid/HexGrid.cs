@@ -132,6 +132,7 @@ namespace Hex.Grid
             Transform cellTransform;
             (cellTransform = cell.transform).SetParent(cellsAnchor, false);
             cellTransform.localPosition = position;
+            cell.SetLocalOrigin(position);
         }
 
         private void RegisterCellNeighbors()
