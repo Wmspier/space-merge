@@ -49,8 +49,8 @@ namespace Hex.Grid.Cell
 
         public HexCellUI UI { get; private set; }
 
-        public bool HoldingEnemyAttack => InfoHolder.HeldEnemyAttack > 0;
-        public bool HoldingUnit => InfoHolder.HeldUnit != null;
+        public bool HoldingEnemyAttack => InfoHolder.EnemyPower > 0;
+        public bool HoldingUnit => InfoHolder.HeldPlayerUnit != null;
 
         private void Awake()
         {

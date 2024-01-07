@@ -136,7 +136,7 @@ namespace Hex.Managers
         {
             // Don't try to place when deck is refilling
             // Can only place detail on empty tiles
-            if (_deckRefilled || cell.InfoHolder.HeldUnit || attackHandler.IsAttackPhase)
+            if (_deckRefilled || cell.InfoHolder.HeldPlayerUnit || attackHandler.IsAttackPhase)
             {
                 return;
             }
@@ -178,6 +178,8 @@ namespace Hex.Managers
                 deckPreviewQueue.gameObject.SetActive(false);
                 gameUI.DeckPreviewQueue.gameObject.SetActive(false);
             }
+            
+            attackHandler.UpdateDamagePreview();
         }
 
         private void OnAttackResolved()
@@ -212,7 +214,7 @@ namespace Hex.Managers
                 return;
             }
             
-            var firstUnit = cells.First().InfoHolder.HeldUnit;
+            var firstUnit = cells.First().InfoHolder.HeldPlayerUnit;
             var last = cells.Last();
             
             var tasks = ListPool<Task>.Get();
@@ -227,6 +229,8 @@ namespace Hex.Managers
             
             // Resolve the combination, using the first unit as a unit override
             last.InfoHolder.ResolveCombine(finalPower, finalRarity, resultsInUpgrade, firstUnit);
+            
+            attackHandler.UpdateDamagePreview();
         }
 
         private UnitData GetUnitAtIndex(int index)

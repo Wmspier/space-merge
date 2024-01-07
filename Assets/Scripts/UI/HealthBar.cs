@@ -9,6 +9,8 @@ namespace Hex.UI
 	{
 		[SerializeField] private RectTransform _fillBar;
 		[SerializeField] private RectTransform _secondaryFillBar;
+		[SerializeField] private RectTransform _previewFillBar;
+		[SerializeField] private TMP_Text _previewText;
 		[SerializeField] private TMP_Text _text;
 		[SerializeField] private float _secondaryFillTimeSeconds = 1f;
 		[SerializeField][Range(1,100)] private int _currentHealthTextSize;
@@ -33,6 +35,29 @@ namespace Hex.UI
 			SetText();
 		}
 
+		public void HidePreview()
+		{
+			_previewFillBar.gameObject.SetActive(false);
+			_previewText.gameObject.SetActive(false);
+		}
+		
+		public void ShowPreview(int previewAmount)
+		{
+			_previewFillBar.gameObject.SetActive(true);
+			_previewText.gameObject.SetActive(true);
+			
+			// Rect transforms don't like anchor Min/Max diffs of smaller than .07f
+			var previewPercentage = Mathf.Max(0.07f,previewAmount / (float)_totalHealth);
+
+			var previewMaxX = _fillBar.anchorMax.x;
+			var previewMinX = Mathf.Max(0, previewMaxX - previewPercentage);
+			
+			_previewFillBar.anchorMin = new Vector2(previewMinX, 0);
+			_previewFillBar.anchorMax = new Vector2(previewMaxX, 1);
+
+			_previewText.text = $"-{previewAmount}";
+		}
+		
 		private void SetText(string currentHealthOverride = null)
 		{
 			var currentHealth = currentHealthOverride ?? _currentHealth.ToString();
@@ -41,7 +66,7 @@ namespace Hex.UI
 			_textBuilder.Append($"<size={_currentHealthTextSize}%>{currentHealth}</size><size={_totalHealthTextSize}%>/{_totalHealth}</size>");
 			_text.text = _textBuilder.ToString();
 		}
-
+		
 		public void ModifyValue(int change)
 		{
 			var previous = _currentHealth;

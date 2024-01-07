@@ -88,6 +88,8 @@ namespace Hex.Enemy
 
 			_attackPhaseCount++;
 			if (isEvenAttack) _staggeredPhaseCount++;
+			
+			UpdateDamagePreview();
 		}
 
 		private void ResolveAttacks()
@@ -123,6 +125,32 @@ namespace Hex.Enemy
 			AssignAttacksToGrid();
 
 			AttackResolved?.Invoke();
+		}
+
+		public void UpdateDamagePreview()
+		{
+			var totalEnemyDamageTaken = GridUtility.GetTotalEnemyDamageTaken(_grid);
+			var totalPlayerDamageTaken = GridUtility.GetTotalPlayerDamageTaken(_grid);
+
+			// Update enemy total damage preview
+			if (totalEnemyDamageTaken > 0)
+			{
+				_enemyHealthBar.ShowPreview(totalEnemyDamageTaken);
+			}
+			else
+			{
+				_enemyHealthBar.HidePreview();
+			}
+			
+			// Update player total damage preview
+			if (totalPlayerDamageTaken > 0)
+			{
+				_playerHealthBar.ShowPreview(totalPlayerDamageTaken);
+			}
+			else
+			{
+				_playerHealthBar.HidePreview();
+			}
 		}
 	}
 }

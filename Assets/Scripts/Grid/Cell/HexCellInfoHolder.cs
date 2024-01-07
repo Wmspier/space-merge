@@ -10,10 +10,10 @@ namespace Hex.Grid.Cell
 		[SerializeField] private HexCellUI _ui;
 		
 		[field: SerializeField] public Transform UnitAnchor { get; private set; }
-		public UnitData HeldUnit { get; private set; }
-		public int HeldEnemyAttack { get; private set; } = -1;
-		public int CurrentPower { get; private set; }
-		public int CurrentRarity { get; private set; }
+		public UnitData HeldPlayerUnit { get; private set; }
+		public int EnemyPower { get; private set; } = -1;
+		public int PlayerPower { get; private set; }
+		public int PlayerRarity { get; private set; }
 
 		private Vector3 _unitAnchorOrigin;
 		
@@ -26,26 +26,26 @@ namespace Hex.Grid.Cell
 
 		public void SpawnUnit(UnitData unitData, int? withPower = null)
 		{
-			if (HeldUnit != null)
+			if (HeldPlayerUnit != null)
 			{
 				Debug.LogWarning("Trying to spawn unit on occupied cell");
 				return;
 			}
 
-			HeldUnit = unitData;
+			HeldPlayerUnit = unitData;
 			Instantiate(unitData.Prefab, UnitAnchor);
 			
-			CurrentPower = withPower ?? HeldUnit.BasePower;
-			CurrentRarity = HeldUnit.BaseRarity;
+			PlayerPower = withPower ?? HeldPlayerUnit.BasePower;
+			PlayerRarity = HeldPlayerUnit.BaseRarity;
 			
 			_ui.ToggleUnitInfoCanvas(true);
-			_ui.SetPlayerPower(CurrentPower);
-			_ui.SetRarityBaseZero(CurrentRarity);
+			_ui.SetPlayerPower(PlayerPower);
+			_ui.SetRarityBaseZero(PlayerRarity);
 		}
 
 		public void HoldEnemyAttack(int attackPower)
 		{
-			HeldEnemyAttack = attackPower;
+			EnemyPower = attackPower;
 			_ui.ToggleAttackCanvas(true);
 			_ui.SetEnemyAttackPower(attackPower);
 		}
@@ -57,7 +57,7 @@ namespace Hex.Grid.Cell
 			ClearUnit();
 			SpawnUnit(finalUnitData, newPower);
 
-			if (!resultsInUpgrade || CurrentRarity == HexGameUtil.MaxRarityZeroBased)
+			if (!resultsInUpgrade || PlayerRarity == HexGameUtil.MaxRarityZeroBased)
 			{
 				// Unit is at max rarity, toggle the anchor to play the spawn anim
 				UnitAnchor.gameObject.SetActive(false);
@@ -65,21 +65,21 @@ namespace Hex.Grid.Cell
 				return;
 			}
 
-			while (finalRarity > CurrentRarity)
+			while (finalRarity > PlayerRarity)
 			{
-				var nextRarity = HeldUnit.NextRarity;
+				var nextRarity = HeldPlayerUnit.NextRarity;
 				
 				ClearUnit();
 				SpawnUnit(nextRarity, newPower);
 			}
 			
-			CurrentRarity = finalRarity;
-			_ui.SetRarityBaseZero(CurrentRarity);
+			PlayerRarity = finalRarity;
+			_ui.SetRarityBaseZero(PlayerRarity);
 		}
 
 		public int ResolveAttack()
 		{
-			var powerDifference = CurrentPower - HeldEnemyAttack;
+			var powerDifference = PlayerPower - EnemyPower;
 			
 			if (powerDifference <= 0)
 			{
@@ -88,8 +88,8 @@ namespace Hex.Grid.Cell
 			}
 			else
 			{
-				CurrentPower -= HeldEnemyAttack;
-				_ui.SetPlayerPower(CurrentPower);
+				PlayerPower -= EnemyPower;
+				_ui.SetPlayerPower(PlayerPower);
 			}
 			
 			return powerDifference;
@@ -97,21 +97,21 @@ namespace Hex.Grid.Cell
 
 		public void ClearUnit()
 		{
-			HeldUnit = null;
-			CurrentPower = 0;
-			CurrentRarity = -1;
+			HeldPlayerUnit = null;
+			PlayerPower = 0;
+			PlayerRarity = -1;
 
 			UnitAnchor.DestroyAllChildGameObjects();
 			UnitAnchor.localPosition = _unitAnchorOrigin;
 			
-			_ui.SetPlayerPower(CurrentPower);
-			_ui.SetRarityBaseZero(CurrentRarity);
+			_ui.SetPlayerPower(PlayerPower);
+			_ui.SetRarityBaseZero(PlayerRarity);
 		}
 
 		public void ClearEnemyAttack()
 		{
-			HeldEnemyAttack = 0;
-			_ui.SetEnemyAttackPower(HeldEnemyAttack);
+			EnemyPower = 0;
+			_ui.SetEnemyAttackPower(EnemyPower);
 			_ui.ToggleAttackCanvas(false);
 		}
 		

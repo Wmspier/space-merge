@@ -107,7 +107,7 @@ namespace Hex.Grid.DetailQueue
         {
             while (true)
             {
-                if (_cellInfoHolder != null && _cellInfoHolder.HeldUnit)
+                if (_cellInfoHolder != null && _cellInfoHolder.HeldPlayerUnit)
                 {
                     var child = _cellInfoHolder.UnitAnchor;
                     child.Rotate(Vector3.up, Time.deltaTime * 15f);

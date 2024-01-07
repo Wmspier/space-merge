@@ -12,14 +12,14 @@ namespace Hex.Util
 	    {
 		    var hexCells = toCombine as HexCell[] ?? toCombine.ToArray();
 		    // Can't combine if list has one or fewer cells or there are any empty spaces
-		    if (hexCells.Length <= 1 || hexCells.Any(c => c.InfoHolder.HeldUnit == null))
+		    if (hexCells.Length <= 1 || hexCells.Any(c => c.InfoHolder.HeldPlayerUnit == null))
 		    {
 			    return (false, -1, -1);
 		    }
 
 		    var createsUpgrade = false;
-		    var masterCellId = hexCells.First().InfoHolder.HeldUnit.UniqueId;
-		    var masterCellRarity = hexCells.First().InfoHolder.CurrentRarity;
+		    var masterCellId = hexCells.First().InfoHolder.HeldPlayerUnit.UniqueId;
+		    var masterCellRarity = hexCells.First().InfoHolder.PlayerRarity;
 		    var finalPower = 0;
 		    var finalRarity = masterCellRarity;
 		    var currentRarity = masterCellRarity;
@@ -29,22 +29,22 @@ namespace Hex.Util
 			    var cell = hexCells[index];
 			    if (index == 0)
 			    {
-				    finalPower += cell.InfoHolder.CurrentPower;
+				    finalPower += cell.InfoHolder.PlayerPower;
 				    continue;
 			    }
 
 			    // Can't combine lower rarities with higher rarities
-			    if (cell.InfoHolder.CurrentRarity > currentRarity) return (false, -1, -1); 
+			    if (cell.InfoHolder.PlayerRarity > currentRarity) return (false, -1, -1); 
 
 			    // Add the cells power to the resulting power
-			    finalPower += cell.InfoHolder.CurrentPower;
+			    finalPower += cell.InfoHolder.PlayerPower;
 			    
 			    // If the cell shares a rarity with the rarity at this point in the merge,
 			    // and the cell shares the same type as the master,
 			    // and the master cell is not at max rarity,
 			    // this cell creates an upgrade and doubles the final power
-			    if (cell.InfoHolder.CurrentRarity == currentRarity &&
-			        cell.InfoHolder.HeldUnit.UniqueId == masterCellId &&
+			    if (cell.InfoHolder.PlayerRarity == currentRarity &&
+			        cell.InfoHolder.HeldPlayerUnit.UniqueId == masterCellId &&
 			        currentRarity < MaxRarityZeroBased)
 			    {
 				    createsUpgrade = true;
