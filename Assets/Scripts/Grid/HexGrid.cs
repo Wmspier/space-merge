@@ -43,25 +43,21 @@ namespace Hex.Grid
             return allCells[Random.Range(0, allCells.Count)];
         }
          
-        public IEnumerable<List<HexCell>> GetCellsByRow()
+        public Dictionary<double, List<HexCell>> GetCellsByXPosRounded()
         {
-            var cellsByRow = new List<List<HexCell>>();
-            for (var i = 0; i < numEdgeCells*2-numEdgeCells%2; i++)
-            {
-                cellsByRow.Add(new List<HexCell>());
-            }
- 
+            var cellsByXPosRounded = new Dictionary<double, List<HexCell>>();
             foreach (var (_, cell) in Registry)
             {
-                cellsByRow[cell.Coordinates.x-1].Add(cell);
-            }
-
-            for (var i = cellsByRow.Count - 1; i >= 0; i--)
-            {
-                if (cellsByRow[i].Count == 0) cellsByRow.RemoveAt(i);
+                var roundedXPos = Math.Round(cell.transform.position.x, 3);
+                if (!cellsByXPosRounded.TryGetValue(roundedXPos, out var list))
+                {
+                    cellsByXPosRounded[roundedXPos] = new List<HexCell>();
+                }
+                
+                cellsByXPosRounded[roundedXPos].Add(cell);
             }
  
-            return cellsByRow;
+            return cellsByXPosRounded;
         }
          
         #endregion

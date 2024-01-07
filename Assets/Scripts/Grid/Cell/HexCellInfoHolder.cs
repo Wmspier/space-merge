@@ -19,7 +19,7 @@ namespace Hex.Grid.Cell
 		
 		private void Awake()
 		{
-			_ui.SetPower(0);
+			_ui.SetPlayerPower(0);
 			_ui.SetRarityBaseZero(-1);
 			_unitAnchorOrigin = UnitAnchor.localPosition;
 		}
@@ -39,14 +39,14 @@ namespace Hex.Grid.Cell
 			CurrentRarity = HeldUnit.BaseRarity;
 			
 			_ui.ToggleUnitInfoCanvas(true);
-			_ui.SetPower(CurrentPower);
+			_ui.SetPlayerPower(CurrentPower);
 			_ui.SetRarityBaseZero(CurrentRarity);
 		}
 
 		public void HoldEnemyAttack(int attackPower)
 		{
 			HeldEnemyAttack = attackPower;
-			_ui.ToggleEnemyAttackCanvas(true);
+			_ui.ToggleAttackCanvas(true);
 			_ui.SetEnemyAttackPower(attackPower);
 		}
 		
@@ -89,7 +89,7 @@ namespace Hex.Grid.Cell
 			else
 			{
 				CurrentPower -= HeldEnemyAttack;
-				_ui.SetPower(CurrentPower);
+				_ui.SetPlayerPower(CurrentPower);
 			}
 			
 			return powerDifference;
@@ -104,7 +104,7 @@ namespace Hex.Grid.Cell
 			UnitAnchor.DestroyAllChildGameObjects();
 			UnitAnchor.localPosition = _unitAnchorOrigin;
 			
-			_ui.SetPower(CurrentPower);
+			_ui.SetPlayerPower(CurrentPower);
 			_ui.SetRarityBaseZero(CurrentRarity);
 		}
 
@@ -112,7 +112,7 @@ namespace Hex.Grid.Cell
 		{
 			HeldEnemyAttack = 0;
 			_ui.SetEnemyAttackPower(HeldEnemyAttack);
-			_ui.ToggleEnemyAttackCanvas(false);
+			_ui.ToggleAttackCanvas(false);
 		}
 		
 		public void Clear()

@@ -58,8 +58,8 @@ namespace Hex.Enemy
 
 			attackList.Shuffle();
 
-			var cellsByRowWithNoAttack = _grid.GetCellsByRow()
-				// .Where(cells => cells.All(c => !c.HoldingEnemyAttack)) // Need to fix this later
+			var cellsByRowWithNoAttack = _grid.GetCellsByXPosRounded()
+				.Where(kvp => !kvp.Value.Any(c => c.HoldingEnemyAttack))
 				.ToList()
 				.Shuffle();
 
@@ -73,7 +73,7 @@ namespace Hex.Enemy
 				else
 				{
 					// Pick the first row (list should be shuffled)
-					var cellsInRow = cellsByRowWithNoAttack[0];
+					var cellsInRow = cellsByRowWithNoAttack[0].Value;
 					// Pick a random cell in this row
 					randomCell = cellsInRow.Shuffle().First();
 					// Remove row
@@ -92,13 +92,13 @@ namespace Hex.Enemy
 
 		private void ResolveAttacks()
 		{
-			var cellsByRow = _grid.GetCellsByRow();
+			var cellsByRow = _grid.GetCellsByXPosRounded();
 			foreach (var row in cellsByRow)
 			{
-				foreach (var cell in row)
+				foreach (var cell in row.Value)
 				{
 					var cellHoldingUint = cell.HoldingUnit;
-					if (!cell.HoldingEnemyAttack && !cellHoldingUint) continue; // Empty cell
+					if (!cell.HoldingEnemyAttack) continue; // Cell does not contain enemy attack
 
 					var powerDifference = cell.InfoHolder.ResolveAttack();
 					if (powerDifference > 0)
