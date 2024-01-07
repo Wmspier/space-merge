@@ -84,6 +84,7 @@ namespace Hex.Managers
             gameUI.DeckPreviewQueue.Initialize(_deck.FirstOrDefault(), startingDeck.Count);
 
             attackHandler.Initialize(grid);
+            attackHandler.AttackResolved = OnAttackResolved;
             attackHandler.AssignAttacksToGrid();
         }
 
@@ -177,6 +178,12 @@ namespace Hex.Managers
                 deckPreviewQueue.gameObject.SetActive(false);
                 gameUI.DeckPreviewQueue.gameObject.SetActive(false);
             }
+        }
+
+        private void OnAttackResolved()
+        {
+            deckPreviewQueue.gameObject.SetActive(true);
+            gameUI.DeckPreviewQueue.gameObject.SetActive(true);
         }
         
         private async void OnDetailDequeued()

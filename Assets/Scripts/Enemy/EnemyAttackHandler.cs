@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hex.Extensions;
@@ -19,7 +20,9 @@ namespace Hex.Enemy
 		private int _attackPhaseCount;
 		private int _staggeredPhaseCount;
 		private HexGrid _grid;
-		
+
+		public Action AttackResolved;
+
 		public bool IsAttackPhase => _ui.TurnsBeforeAttack == 0;
 		
 		public bool ElapseTurn() => _ui.ElapseTurn();
@@ -118,6 +121,8 @@ namespace Hex.Enemy
 			
 			_ui.ResetTurns();
 			AssignAttacksToGrid();
+
+			AttackResolved?.Invoke();
 		}
 	}
 }
