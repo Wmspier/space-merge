@@ -59,14 +59,9 @@ namespace Hex.Grid.Cell
 
 		public void SetPlayerPower(int power)
 		{
-			if (power <= 0)
-			{
-				powerText.gameObject.SetActive(false);
-				return;
-			}
-			
 			powerText.gameObject.SetActive(true);
 			powerText.text = power.ToString();
+			powerText.gameObject.SetActive(power > 0);
 			cachedPlayerPower = power;
 
 			UpdateAttackDisplay();
