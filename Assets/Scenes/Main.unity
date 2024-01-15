@@ -276,6 +276,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 889139186}
     m_Modifications:
+    - target: {fileID: 2635124790645211741, guid: c41a9f35a89754c2a96f9096eccf748b,
+        type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2635124790645211741, guid: c41a9f35a89754c2a96f9096eccf748b,
+        type: 3}
+      propertyPath: m_PixelsPerUnitMultiplier
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 7637794164846053565, guid: c41a9f35a89754c2a96f9096eccf748b,
         type: 3}
       propertyPath: m_Pivot.x
