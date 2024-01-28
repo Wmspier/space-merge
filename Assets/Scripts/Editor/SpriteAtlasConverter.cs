@@ -86,7 +86,9 @@ namespace Hex.Editor
             TextureImporter ti = AssetImporter.GetAtPath(pngPath) as TextureImporter;
             ti.textureType = TextureImporterType.Sprite;
             ti.spriteImportMode = SpriteImportMode.Multiple;
+#pragma warning disable CS0618
             ti.spritesheet = metas.ToArray();
+#pragma warning restore CS0618
        
             EditorUtility.SetDirty(ti);
             ti.SaveAndReimport();

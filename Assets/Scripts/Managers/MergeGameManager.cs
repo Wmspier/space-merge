@@ -34,7 +34,7 @@ namespace Hex.Managers
         [SerializeField] private TopBarUI topBarUI;
         
         [Space]
-        [SerializeField] private EnemyAttackHandler attackHandler;
+        [SerializeField] private EnemyAttackManager _attackManager;
 
         [SerializeField] private float mergePulseIntensity = .75f;
         [SerializeField] private float mergeUpgradePulseIntensity = 1.5f;
@@ -61,7 +61,7 @@ namespace Hex.Managers
         
         public void Play()
         {
-            attackHandler.ResetTurns();
+            _attackManager.ResetTurns();
             
             _interactionHandler.BlockInteractions = false;
             _interactionHandler.SetSelectionMode(SelectionMode.Outline);
@@ -83,9 +83,9 @@ namespace Hex.Managers
             deckPreviewQueue.GeneratePreviewQueue();
             gameUI.DeckPreviewQueue.Initialize(_deck.FirstOrDefault(), startingDeck.Count);
 
-            attackHandler.Initialize(grid);
-            attackHandler.AttackResolved = OnAttackResolved;
-            attackHandler.AssignAttacksToGrid();
+            _attackManager.Initialize(grid);
+            _attackManager.AttackResolved = OnAttackResolved;
+            _attackManager.AssignAttacksToGrid();
         }
 
         public void Leave()
@@ -99,7 +99,7 @@ namespace Hex.Managers
             deckPreviewQueue.gameObject.SetActive(false);
             gameUI.gameObject.SetActive(false);
             
-            attackHandler.Cleanup();
+            _attackManager.Cleanup();
         }
 
         private void OnResetPressed()
@@ -138,7 +138,7 @@ namespace Hex.Managers
         {
             // Don't try to place when deck is refilling
             // Can only place detail on empty tiles
-            if (_deckRefilled || cell.InfoHolder.HeldPlayerUnit || attackHandler.IsAttackPhase)
+            if (_deckRefilled || cell.InfoHolder.HeldPlayerUnit || _attackManager.IsAttackPhase)
             {
                 return;
             }
@@ -175,13 +175,13 @@ namespace Hex.Managers
 
             grid.Save(GameMode.Merge);
             
-            if (attackHandler.ElapseTurn())
+            if (_attackManager.ElapseTurn())
             {
                 deckPreviewQueue.gameObject.SetActive(false);
                 gameUI.DeckPreviewQueue.gameObject.SetActive(false);
             }
             
-            attackHandler.UpdateDamagePreview();
+            _attackManager.UpdateDamagePreview();
         }
 
         private void OnAttackResolved()
@@ -232,7 +232,7 @@ namespace Hex.Managers
             // Resolve the combination, using the first unit as a unit override
             last.InfoHolder.ResolveCombine(finalPower, finalRarity, resultsInUpgrade, firstUnit);
             
-            attackHandler.UpdateDamagePreview();
+            _attackManager.UpdateDamagePreview();
         }
 
         private UnitData GetUnitAtIndex(int index)

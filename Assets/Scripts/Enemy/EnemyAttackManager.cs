@@ -22,7 +22,7 @@ namespace Hex.Enemy
 		}
 	}
 	
-	public class EnemyAttackHandler : MonoBehaviour
+	public class EnemyAttackManager : MonoBehaviour
 	{
 		private static readonly int[] AttackPowerList = { 3, 5, 8, 12, 17, 23, 30, 38, 47 };
 
