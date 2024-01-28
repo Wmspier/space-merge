@@ -14,17 +14,19 @@ namespace Hex.Enemy
 		[SerializeField] private GameObject _enemyShipPrefabLarge;
 		
 
-		public GameObject SpawnSmallShip(int3 coord)
+		public GameObject SpawnSmallShip(int3 coord, out Vector3 originPosition)
 		{
 			if (!_planePositions.Positions.TryGetValue(coord, out var position))
 			{
 				Debug.LogError($"Failed to find position to spawn ship: {coord}");
+				originPosition = Vector3.zero;
 				return null;
 			}
 
 			var shipInstance = Instantiate(_enemyShipPrefabSmall, _shipAnchor);
 			shipInstance.transform.Reset();
 			shipInstance.transform.position = position;
+			originPosition = position;
 
 			return shipInstance;
 		}

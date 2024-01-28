@@ -43,10 +43,10 @@ namespace Hex.Grid.Cell
 			_ui.SetRarityBaseZero(PlayerRarity);
 		}
 
-		public void HoldEnemyAttack(int attackPower)
+		public void HoldEnemyAttack(int attackPower, bool andShow = true)
 		{
 			EnemyPower = attackPower;
-			_ui.ToggleAttackCanvas(true);
+			_ui.ToggleAttackCanvas(andShow);
 			_ui.SetEnemyAttackPower(attackPower);
 		}
 		

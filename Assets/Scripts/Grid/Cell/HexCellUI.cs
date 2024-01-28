@@ -84,7 +84,7 @@ namespace Hex.Grid.Cell
 		private void UpdateAttackDisplay()
 		{
 			// Cell does not contain enemy attack so don't show attack info
-			if (attackCanvasRoot == null || !attackCanvasRoot.activeSelf) return;
+			if (attackCanvasRoot == null) return;
 			
 			playerPowerText.text = cachedPlayerPower.ToString();
 			enemyPowerText.text = cachedEnemyPower.ToString();

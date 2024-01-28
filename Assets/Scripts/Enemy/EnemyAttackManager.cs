@@ -6,7 +6,10 @@ using Hex.Grid;
 using Hex.Grid.Cell;
 using Hex.UI;
 using Unity.Mathematics;
+using UnityEditor.VersionControl;
 using UnityEngine;
+using UnityEngine.VFX;
+using Task = System.Threading.Tasks.Task;
 
 namespace Hex.Enemy
 {
@@ -14,11 +17,15 @@ namespace Hex.Enemy
 	{
 		public int Damage;
 		public GameObject Ship;
+		public HexCell TargetCell;
+		public Vector3 OriginPosition;
 
-		public EnemyAttackInfo(int damage, GameObject ship)
+		public EnemyAttackInfo(int damage, GameObject ship, HexCell target, Vector3 originPos)
 		{
 			Damage = damage;
 			Ship = ship;
+			TargetCell = target;
+			OriginPosition = originPos;
 		}
 	}
 	
@@ -31,6 +38,12 @@ namespace Hex.Enemy
 		[SerializeField] private HealthBar _playerHealthBar;
 		[SerializeField] private EnemyShipSpawner _shipSpawner;
 
+		[Space] 
+		[Header("VFX")] 
+		[SerializeField] private Transform _vfxAnchor;
+		[SerializeField] private VisualEffect _targetingEffect;
+		[SerializeField] private float _attackTextDisplayDelaySeconds = 2f;
+		
 		private readonly Dictionary<int3, EnemyAttackInfo> _attacksByCoord = new();
 
 		private int _attackPhaseCount;
@@ -120,13 +133,19 @@ namespace Hex.Enemy
 					// Remove row
 					cellsByXPos.RemoveAt(0);
 				}
+
+				var attackValue = attackList[0];
 				
 				// Assign attack 
-				randomCell.InfoHolder.HoldEnemyAttack(attackList[0]);
+				randomCell.InfoHolder.HoldEnemyAttack(attackValue, false);
 
 				// Create and store attack info
-				var newShip = _shipSpawner.SpawnSmallShip(randomCell.Coordinates);
-				_attacksByCoord[randomCell.Coordinates] = new EnemyAttackInfo(attackList[0], newShip);
+				var newShip = _shipSpawner.SpawnSmallShip(randomCell.Coordinates, out var originPosition);
+				var attackInfo = new EnemyAttackInfo(attackValue, newShip, randomCell, originPosition);
+				_attacksByCoord[randomCell.Coordinates] = attackInfo;
+				
+				// Start vfx sequence
+				PlayTargetSequence(randomCell, attackInfo);
 				
 				// Remove attack
 				attackList.RemoveAt(0);
@@ -203,6 +222,24 @@ namespace Hex.Enemy
 			else
 			{
 				_playerHealthBar.HidePreview();
+			}
+		}
+
+		private async void PlayTargetSequence(HexCell cell, EnemyAttackInfo attackInfo)
+		{
+			var effectInstance = Instantiate(_targetingEffect, _vfxAnchor);
+			effectInstance.transform.position = attackInfo.OriginPosition;
+			
+			WaitThenDestroyVFX(effectInstance.gameObject, (int)effectInstance.GetFloat("Duration") * 1000);
+
+			await Task.Delay((int)_attackTextDisplayDelaySeconds * 1000);
+			cell.UI.ToggleAttackCanvas(true);
+
+			async void WaitThenDestroyVFX(GameObject vfxInstance, int delay)
+			{
+				await Task.Delay(delay);
+			
+				Destroy(vfxInstance);
 			}
 		}
 	}
