@@ -58,26 +58,30 @@ namespace Hex.Enemy
 
 			attackList.Shuffle();
 
-			var cellsByRowWithNoAttack = _grid.GetCellsByXPosRounded()
+			var cellsByXPos = _grid.GetCellsByXPosRounded()
 				.Where(kvp => !kvp.Value.Any(c => c.HoldingEnemyAttack))
+				.Where(kvp => kvp.Value.Any(c => c.Coordinates.x == 1))
 				.ToList()
 				.Shuffle();
 
 			while (attackList.Count > 0)
 			{
 				HexCell randomCell;
-				if (cellsByRowWithNoAttack.Count == 0)
+				if (cellsByXPos.Count == 0)
 				{
 					randomCell = _grid.GetRandomCell();
 				}
 				else
 				{
-					// Pick the first row (list should be shuffled)
-					var cellsInRow = cellsByRowWithNoAttack[0].Value;
+					// Pick the first column (list should be shuffled)
+					var cellsInRow = cellsByXPos[0].Value;
 					// Pick a random cell in this row
-					randomCell = cellsInRow.Shuffle().First();
+					randomCell = cellsInRow.FirstOrDefault(c => c.Coordinates.x == 1); //cellsInRow.Shuffle().First();
+
+					if (randomCell == null) continue;
+					
 					// Remove row
-					cellsByRowWithNoAttack.RemoveAt(0);
+					cellsByXPos.RemoveAt(0);
 				}
 				
 				// Assign attack 

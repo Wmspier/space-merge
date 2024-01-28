@@ -49,7 +49,7 @@ namespace Hex.Grid
             foreach (var (_, cell) in Registry)
             {
                 var roundedXPos = Math.Round(cell.transform.position.x, 3);
-                if (!cellsByXPosRounded.TryGetValue(roundedXPos, out var list))
+                if (!cellsByXPosRounded.TryGetValue(roundedXPos, out _))
                 {
                     cellsByXPosRounded[roundedXPos] = new List<HexCell>();
                 }
