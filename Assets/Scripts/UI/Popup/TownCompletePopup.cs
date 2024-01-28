@@ -20,7 +20,7 @@ namespace Hex.UI.Popup
             claimButton.onClick.AddListener(() => ClaimPressed?.Invoke());
         }
 
-        public async Task DoClaim(TopBarUI topBarUI, MergeGameModel model)
+        public async Task DoClaim(TopBarUI topBarUI, ResourcesModel model)
         {
             topBarUI.ToggleResourceBar(ResourceType.CoinSilver, false);
             topBarUI.ToggleResourceBar(ResourceType.CoinGold, true);

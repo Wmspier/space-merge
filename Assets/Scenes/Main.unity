@@ -1247,7 +1247,7 @@ MonoBehaviour:
   cellOutlineCannotCombine: {r: 1, g: 0.5956088, b: 0.23137254, a: 0}
   gameUI: {fileID: 1400717077}
   topBarUI: {fileID: 183852980}
-  attackHandler: {fileID: 360976172}
+  _attackManager: {fileID: 360976172}
   mergePulseIntensity: 0.25
   mergeUpgradePulseIntensity: 0.75
 --- !u!4 &275954090

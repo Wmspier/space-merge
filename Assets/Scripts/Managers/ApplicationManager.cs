@@ -33,13 +33,6 @@ namespace Hex.Managers
             throw new KeyNotFoundException($"{typeof(T)} not found in resource map.");
         }
 
-        public static IGameManager GetGameManager()
-        {
-            return Model.ActiveMode switch
-            {
-                GameMode.Merge => GetResource<MergeGameManager>(),
-                _ => throw new NotSupportedException()
-            };
-        }
+        public static MergeGameManager GetGameManager() => GetResource<MergeGameManager>();
     }
 }

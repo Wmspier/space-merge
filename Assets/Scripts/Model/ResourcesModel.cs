@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Hex.Model
 {
-    public class MergeGameModel
+    public class ResourcesModel
     {
         public readonly Dictionary<ResourceType, int> ResourceAmounts = new();
 

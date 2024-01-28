@@ -16,7 +16,7 @@ using static Hex.Grid.HexGridInteractionHandler;
 
 namespace Hex.Managers
 {
-    public class MergeGameManager : MonoBehaviour, IGameManager
+    public class MergeGameManager : MonoBehaviour
     {
         [SerializeField] private List<UnitData> startingDeck;
         
@@ -39,24 +39,29 @@ namespace Hex.Managers
         [SerializeField] private float mergePulseIntensity = .75f;
         [SerializeField] private float mergeUpgradePulseIntensity = 1.5f;
 
-        private readonly MergeGameModel _model = new();
+        private readonly ResourcesModel _resourceModel = new();
         private readonly List<UnitData> _deck = new();
         private readonly List<UnitData> _discard = new();
         private bool _deckRefilled;
+        private GameStateModel _gameStateModel;
 
         #region Setup/Game State
         private void Awake()
         {
-            ApplicationManager.RegisterResource(this);
-
             deckPreviewQueue.DetailDequeued = OnDetailDequeued;
             gameUI.ResetPressed = OnResetPressed;
             
-            _model.Load();
-            foreach (var (resource, amount) in _model.ResourceAmounts)
+            _resourceModel.Load();
+            foreach (var (resource, amount) in _resourceModel.ResourceAmounts)
             {
                 topBarUI.SetResourceImmediate(resource, amount);
             }
+
+            _gameStateModel = new GameStateModel(grid);
+            
+            ApplicationManager.RegisterResource(this);
+            ApplicationManager.RegisterResource(_resourceModel);
+            ApplicationManager.RegisterResource(_gameStateModel);
         }
         
         public void Play()
