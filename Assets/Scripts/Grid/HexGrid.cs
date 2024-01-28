@@ -4,6 +4,7 @@ using System.Linq;
 using Hex.Extensions;
 using Hex.Grid.Cell;
 using Hex.Managers;
+using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -29,13 +30,13 @@ namespace Hex.Grid
         [Space] 
         [SerializeField] private Transform cellsAnchor;
 
-        public Action GridInitialized;
+        public event Action GridInitialized;
         
-        public Dictionary<int, HexCell> Registry { get; } = new();
+        public Dictionary<int3, HexCell> Registry { get; } = new();
 
         #region Grid Accessing
          
-        public HexCell GetCenterCell() => Registry[(numEdgeCells, numEdgeCells, numEdgeCells).GetHashCode()];
+        public HexCell GetCenterCell() => Registry[new int3(numEdgeCells, numEdgeCells, numEdgeCells)];
  
         public HexCell GetRandomCell()
         {
@@ -111,7 +112,7 @@ namespace Hex.Grid
             var offsetX = x + coordOffset;
             var offsetY = y + coordOffset;
             var offsetZ = z + coordOffset;
-            var key = (offsetX, offsetY, offsetZ).GetHashCode();
+            var key = new int3(offsetX, offsetY, offsetZ);
             Registry.Add(key, cell);
             
             cell.ApplyCoordinates(offsetX, offsetY, offsetZ);
@@ -140,8 +141,8 @@ namespace Hex.Grid
                     for(var y = -1; y <= 1; y++)
                         for(var z = -1; z <= 1; z++)
                         {
-                            var neighborHash = (cell.Coordinates.x + x, cell.Coordinates.y + y, cell.Coordinates.z + z).GetHashCode();
-                            if (Registry.TryGetValue(neighborHash, out var neighbor) && neighbor != cell)
+                            var neighborKey = new int3(cell.Coordinates.x + x, cell.Coordinates.y + y, cell.Coordinates.z + z);
+                            if (Registry.TryGetValue(neighborKey, out var neighbor) && neighbor != cell)
                             {
                                 cell.RegisterNeighbor(neighbor);
                             }

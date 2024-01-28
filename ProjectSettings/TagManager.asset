@@ -6,6 +6,7 @@ TagManager:
   tags:
   - HexCell
   - EnemyPlane
+  - AttackPlane
   layers:
   - Default
   - TransparentFX

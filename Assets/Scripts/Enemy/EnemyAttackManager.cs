@@ -43,6 +43,11 @@ namespace Hex.Enemy
 		[SerializeField] private Transform _vfxAnchor;
 		[SerializeField] private VisualEffect _targetingEffect;
 		[SerializeField] private float _attackTextDisplayDelaySeconds = 2f;
+
+		[Space] 
+		[Header("Debug")] 
+		[SerializeField]
+		private List<int3> _debugAttacks;
 		
 		private readonly Dictionary<int3, EnemyAttackInfo> _attacksByCoord = new();
 
@@ -104,53 +109,75 @@ namespace Hex.Enemy
 				.ToList()
 				.Shuffle();
 
-			while (attackList.Count > 0)
+			if (_debugAttacks.Count > 0)
 			{
-				HexCell randomCell;
-				if (cellsByXPos.Count == 0)
+				foreach (var attack in _debugAttacks)
 				{
-					randomCell = _grid.GetRandomCell();
-				}
-				else
-				{
-					// Pick the first column (list should be shuffled)
-					var cellsInRow = cellsByXPos[0].Value;
-					// Pick a random cell in this row
-					randomCell = cellsInRow.FirstOrDefault(c => c.Coordinates.x == 1); //cellsInRow.Shuffle().First();
-
-					if (randomCell == null)
-					{
-						Debug.LogWarning("Issue when assigning attack: Random Cell is null");
-						return;
-					}
-
-					if (_attacksByCoord.ContainsKey(randomCell.Coordinates))
-					{
-						Debug.LogWarning("Issue when assigning attack: Attack is already on cell");
-						return;
-					}
+					var cell = _grid.Registry[attack];
 					
-					// Remove row
-					cellsByXPos.RemoveAt(0);
+					// Assign attack 
+					cell.InfoHolder.HoldEnemyAttack(999, false);
+
+					// Create and store attack info
+					var newShip = _shipSpawner.SpawnSmallShip(cell.Coordinates, out var originPosition);
+					var attackInfo = new EnemyAttackInfo(999, newShip, cell, originPosition);
+					_attacksByCoord[cell.Coordinates] = attackInfo;
+				
+					// Start vfx sequence
+					PlayTargetSequence(cell, attackInfo);
 				}
-
-				var attackValue = attackList[0];
-				
-				// Assign attack 
-				randomCell.InfoHolder.HoldEnemyAttack(attackValue, false);
-
-				// Create and store attack info
-				var newShip = _shipSpawner.SpawnSmallShip(randomCell.Coordinates, out var originPosition);
-				var attackInfo = new EnemyAttackInfo(attackValue, newShip, randomCell, originPosition);
-				_attacksByCoord[randomCell.Coordinates] = attackInfo;
-				
-				// Start vfx sequence
-				PlayTargetSequence(randomCell, attackInfo);
-				
-				// Remove attack
-				attackList.RemoveAt(0);
 			}
 
+			else
+			{
+				while (attackList.Count > 0)
+				{
+					HexCell randomCell;
+					if (cellsByXPos.Count == 0)
+					{
+						randomCell = _grid.GetRandomCell();
+					}
+					else
+					{
+						// Pick the first column (list should be shuffled)
+						var cellsInRow = cellsByXPos[0].Value;
+						// Pick a random cell in this row
+						randomCell = cellsInRow.FirstOrDefault(c => c.Coordinates.x == 1); //cellsInRow.Shuffle().First();
+
+						if (randomCell == null)
+						{
+							Debug.LogWarning("Issue when assigning attack: Random Cell is null");
+							return;
+						}
+
+						if (_attacksByCoord.ContainsKey(randomCell.Coordinates))
+						{
+							Debug.LogWarning("Issue when assigning attack: Attack is already on cell");
+							return;
+						}
+					
+						// Remove row
+						cellsByXPos.RemoveAt(0);
+					}
+
+					var attackValue = attackList[0];
+				
+					// Assign attack 
+					randomCell.InfoHolder.HoldEnemyAttack(attackValue, false);
+
+					// Create and store attack info
+					var newShip = _shipSpawner.SpawnSmallShip(randomCell.Coordinates, out var originPosition);
+					var attackInfo = new EnemyAttackInfo(attackValue, newShip, randomCell, originPosition);
+					_attacksByCoord[randomCell.Coordinates] = attackInfo;
+				
+					// Start vfx sequence
+					PlayTargetSequence(randomCell, attackInfo);
+				
+					// Remove attack
+					attackList.RemoveAt(0);
+				}
+
+			}
 			_attackPhaseCount++;
 			if (isEvenAttack) _staggeredPhaseCount++;
 			

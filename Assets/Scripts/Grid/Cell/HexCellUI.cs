@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -27,6 +28,8 @@ namespace Hex.Grid.Cell
 		private int cachedPlayerPower;
 		private int cachedEnemyPower;
 		
+		private readonly RaycastHit[] _hitBuffer = new RaycastHit[10];
+		
 		public void ToggleMergeCanvas(bool visible) => mergeCanvasRoot.SetActive(visible);
 		public void ToggleUnitInfoCanvas(bool visible) => unitInfoCanvasRoot.SetActive(visible);
 
@@ -34,12 +37,27 @@ namespace Hex.Grid.Cell
 		{
 			attackCanvasRoot.SetActive(visible);
 			attackTarget.SetActive(visible);
+			
+			PositionAttackCanvas();
 		}
 
 		private void Awake()
 		{
 			if(mergeCanvasRoot != null) ToggleMergeCanvas(false);
 			if(attackCanvasRoot != null) ToggleAttackCanvas(false);
+		}
+
+		private void PositionAttackCanvas()
+		{
+			var hitCount = Physics.RaycastNonAlloc(transform.position, Vector3.up, _hitBuffer);
+			
+			for (var i = 0; i < hitCount; i++)
+			{
+				var hit = _hitBuffer[i];
+				if (!hit.collider.CompareTag("AttackPlane")) continue;
+
+				attackCanvasRoot.transform.position = hit.point;
+			}
 		}
 
 		public void SetEnemyAttackPower(int power)

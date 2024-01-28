@@ -1489,7 +1489,23 @@ MonoBehaviour:
   _vfxAnchor: {fileID: 1855581969}
   _targetingEffect: {fileID: 806958650295839093, guid: 96f4829b621bc41368d1b85477b29835,
     type: 3}
-  _attackTextDisplayDelaySeconds: 2.5
+  _attackTextDisplayDelaySeconds: 2.98
+  _debugAttacks:
+  - x: 1
+    y: 5
+    z: 3
+  - x: 2
+    y: 4
+    z: 3
+  - x: 3
+    y: 3
+    z: 3
+  - x: 4
+    y: 2
+    z: 3
+  - x: 5
+    y: 1
+    z: 3
 --- !u!4 &360976173
 Transform:
   m_ObjectHideFlags: 0
@@ -2878,6 +2894,75 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 833623247}
   m_CullTransparentMesh: 1
+--- !u!1 &835652154
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 835652158}
+  - component: {fileID: 835652160}
+  - component: {fileID: 835652159}
+  m_Layer: 0
+  m_Name: AttackPlane
+  m_TagString: AttackPlane
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &835652158
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835652154}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.27563733, y: 0, z: 0, w: 0.96126175}
+  m_LocalPosition: {x: 0, y: 5.93, z: 0.69}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 32, y: 0, z: 0}
+--- !u!114 &835652159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835652154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63f36aa9e11a4cf180b90537cd61f4a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _planeCollider: {fileID: 835652154}
+  _grid: {fileID: 707193171}
+  _projectionPointOffset: {x: 0, y: 100, z: 0}
+--- !u!65 &835652160
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835652154}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 20, y: 0.01, z: 20}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &843282077
 GameObject:
   m_ObjectHideFlags: 0
@@ -7232,6 +7317,7 @@ SceneRoots:
   - {fileID: 740895457}
   - {fileID: 275954090}
   - {fileID: 360976173}
+  - {fileID: 835652158}
   - {fileID: 707193172}
   - {fileID: 1153613176}
   - {fileID: 1378272703}

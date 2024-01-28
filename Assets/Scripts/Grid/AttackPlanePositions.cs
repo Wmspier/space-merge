@@ -1,12 +1,11 @@
-using System;
 using System.Collections.Generic;
-using Hex.Grid;
+using Hex.Managers;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Hex.Enemy
+namespace Hex.Grid
 {
-	public class EnemyPlanePositions : MonoBehaviour
+	public class AttackPlanePositions : MonoBehaviour
 	{
 		[SerializeField] private GameObject _planeCollider;
 		[SerializeField] private HexGrid _grid;
@@ -24,6 +23,8 @@ namespace Hex.Enemy
 		private void Awake()
 		{
 			_grid.GridInitialized += GridInitialized;
+			
+			ApplicationManager.RegisterResource(this);
 		}
 
 		private void OnDestroy()
