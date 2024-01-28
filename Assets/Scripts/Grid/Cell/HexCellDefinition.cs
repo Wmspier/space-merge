@@ -1,4 +1,5 @@
 using System.Text;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,7 +9,7 @@ namespace Hex.Grid.Cell
     {
         private const char StringDelimiter = ',';
         
-        public Vector3Int Coordinates;
+        public int3 Coordinates;
         public int Detail;
 
         public override string ToString()
@@ -31,7 +32,7 @@ namespace Hex.Grid.Cell
 
             return new HexCellDefinition()
             {
-                Coordinates = new Vector3Int(
+                Coordinates = new int3(
                     int.Parse(contents[0]), 
                     int.Parse(contents[1]), 
                     int.Parse(contents[2])),

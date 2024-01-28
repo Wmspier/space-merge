@@ -1,5 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Hex.Grid;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Hex.Enemy
@@ -10,13 +13,15 @@ namespace Hex.Enemy
 		[SerializeField] private HexGrid _grid;
 		[SerializeField] private Vector3 _projectionPointOffset = new (0, 100f, 0);
 
-		private readonly List<Vector3> _positions = new();
+		private readonly Dictionary<int3, Vector3> _positions = new();
 		private readonly RaycastHit[] _hitBuffer = new RaycastHit[10];
 
 		private bool _gridInitialized;
 		private Quaternion _cachedPlaneRotation;
 		private Vector3 _cachedOffsetPosition;
-		
+
+		public IReadOnlyDictionary<int3, Vector3> Positions => _positions;
+
 		private void Awake()
 		{
 			_grid.GridInitialized = GridInitialized;
@@ -41,7 +46,8 @@ namespace Hex.Enemy
 			{
 				var positionOnPlane = ProjectOntoPlane(cell.transform.position);
 				if (!positionOnPlane.HasValue) continue;
-				_positions.Add(positionOnPlane.Value);
+
+				_positions[cell.Coordinates] = positionOnPlane.Value;
 			}
 		}
 
@@ -65,7 +71,7 @@ namespace Hex.Enemy
 		{
 			foreach (var pos in _positions)
 			{
-				Gizmos.DrawSphere(pos, .25f);
+				Gizmos.DrawSphere(pos.Value, .25f);
 			}
 			Gizmos.color = Color.red;
 			Gizmos.DrawSphere(_projectionPointOffset, .25f);

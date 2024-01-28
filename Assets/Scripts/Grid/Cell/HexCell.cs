@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DG.Tweening;
 using Hex.Extensions;
-using UnityEditor;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Hex.Grid.Cell
@@ -39,7 +39,7 @@ namespace Hex.Grid.Cell
 
         private readonly Dictionary<HexCellDirection, GameObject> _outlineByDirection = new();
 
-        public Vector3Int Coordinates { get; private set; }
+        public int3 Coordinates { get; private set; }
 
         public List<HexCell> Neighbors { get; } = new ();
 
@@ -81,7 +81,7 @@ namespace Hex.Grid.Cell
             _outlineMaterial.SetColor(EmissionColor, color * 10);
         }
 
-        public void ApplyCoordinates(int x, int y, int z) => Coordinates = new Vector3Int(x, y, z);
+        public void ApplyCoordinates(int x, int y, int z) => Coordinates = new int3(x, y, z);
         public void SetLocalOrigin(Vector3 origin) => _originLocal = origin;
         
         public void ToggleOutline(bool visible, List<HexCell> connectedCells = null)
