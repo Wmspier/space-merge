@@ -98,6 +98,8 @@ namespace Hex.Managers
             
             deckPreviewQueue.gameObject.SetActive(false);
             gameUI.gameObject.SetActive(false);
+            
+            attackHandler.Cleanup();
         }
 
         private void OnResetPressed()

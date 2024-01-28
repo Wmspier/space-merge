@@ -1211,7 +1211,6 @@ GameObject:
   m_Component:
   - component: {fileID: 275954090}
   - component: {fileID: 275954089}
-  - component: {fileID: 275954091}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1248,7 +1247,7 @@ MonoBehaviour:
   cellOutlineCannotCombine: {r: 1, g: 0.5956088, b: 0.23137254, a: 0}
   gameUI: {fileID: 1400717077}
   topBarUI: {fileID: 183852980}
-  attackHandler: {fileID: 275954091}
+  attackHandler: {fileID: 360976172}
   mergePulseIntensity: 0.25
   mergeUpgradePulseIntensity: 0.75
 --- !u!4 &275954090
@@ -1266,21 +1265,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &275954091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 275954088}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51cf1fc386034a6cbe8b2077c1a81579, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _ui: {fileID: 2012768034}
-  _enemyHealthBar: {fileID: 948491675}
-  _playerHealthBar: {fileID: 204190700}
 --- !u!1 &279352934
 GameObject:
   m_ObjectHideFlags: 0
@@ -1305,12 +1289,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 279352934}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.309017, y: -0, z: -0, w: 0.95105654}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 696568558}
+  m_Father: {fileID: 689474848}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &290148556
 GameObject:
@@ -1471,6 +1455,56 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 134}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &360976171
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 360976173}
+  - component: {fileID: 360976172}
+  m_Layer: 0
+  m_Name: EnemyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &360976172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360976171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51cf1fc386034a6cbe8b2077c1a81579, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ui: {fileID: 2012768034}
+  _enemyHealthBar: {fileID: 948491675}
+  _playerHealthBar: {fileID: 204190700}
+  _shipSpawner: {fileID: 689474847}
+--- !u!4 &360976173
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360976171}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 696568558}
+  - {fileID: 689474848}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &370491496
 GameObject:
   m_ObjectHideFlags: 0
@@ -2460,6 +2494,57 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 619116607}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &689474846
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 689474848}
+  - component: {fileID: 689474847}
+  m_Layer: 0
+  m_Name: ShipSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &689474847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 689474846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b0e9d5f310744179321606964e2aa2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _planePositions: {fileID: 696568559}
+  _shipAnchor: {fileID: 279352935}
+  _enemyShipPrefabSmall: {fileID: 8932813787173009617, guid: f920a635959994d38972ba845d3b03b6,
+    type: 3}
+  _enemyShipPrefabLarge: {fileID: 8932813787173009617, guid: 5c6b06529959944658b8178fad7d331c,
+    type: 3}
+--- !u!4 &689474848
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 689474846}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 279352935}
+  m_Father: {fileID: 360976173}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &696568556
 GameObject:
   m_ObjectHideFlags: 0
@@ -2471,7 +2556,6 @@ GameObject:
   - component: {fileID: 696568558}
   - component: {fileID: 696568557}
   - component: {fileID: 696568559}
-  - component: {fileID: 696568560}
   m_Layer: 0
   m_Name: EnemyPlane
   m_TagString: EnemyPlane
@@ -2508,13 +2592,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 696568556}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.309017, y: 0, z: 0, w: 0.95105654}
+  m_LocalRotation: {x: 0.309017, y: -0, z: -0, w: 0.95105654}
   m_LocalPosition: {x: 0, y: 10.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 279352935}
-  m_Father: {fileID: 0}
+  m_Children: []
+  m_Father: {fileID: 360976173}
   m_LocalEulerAnglesHint: {x: 36, y: 0, z: 0}
 --- !u!114 &696568559
 MonoBehaviour:
@@ -2531,28 +2614,6 @@ MonoBehaviour:
   _planeCollider: {fileID: 696568556}
   _grid: {fileID: 707193171}
   _projectionPointOffset: {x: 0, y: 100, z: 0}
---- !u!114 &696568560
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 696568556}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b0e9d5f310744179321606964e2aa2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _planePositions: {fileID: 696568559}
-  _shipAnchor: {fileID: 279352935}
-  _enemyShipPrefabSmall: {fileID: 8932813787173009617, guid: f920a635959994d38972ba845d3b03b6,
-    type: 3}
-  _enemyShipPrefabLarge: {fileID: 8932813787173009617, guid: 5c6b06529959944658b8178fad7d331c,
-    type: 3}
-  ShipSpawnCoord:
-    x: 0
-    y: 0
-    z: 0
 --- !u!1 &707193170
 GameObject:
   m_ObjectHideFlags: 0
@@ -7326,7 +7387,7 @@ SceneRoots:
   - {fileID: 889139185}
   - {fileID: 740895457}
   - {fileID: 275954090}
-  - {fileID: 696568558}
+  - {fileID: 360976173}
   - {fileID: 707193172}
   - {fileID: 1153613176}
   - {fileID: 1378272703}

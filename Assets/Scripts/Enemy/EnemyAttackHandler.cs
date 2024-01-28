@@ -5,10 +5,23 @@ using Hex.Extensions;
 using Hex.Grid;
 using Hex.Grid.Cell;
 using Hex.UI;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Hex.Enemy
 {
+	public struct EnemyAttackInfo
+	{
+		public int Damage;
+		public GameObject Ship;
+
+		public EnemyAttackInfo(int damage, GameObject ship)
+		{
+			Damage = damage;
+			Ship = ship;
+		}
+	}
+	
 	public class EnemyAttackHandler : MonoBehaviour
 	{
 		private static readonly int[] AttackPowerList = { 3, 5, 8, 12, 17, 23, 30, 38, 47 };
@@ -16,7 +29,10 @@ namespace Hex.Enemy
 		[SerializeField] private EnemyAttackUI _ui;
 		[SerializeField] private HealthBar _enemyHealthBar;
 		[SerializeField] private HealthBar _playerHealthBar;
-		
+		[SerializeField] private EnemyShipSpawner _shipSpawner;
+
+		private readonly Dictionary<int3, EnemyAttackInfo> _attacksByCoord = new();
+
 		private int _attackPhaseCount;
 		private int _staggeredPhaseCount;
 		private HexGrid _grid;
@@ -24,7 +40,9 @@ namespace Hex.Enemy
 		public Action AttackResolved;
 
 		public bool IsAttackPhase => _ui.TurnsBeforeAttack == 0;
-		
+
+		public IReadOnlyDictionary<int3, EnemyAttackInfo> AttacksByCoordByCoord => _attacksByCoord;
+
 		public bool ElapseTurn() => _ui.ElapseTurn();
 		public void ResetTurns() => _ui.ResetTurns();
 
@@ -36,6 +54,15 @@ namespace Hex.Enemy
 			
 			_playerHealthBar.SetHealthToMax(50);;
 			_enemyHealthBar.SetHealthToMax(100);
+		}
+
+		public void Cleanup()
+		{
+			foreach (var (_, info) in _attacksByCoord)
+			{
+				Destroy(info.Ship);
+			}
+			_attacksByCoord.Clear();
 		}
 		
 		public void AssignAttacksToGrid()
@@ -78,7 +105,17 @@ namespace Hex.Enemy
 					// Pick a random cell in this row
 					randomCell = cellsInRow.FirstOrDefault(c => c.Coordinates.x == 1); //cellsInRow.Shuffle().First();
 
-					if (randomCell == null) continue;
+					if (randomCell == null)
+					{
+						Debug.LogWarning("Issue when assigning attack: Random Cell is null");
+						return;
+					}
+
+					if (_attacksByCoord.ContainsKey(randomCell.Coordinates))
+					{
+						Debug.LogWarning("Issue when assigning attack: Attack is already on cell");
+						return;
+					}
 					
 					// Remove row
 					cellsByXPos.RemoveAt(0);
@@ -86,6 +123,11 @@ namespace Hex.Enemy
 				
 				// Assign attack 
 				randomCell.InfoHolder.HoldEnemyAttack(attackList[0]);
+
+				// Create and store attack info
+				var newShip = _shipSpawner.SpawnSmallShip(randomCell.Coordinates);
+				_attacksByCoord[randomCell.Coordinates] = new EnemyAttackInfo(attackList[0], newShip);
+				
 				// Remove attack
 				attackList.RemoveAt(0);
 			}
@@ -121,6 +163,13 @@ namespace Hex.Enemy
 					if (cellHoldingUint)
 					{
 						cell.InfoHolder.ClearEnemyAttack();
+
+						// Remove stored attack info
+						if (_attacksByCoord.TryGetValue(cell.Coordinates, out var attackInfo))
+						{
+							Destroy(attackInfo.Ship);
+							_attacksByCoord.Remove(cell.Coordinates);
+						}
 					}
 				}
 			}

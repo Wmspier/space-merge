@@ -13,34 +13,35 @@ namespace Hex.Enemy
 		[SerializeField] private GameObject _enemyShipPrefabSmall;
 		[SerializeField] private GameObject _enemyShipPrefabLarge;
 		
-		public int3 ShipSpawnCoord;
 
-		[ContextMenu("Spawn Small Ship")]
-		public void SpawnSmallShip()
+		public GameObject SpawnSmallShip(int3 coord)
 		{
-			if (!_planePositions.Positions.TryGetValue(ShipSpawnCoord, out var position))
+			if (!_planePositions.Positions.TryGetValue(coord, out var position))
 			{
-				Debug.LogError($"Failed to find position to spawn ship: {ShipSpawnCoord}");
-				return;
+				Debug.LogError($"Failed to find position to spawn ship: {coord}");
+				return null;
 			}
 
 			var shipInstance = Instantiate(_enemyShipPrefabSmall, _shipAnchor);
 			shipInstance.transform.Reset();
 			shipInstance.transform.position = position;
+
+			return shipInstance;
 		}
 		
-		[ContextMenu("Spawn Big Ship")]
-		public void SpawnBigShip()
+		public GameObject SpawnBigShip(int3 coord)
 		{
-			if (!_planePositions.Positions.TryGetValue(ShipSpawnCoord, out var position))
+			if (!_planePositions.Positions.TryGetValue(coord, out var position))
 			{
-				Debug.LogError($"Failed to find position to spawn ship: {ShipSpawnCoord}");
-				return;
+				Debug.LogError($"Failed to find position to spawn ship: {coord}");
+				return null;
 			}
 
 			var shipInstance = Instantiate(_enemyShipPrefabLarge, _shipAnchor);
 			shipInstance.transform.Reset();
 			shipInstance.transform.position = position;
+			
+			return shipInstance;
 		}
 	}
 }
