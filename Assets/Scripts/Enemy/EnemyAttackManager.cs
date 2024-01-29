@@ -6,13 +6,20 @@ using Hex.Grid;
 using Hex.Grid.Cell;
 using Hex.UI;
 using Unity.Mathematics;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.VFX;
 using Task = System.Threading.Tasks.Task;
 
 namespace Hex.Enemy
 {
+	public enum AttackResultType
+	{
+		Contested,
+		PlayerHit,
+		PlayerMiss,
+		EnemyHit
+	}
+
 	public struct EnemyAttackInfo
 	{
 		public int Damage;
@@ -42,6 +49,10 @@ namespace Hex.Enemy
 		[Header("VFX")] 
 		[SerializeField] private Transform _vfxAnchor;
 		[SerializeField] private VisualEffect _targetingEffect;
+		[SerializeField] private VisualEffect _beamEffectContested;
+		[SerializeField] private VisualEffect _beamEffectEnemyHit;
+		[SerializeField] private VisualEffect _beamEffectPlayerHit;
+		[SerializeField] private VisualEffect _beamEffectPlayerMiss;
 		[SerializeField] private float _attackTextDisplayDelaySeconds = 2f;
 
 		[Space] 
@@ -124,10 +135,9 @@ namespace Hex.Enemy
 					_attacksByCoord[cell.Coordinates] = attackInfo;
 				
 					// Start vfx sequence
-					PlayTargetSequence(cell, attackInfo);
+					PlayTargetSequence(attackInfo);
 				}
 			}
-
 			else
 			{
 				while (attackList.Count > 0)
@@ -171,7 +181,7 @@ namespace Hex.Enemy
 					_attacksByCoord[randomCell.Coordinates] = attackInfo;
 				
 					// Start vfx sequence
-					PlayTargetSequence(randomCell, attackInfo);
+					PlayTargetSequence(attackInfo);
 				
 					// Remove attack
 					attackList.RemoveAt(0);
@@ -184,8 +194,10 @@ namespace Hex.Enemy
 			UpdateDamagePreview();
 		}
 
-		private void ResolveAttacks()
+		private async void ResolveAttacks()
 		{
+			var resolutionTasks = new List<Task>();
+			
 			var cellsByRow = _grid.GetCellsByXPosRounded();
 			foreach (var row in cellsByRow)
 			{
@@ -194,31 +206,47 @@ namespace Hex.Enemy
 					var cellHoldingUint = cell.HoldingUnit;
 					if (!cell.HoldingEnemyAttack) continue; // Cell does not contain enemy attack
 
+					var attackResult = AttackResultType.Contested;
+					
 					var powerDifference = cell.InfoHolder.ResolveAttack();
 					if (powerDifference > 0)
 					{
 						// Player unit is stronger
 						_enemyHealthBar.ModifyValue(-powerDifference);
+						attackResult = AttackResultType.PlayerHit;
 					}
 					else if (powerDifference < 0)
 					{
 						// Enemy Attack is stronger
 						_playerHealthBar.ModifyValue(powerDifference);
+						attackResult = AttackResultType.EnemyHit;
+					}
+					else
+					{
+						attackResult = AttackResultType.Contested;
 					}
 
-					if (cellHoldingUint)
+					if (!_attacksByCoord.TryGetValue(cell.Coordinates, out var attackInfo))
 					{
-						cell.InfoHolder.ClearEnemyAttack();
-
-						// Remove stored attack info
-						if (_attacksByCoord.TryGetValue(cell.Coordinates, out var attackInfo))
+						Debug.LogError("Attack info not found when resolving attack");
+						continue;
+					}
+					
+					resolutionTasks.Add(PlayBeamSequence(attackInfo, attackResult, () =>
+					{
+						if (cellHoldingUint)
 						{
+							cell.InfoHolder.ClearEnemyAttack();
+
+							// Remove stored attack info
 							Destroy(attackInfo.Ship);
 							_attacksByCoord.Remove(cell.Coordinates);
 						}
-					}
+					}));
 				}
 			}
+
+			await Task.WhenAll(resolutionTasks);
 			
 			_ui.ResetTurns();
 			AssignAttacksToGrid();
@@ -252,7 +280,7 @@ namespace Hex.Enemy
 			}
 		}
 
-		private async void PlayTargetSequence(HexCell cell, EnemyAttackInfo attackInfo)
+		private async void PlayTargetSequence(EnemyAttackInfo attackInfo)
 		{
 			var effectInstance = Instantiate(_targetingEffect, _vfxAnchor);
 			effectInstance.transform.position = attackInfo.OriginPosition;
@@ -260,7 +288,7 @@ namespace Hex.Enemy
 			WaitThenDestroyVFX(effectInstance.gameObject, (int)effectInstance.GetFloat("Duration") * 1000);
 
 			await Task.Delay((int)_attackTextDisplayDelaySeconds * 1000);
-			cell.UI.ToggleAttackCanvas(true);
+			attackInfo.TargetCell.UI.ToggleAttackCanvas(true);
 
 			async void WaitThenDestroyVFX(GameObject vfxInstance, int delay)
 			{
@@ -268,6 +296,24 @@ namespace Hex.Enemy
 			
 				Destroy(vfxInstance);
 			}
+		}
+
+		private async Task PlayBeamSequence(EnemyAttackInfo attackInfo, AttackResultType result, Action onComplete)
+		{
+			var effectPrefab = result switch
+			{
+				AttackResultType.Contested => _beamEffectContested,
+				AttackResultType.EnemyHit => _beamEffectEnemyHit,
+				AttackResultType.PlayerHit => _beamEffectPlayerHit,
+				AttackResultType.PlayerMiss => _beamEffectPlayerMiss,
+				_ => throw new ArgumentOutOfRangeException(nameof(result), result, null)
+			};
+			
+			var effectInstance = Instantiate(effectPrefab, _vfxAnchor);
+			effectInstance.transform.position = attackInfo.OriginPosition;
+			
+			await Task.Delay((int)effectInstance.GetFloat("Duration") * 1000);
+			Destroy(effectInstance);
 		}
 	}
 }

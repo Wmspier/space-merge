@@ -1489,6 +1489,14 @@ MonoBehaviour:
   _vfxAnchor: {fileID: 1855581969}
   _targetingEffect: {fileID: 806958650295839093, guid: 96f4829b621bc41368d1b85477b29835,
     type: 3}
+  _beamEffectContested: {fileID: 3711066673474972241, guid: 4b22b1c0f7c504e7d96dd7f7dc806f28,
+    type: 3}
+  _beamEffectEnemyHit: {fileID: 3711066673474972241, guid: 4b22b1c0f7c504e7d96dd7f7dc806f28,
+    type: 3}
+  _beamEffectPlayerHit: {fileID: 3711066673474972241, guid: 4b22b1c0f7c504e7d96dd7f7dc806f28,
+    type: 3}
+  _beamEffectPlayerMiss: {fileID: 3711066673474972241, guid: 4b22b1c0f7c504e7d96dd7f7dc806f28,
+    type: 3}
   _attackTextDisplayDelaySeconds: 2.98
   _debugAttacks:
   - x: 1

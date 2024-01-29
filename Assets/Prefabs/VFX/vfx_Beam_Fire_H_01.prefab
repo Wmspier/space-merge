@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8171652445417353479
+--- !u!1 &5510294597703729271
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8035630954385802644}
-  - component: {fileID: 806958650295839093}
-  - component: {fileID: 4528473503595891906}
+  - component: {fileID: 3141170934772838864}
+  - component: {fileID: 2188944888994888516}
+  - component: {fileID: 8863556333746644743}
   m_Layer: 0
-  m_Name: VFX_Graph_target_cell
+  m_Name: vfx_Beam_Fire_H_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8035630954385802644
+--- !u!4 &3141170934772838864
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8171652445417353479}
+  m_GameObject: {fileID: 5510294597703729271}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -33,15 +33,15 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!2083052967 &806958650295839093
+--- !u!2083052967 &2188944888994888516
 VisualEffect:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8171652445417353479}
+  m_GameObject: {fileID: 5510294597703729271}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: 508d4d477e83c4273876628240496ec1, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: 5723dd1cc8ab3473cb4b3cf8cfa5f259, type: 3}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
@@ -71,14 +71,14 @@ VisualEffect:
       m_Array: []
     m_Bool:
       m_Array: []
---- !u!73398921 &4528473503595891906
+--- !u!73398921 &8863556333746644743
 VFXRenderer:
   serializedVersion: 1
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8171652445417353479}
+  m_GameObject: {fileID: 5510294597703729271}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 0
