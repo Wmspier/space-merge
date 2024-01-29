@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Hex.Grid;
 using Unity.Mathematics;
@@ -79,6 +78,21 @@ namespace Hex.Enemy
 			}
 			Gizmos.color = Color.red;
 			Gizmos.DrawSphere(_projectionPointOffset, .25f);
+		}
+
+		[ContextMenu("Project and Create Anchors")]
+		public void ProjectAndCreateAnchors()
+		{
+			foreach (var (_, cell) in _grid.Registry)
+			{
+				var positionOnPlane = ProjectOntoPlane(cell.transform.position);
+				if (!positionOnPlane.HasValue) continue;
+
+				var anchor = new GameObject(cell.Coordinates.ToString());
+				anchor.transform.SetParent(transform);
+				anchor.transform.position = positionOnPlane.Value;
+				_positions[cell.Coordinates] = positionOnPlane.Value;
+			}
 		}
 	}
 }
