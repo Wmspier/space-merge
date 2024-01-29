@@ -681,7 +681,7 @@ MonoBehaviour:
   - name: Height
     path: Height
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Float
     realType: Single
@@ -697,7 +697,7 @@ MonoBehaviour:
   - name: Duration
     path: Duration
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Float
     realType: Single
@@ -713,7 +713,7 @@ MonoBehaviour:
   - name: ScaleOverLifeX
     path: ScaleOverLifeX
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_AnimationCurve
     realType: AnimationCurve
@@ -729,7 +729,7 @@ MonoBehaviour:
   - name: ScaleOverLifeY
     path: ScaleOverLifeY
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_AnimationCurve
     realType: AnimationCurve
@@ -745,7 +745,7 @@ MonoBehaviour:
   - name: ScaleOverLifeZ
     path: ScaleOverLifeZ
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_AnimationCurve
     realType: AnimationCurve
@@ -761,7 +761,7 @@ MonoBehaviour:
   - name: TipDissolve
     path: TipDissolve
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Float
     realType: Single
@@ -777,7 +777,7 @@ MonoBehaviour:
   - name: DissolveCurve
     path: DissolveCurve
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_AnimationCurve
     realType: AnimationCurve
@@ -793,7 +793,7 @@ MonoBehaviour:
   - name: Scale
     path: Scale
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Vector3f
     realType: Vector3
@@ -809,7 +809,7 @@ MonoBehaviour:
   - name: FireTipColorLayer1
     path: FireTipColorLayer1
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Vector4f
     realType: Color
@@ -825,7 +825,7 @@ MonoBehaviour:
   - name: TipDissolveLayer1
     path: TipDissolveLayer1
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Float
     realType: Single
@@ -841,7 +841,7 @@ MonoBehaviour:
   - name: FireTipColorLayer2
     path: FireTipColorLayer2
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Vector4f
     realType: Color
@@ -857,7 +857,7 @@ MonoBehaviour:
   - name: TipDissolveLayer2
     path: TipDissolveLayer2
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Float
     realType: Single
@@ -873,7 +873,7 @@ MonoBehaviour:
   - name: FireTipColorLayer3
     path: FireTipColorLayer3
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Vector4f
     realType: Color
@@ -889,7 +889,7 @@ MonoBehaviour:
   - name: TipDissolveLayer3
     path: TipDissolveLayer3
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Float
     realType: Single
@@ -905,7 +905,7 @@ MonoBehaviour:
   - name: FireTipColor
     path: FireTipColor
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Vector4f
     realType: Color
@@ -31748,7 +31748,7 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 0
+  m_UICollapsed: 1
   m_UISuperCollapsed: 0
   m_InputSlots: []
   m_OutputSlots:
@@ -31860,7 +31860,7 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 0
+  m_UICollapsed: 1
   m_UISuperCollapsed: 0
   m_InputSlots: []
   m_OutputSlots:
@@ -32289,7 +32289,7 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 0
+  m_UICollapsed: 1
   m_UISuperCollapsed: 0
   m_InputSlots: []
   m_OutputSlots:
