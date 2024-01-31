@@ -10,7 +10,8 @@ namespace Hex.Enemy
 		[SerializeField] private GameObject _planeCollider;
 		[SerializeField] private HexGrid _grid;
 		[SerializeField] private Vector3 _projectionPointOffset = new (0, 100f, 0);
-
+		[SerializeField] private bool _useProjectionTarget;
+		
 		private readonly Dictionary<int3, Vector3> _positions = new();
 		private readonly RaycastHit[] _hitBuffer = new RaycastHit[10];
 
@@ -56,7 +57,7 @@ namespace Hex.Enemy
 
 		private Vector3? ProjectOntoPlane(Vector3 cellPosition)
 		{
-			var raycastDir = _projectionPointOffset - cellPosition;
+			var raycastDir = _useProjectionTarget ? _projectionPointOffset - cellPosition : Vector3.up;
 
 			var hitCount = Physics.RaycastNonAlloc(cellPosition, raycastDir, _hitBuffer);
 			
