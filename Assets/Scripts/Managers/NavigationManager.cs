@@ -11,12 +11,14 @@ namespace Hex.Managers
         [SerializeField] private GameObject splashUI;
         [SerializeField] private GameObject gridRoot;
 
+        [SerializeField] private BattleContext _battleContext;
+        
         private void Awake()
         {
             ApplicationManager.RegisterResource(this);
             splashUI.SetActive(true);
             
-            mainMenuUI.PlayPressed = GoToHexGame;
+            mainMenuUI.PlayPressed = GoToBattle;
             topBarUI.HomePressed = GoToMainMenu;
         }
 
@@ -26,13 +28,13 @@ namespace Hex.Managers
             splashUI.SetActive(false);
         }
 
-        private void GoToHexGame(GameMode mode)
+        private void GoToBattle(GameMode mode)
         {
             ApplicationManager.Model.ActiveMode = mode;
             
             mainMenuUI.gameObject.SetActive(false);
             gridRoot.SetActive(true);
-            ApplicationManager.GetGameManager().Initialize();
+            _battleContext.StartBattle();
             
             topBarUI.ToggleHomeButton(true);
         }
@@ -41,7 +43,7 @@ namespace Hex.Managers
         {
             mainMenuUI.gameObject.SetActive(true);
             gridRoot.SetActive(false);
-            ApplicationManager.GetGameManager().Dispose();
+            _battleContext.Dispose();
             
             topBarUI.ToggleHomeButton(false);
         }

@@ -1,14 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hex.Data;
 using Hex.Enemy;
-using Hex.Extensions;
 using Hex.Grid;
 using Hex.Grid.Cell;
-using Hex.Grid.DetailQueue;
 using Hex.Model;
-using Hex.UI;
 using Hex.Util;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -26,39 +24,21 @@ namespace Hex.Managers
         [Header("Cell Selecting")] 
         [SerializeField] private Color cellOutlineCanCombine;
         [SerializeField] private Color cellOutlineCannotCombine;
-        
-        [Header("UI")]
-        [SerializeField] private GameUI gameUI;
-        [SerializeField] private TopBarUI topBarUI;
-        
+
         [Space]
         [SerializeField] private EnemyAttackManager _attackManager;
-        [SerializeField] private PlayerUnitManager _playerUnitManager;
 
         [SerializeField] private float mergePulseIntensity = .75f;
         [SerializeField] private float mergeUpgradePulseIntensity = 1.5f;
 
-        private readonly ResourcesModel _resourceModel = new();
-        private bool _deckRefilled;
-        private GameStateModel _gameStateModel;
+        private BattleModel _battleModel;
+
+        public Func<UnitData> SpawnUnit;
+        public event Action GridStateChanged;
+        
+        public HexGrid Grid => grid;
 
         #region Setup/Game State
-        private void Awake()
-        {
-            gameUI.ResetPressed = OnResetPressed;
-            
-            _resourceModel.Load();
-            foreach (var (resource, amount) in _resourceModel.ResourceAmounts)
-            {
-                topBarUI.SetResourceImmediate(resource, amount);
-            }
-
-            _gameStateModel = new GameStateModel(grid);
-            
-            ApplicationManager.RegisterResource(this);
-            ApplicationManager.RegisterResource(_resourceModel);
-            ApplicationManager.RegisterResource(_gameStateModel);
-        }
         
         public void Initialize()
         {
@@ -69,16 +49,9 @@ namespace Hex.Managers
             _interactionHandler.CellsDragReleased += TryCombineCells;
             _interactionHandler.CellsDragContinue += OnCellsDragContinued;
             
-            gameUI.gameObject.SetActive(true);
-            
             grid.Load();
-            
-            _playerUnitManager.Initialize();
-            
-            _attackManager.ResetTurns();
-            _attackManager.Initialize(grid);
-            _attackManager.AttackResolved = OnAttackResolved;
-            _attackManager.AssignAttacksToGrid();
+
+            _battleModel = ApplicationManager.GetResource<BattleModel>();
         }
 
         public void Dispose()
@@ -88,48 +61,24 @@ namespace Hex.Managers
             _interactionHandler.CellClicked -= TryPlaceUnit;
             _interactionHandler.CellsDragReleased -= TryCombineCells;
             _interactionHandler.CellsDragContinue -= OnCellsDragContinued;
-
-            gameUI.gameObject.SetActive(false);
-
-            _attackManager.Dispose();
-            _playerUnitManager.Dispose();
-        }
-
-        private void OnResetPressed()
-        {
-            ClearGrid();
-            gameUI.TopBar.Clear();
         }
         #endregion
 
-        private void ClearGrid()
-        {
-            foreach (var kvp in grid.Registry)
-            {
-                kvp.Value.InfoHolder.Clear();
-            }
-        }
-        
         private void TryPlaceUnit(HexCell cell)
         {
             // Don't try to place when hand is empty
             // Can only place detail on empty tiles
-            if (_playerUnitManager.IsHandEmpty || cell.InfoHolder.HeldPlayerUnit || _attackManager.IsAttackPhase)
+            if (_battleModel.IsHandEmpty || cell.InfoHolder.HeldPlayerUnit || _attackManager.IsAttackPhase)
             {
                 return;
             }
             
-            cell.InfoHolder.SpawnUnit(_playerUnitManager.DrawNextUnit());
+            cell.InfoHolder.SpawnUnit(SpawnUnit?.Invoke());
             cell.Impact();
 
             grid.Save(GameMode.Merge);
             
-            _attackManager.UpdateDamagePreview();
-        }
-
-        private void OnAttackResolved()
-        {
-            _playerUnitManager.DrawNewHand();
+            GridStateChanged?.Invoke();
         }
         
         private async void TryCombineCells(List<HexCell> cells)
@@ -159,7 +108,7 @@ namespace Hex.Managers
             // Resolve the combination, using the first unit as a unit override
             last.InfoHolder.ResolveCombine(finalPower, finalRarity, resultsInUpgrade, firstUnit);
             
-            _attackManager.UpdateDamagePreview();
+            GridStateChanged?.Invoke();
         }
 
         private void OnCellsDragContinued(List<HexCell> cells)

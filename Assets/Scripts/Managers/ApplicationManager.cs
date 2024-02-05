@@ -18,7 +18,7 @@ namespace Hex.Managers
             RegisteredResources[typeof(T)] = resource;
         }
 
-        public static void UnRegisterResource<T>(T resource)
+        public static void UnRegisterResource<T>()
         {
             RegisteredResources.Remove(typeof(T));
         }
@@ -32,7 +32,5 @@ namespace Hex.Managers
 
             throw new KeyNotFoundException($"{typeof(T)} not found in resource map.");
         }
-
-        public static GridInteractionManager GetGameManager() => GetResource<GridInteractionManager>();
     }
 }
