@@ -26,6 +26,8 @@ namespace Hex.Enemy
 
 		public bool ElapseTurn()
 		{
+			return true;
+			
 			if (TurnsBeforeAttack == 0)
 			{
 				Debug.LogWarning("Elapsed turns already at max");
@@ -65,7 +67,7 @@ namespace Hex.Enemy
 			{
 				dot.localScale = Vector3.zero;
 			}
-			_resolveAttackRoot.localScale = Vector3.zero;
+			//_resolveAttackRoot.localScale = Vector3.zero;
 
 			_elapsedTurns = 0;
 			_turnsBeforeAttackPhaseText.text = $"Enemy Attack in {TurnsBeforeAttack} Turns";

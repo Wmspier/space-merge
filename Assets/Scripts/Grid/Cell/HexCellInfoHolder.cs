@@ -16,11 +16,15 @@ namespace Hex.Grid.Cell
 		public int PlayerRarity { get; private set; }
 
 		private Vector3 _unitAnchorOrigin;
+
+		public void ToggleInfo(bool visible)
+		{
+			UnitAnchor.gameObject.SetActive(visible);
+			_ui.ToggleUnitInfoCanvas(visible);
+		}
 		
 		private void Awake()
 		{
-			_ui.SetPlayerPower(0);
-			_ui.SetRarityBaseZero(-1);
 			_unitAnchorOrigin = UnitAnchor.localPosition;
 		}
 

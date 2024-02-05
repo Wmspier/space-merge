@@ -17,7 +17,7 @@ namespace Hex.UI
             remainingCardsText.gameObject.SetActive(true);
             nextCardText.text = nextUnit.UniqueId;
             
-            remainingCardsText.text = $"{remainingTiles} cards left";
+            remainingCardsText.text = $"{remainingTiles} Unit(s) Left";
             remainingCardsText.gameObject.GetComponent<RectTransform>().pivot = new Vector2(0, .5f);
             remainingCardsText.alignment = TextAlignmentOptions.MidlineLeft;
         }
@@ -30,8 +30,17 @@ namespace Hex.UI
             await MathUtil.DoInterpolation(lerpTimeSeconds, Grow);
             
             // Update text
-            nextCardText.text = nextUnit.UniqueId;
-            remainingCardsText.text = $"{remainingTiles} cards left";
+            if (nextUnit == null)
+            {
+                nextCardText.gameObject.SetActive(false);
+                remainingCardsText.text = $"Out of Units";
+            }
+            else
+            {
+                nextCardText.gameObject.SetActive(true);
+                nextCardText.text = nextUnit.UniqueId;
+                remainingCardsText.text = $"{remainingTiles} Unit(s) Left";
+            }
             
             // Shrink
             await MathUtil.DoInterpolation(lerpTimeSeconds, Shrink);

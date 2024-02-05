@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Hex.Data;
 using Hex.Extensions;
@@ -10,62 +11,57 @@ namespace Hex.Grid.DetailQueue
 {
     public class DeckPreviewQueue : MonoBehaviour
     {
-        [SerializeField] private Transform anchorFirst;
-        [SerializeField] private Transform anchorSecond;
-        [SerializeField] private Transform anchorThird;
-
+        [SerializeField] private float previewOffsetY = 1f;
         [SerializeField] private CardPreview previewPrefab;
 
-        private readonly Queue<List<UnitData>> _queuedDequeueActions = new();
-        private readonly Dictionary<int, CardPreview> _previews = new();
+        private readonly Queue<CardPreview> _previewQueue = new();
+        private readonly Queue<List<UnitData>> _dataSnapshotQueue = new();
         
         private Func<int, UnitData> _getNext;
+        private int _dequeueCount;
+        private int previewQueueSize;
 
         public Action DetailDequeued;
         
         public bool ProcessingDequeues { get; private set; }
 
-        public void Initialize(Func<int, UnitData> getNextFunc)
+        public void Initialize(Func<int, UnitData> getNextFunc, int queueSize)
         {
             _getNext = getNextFunc;
+            previewQueueSize = queueSize;
+            
+            transform.DestroyAllChildGameObjects();
+            _previewQueue.Clear();
+            _dataSnapshotQueue.Clear();
         }
 
         public void GeneratePreviewQueue()
         {
-            SetPreview(0, _getNext.Invoke(0));
-            SetPreview(1, _getNext.Invoke(1));
-            SetPreview(2, _getNext.Invoke(2));
+            for (var i = 0; i < previewQueueSize; i++)
+            {
+                var unit = _getNext.Invoke(i);
+                if (unit == null) return;
+                SetPreview(i, unit);
+            }
         }
 
-        private void SetPreview(int anchorIndex, UnitData unitData)
+        private Task SetPreview(int previewIndex, UnitData unitData)
         {
-            if (unitData == null)
-            {
-                return;
-            }
+            var previewPosition = GetPositionFromIndex(previewIndex);
 
-            var anchor = anchorIndex switch
-            {
-                0 => anchorFirst,
-                1 => anchorSecond,
-                2 => anchorThird,
-                _ => throw new IndexOutOfRangeException()
-            };
-
-            if (anchor.childCount > 0)
-            {
-                Destroy(anchor.GetChild(0).gameObject);
-            }
-
-            var newPreview = Instantiate(previewPrefab, anchor);
+            var newPreview = Instantiate(previewPrefab, transform);
             newPreview.transform.Reset();
-            newPreview.ApplyPreview(unitData, anchorIndex == 0);
-            _previews[anchorIndex] = newPreview;
-        }
+            newPreview.ApplyPreview(unitData, previewIndex == 0);
+            newPreview.transform.position = previewPosition;
+            _previewQueue.Enqueue(newPreview);
 
+            return Task.CompletedTask;
+        }
+        
         public void Dequeue(List<UnitData> queueSnapshot)
         {
-            _queuedDequeueActions.Enqueue(queueSnapshot);
+            _dequeueCount++;
+            _dataSnapshotQueue.Enqueue(queueSnapshot);
 
             if (!ProcessingDequeues)
             {
@@ -76,61 +72,46 @@ namespace Hex.Grid.DetailQueue
         private async void ProcessDequeues()
         {
             ProcessingDequeues = true;
-            while (_queuedDequeueActions.Count > 0)
+            while (_dequeueCount > 0)
             {
-                await DequeueInternal(_queuedDequeueActions.Dequeue());
+                DetailDequeued?.Invoke();
+                _dequeueCount--;
+
+                await DequeueInternal();
             }
 
             ProcessingDequeues = false;
         }
 
-        private async Task DequeueInternal(List<UnitData> queueSnapshot)
+        private async Task DequeueInternal()
         {
-            DetailDequeued?.Invoke();
-            if (!gameObject.activeSelf)
-            {
-                return;
-            }
-
+            var dataSnapshot = _dataSnapshotQueue.Dequeue();
             var tasks = ListPool<Task>.Get();
-            // Remove the first preview
-            tasks.Add(_previews[0].ShrinkAndDestroy());
             
-            // If there is a second preview lerp to first position
-            if (_previews.TryGetValue(1, out var second))
+            // Dequeue and destroy next in queue
+            tasks.Add(_previewQueue.Dequeue().ShrinkAndDestroy());
+            
+            // Lerp queue
+            for (var i = 0; i < _previewQueue.Count; i++)
             {
-                tasks.Add(second.ApplyDetailAndLerp(queueSnapshot[0], anchorFirst, true, () =>
-                {
-                    _previews[0] = second;
-                }));
+                var nextInQueue = _previewQueue.ElementAt(i);
+                tasks.Add(nextInQueue.ApplyDetailAndLerp(dataSnapshot[i], GetPositionFromIndex(i), i==0, i));
             }
 
-            // If there is a third position lerp to second position
-            if (_previews.TryGetValue(2, out var third) && queueSnapshot[1] != null)
+            // Enqueue and spawn next in data snapshot
+            if (dataSnapshot.Count >= previewQueueSize)
             {
-                tasks.Add(third.ApplyDetailAndLerp(queueSnapshot[1], anchorSecond, false, () =>
-                {
-                    _previews[1] = third;
-                    if (queueSnapshot[2] != null)
-                    {
-                        SetPreview(2, queueSnapshot[2]);
-                    }
-                }));
+                tasks.Add(SetPreview(previewQueueSize, dataSnapshot[previewQueueSize-1]));
             }
-
+            
             await Task.WhenAll(tasks);
-
-            // Clean up preview list after lerp is finished
-            if (_previews.ContainsKey(1) && queueSnapshot[1] == null)
-            {
-                _previews.Remove(1);
-            }
-            if (_previews.ContainsKey(2) && queueSnapshot[2] == null)
-            {
-                _previews.Remove(2);
-            }
-            
-            ListPool<UnitData>.Release(queueSnapshot);
+        }
+        
+        private Vector3 GetPositionFromIndex(int index)
+        {
+            var previewPosition = transform.position;
+            previewPosition.y -= (index + 1) * previewOffsetY;
+            return previewPosition;
         }
     }
 }

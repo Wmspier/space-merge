@@ -12,6 +12,7 @@ using Hex.UI;
 using Hex.Util;
 using UnityEngine;
 using UnityEngine.Pool;
+using UnityEngine.XR;
 using static Hex.Grid.HexGridInteractionHandler;
 
 namespace Hex.Managers
@@ -19,6 +20,7 @@ namespace Hex.Managers
     public class MergeGameManager : MonoBehaviour
     {
         [SerializeField] private List<UnitData> startingDeck;
+        [SerializeField] private int startingHandSize = 4;
         
         [Space]
         [SerializeField] private HexGridInteractionHandler _interactionHandler;
@@ -40,6 +42,7 @@ namespace Hex.Managers
         [SerializeField] private float mergeUpgradePulseIntensity = 1.5f;
 
         private readonly ResourcesModel _resourceModel = new();
+        private readonly List<UnitData> _hand = new();
         private readonly List<UnitData> _deck = new();
         private readonly List<UnitData> _discard = new();
         private bool _deckRefilled;
@@ -78,19 +81,24 @@ namespace Hex.Managers
             gameUI.gameObject.SetActive(true);
 
             FillInitialDeck();
-            deckPreviewQueue.Initialize(GetUnitAtIndex);
-            
-            deckPreviewQueue.gameObject.SetActive(true);
-            gameUI.DeckPreviewQueue.gameObject.SetActive(true);
+            FillHand();
+            SetupPreviewQueue();
             
             grid.Load();
-
-            deckPreviewQueue.GeneratePreviewQueue();
-            gameUI.DeckPreviewQueue.Initialize(_deck.FirstOrDefault(), startingDeck.Count);
-
+            
             _attackManager.Initialize(grid);
             _attackManager.AttackResolved = OnAttackResolved;
             _attackManager.AssignAttacksToGrid();
+        }
+
+        private void SetupPreviewQueue()
+        {
+            deckPreviewQueue.Initialize(GetUnitFromHand, _hand.Count);
+            deckPreviewQueue.GeneratePreviewQueue();
+            deckPreviewQueue.gameObject.SetActive(true);
+            
+            gameUI.PreviewQueueUI.Initialize(_hand.FirstOrDefault(), _hand.Count);
+            gameUI.PreviewQueueUI.gameObject.SetActive(true);
         }
 
         public void Leave()
@@ -105,20 +113,24 @@ namespace Hex.Managers
             gameUI.gameObject.SetActive(false);
             
             _attackManager.Cleanup();
+            
+            _deck.Clear();
+            _hand.Clear();
+            _discard.Clear();
         }
 
         private void OnResetPressed()
         {
             ResetGrid();
             deckPreviewQueue.gameObject.SetActive(false);
-            gameUI.DeckPreviewQueue.gameObject.SetActive(false);
+            gameUI.PreviewQueueUI.gameObject.SetActive(false);
 
             gameUI.TopBar.Clear();
             deckPreviewQueue.GeneratePreviewQueue();
-            gameUI.DeckPreviewQueue.Initialize(_deck.FirstOrDefault(), startingDeck.Count);
+            gameUI.PreviewQueueUI.Initialize(_hand.FirstOrDefault(), _hand.Count);
             
             deckPreviewQueue.gameObject.SetActive(true);
-            gameUI.DeckPreviewQueue.gameObject.SetActive(true);
+            gameUI.PreviewQueueUI.gameObject.SetActive(true);
         }
         #endregion
 
@@ -141,63 +153,90 @@ namespace Hex.Managers
         
         private void TryPlaceUnit(HexCell cell)
         {
-            // Don't try to place when deck is refilling
+            // Don't try to place when hand is empty
             // Can only place detail on empty tiles
-            if (_deckRefilled || cell.InfoHolder.HeldPlayerUnit || _attackManager.IsAttackPhase)
+            if (_hand.Count == 0 || cell.InfoHolder.HeldPlayerUnit || _attackManager.IsAttackPhase)
             {
                 return;
             }
             
-            cell.InfoHolder.SpawnUnit(GetUnitAtIndex(0));
+            cell.InfoHolder.SpawnUnit(GetUnitFromHand(0));
             cell.Impact();
             
-            var detail = _deck[0];
+            var detail = _hand[0];
             _discard.Add(detail);
-            _deck.RemoveAt(0);
+            _hand.RemoveAt(0);
             
-            // Deck is empty
-            if (_deck.Count == 0)
+            // Hand is empty
+            if (_hand.Count == 0)
             {
-                // Shuffle discard into deck
-                for (var i = _discard.Count - 1; i >= 0; i--)
-                {
-                    var detailIndex = Random.Range(0, _discard.Count);
-                    _deck.Add(_discard[detailIndex]);
-                    _discard.RemoveAt(detailIndex);
-                }
-
-                _deckRefilled = true;
+                Debug.Log("Hand is Empty");
             }
 
-            // Try to create a snapshot of the next 3 details in the queue so they can be asynchronously processed
+            // Try to create a snapshot of the next details in the queue so they can be asynchronously processed
             var queueSnapshot = ListPool<UnitData>.Get();
             queueSnapshot.Clear();
-            for (var i = 0; i < 3; i++)
+            UnitData unitPreview;
+            var index = 0;
+            do
             {
-                queueSnapshot.Add(GetUnitAtIndex(i));
-            }
+                unitPreview = GetUnitFromHand(index);
+                if (unitPreview != null) queueSnapshot.Add(unitPreview);
+                index++;
+            } while (unitPreview != null);
             deckPreviewQueue.Dequeue(queueSnapshot);
 
             grid.Save(GameMode.Merge);
             
-            if (_attackManager.ElapseTurn())
-            {
-                deckPreviewQueue.gameObject.SetActive(false);
-                gameUI.DeckPreviewQueue.gameObject.SetActive(false);
-            }
+            // if (_attackManager.ElapseTurn())
+            // {
+            //     deckPreviewQueue.gameObject.SetActive(false);
+            //     gameUI.DeckPreviewQueue.gameObject.SetActive(false);
+            // }
             
             _attackManager.UpdateDamagePreview();
+        }
+
+        private void DrawNewHand()
+        {
+            _discard.AddRange(_hand);
+            _hand.Clear();
+            FillHand();
+        }
+        
+        private void FillHand()
+        {
+            for (var i = 0; i < startingHandSize; i++)
+            {
+                if (_deck.Count == 0)
+                {
+                    ShuffleDiscardIntoDeck();
+                    if (_deck.Count == 0) return;
+                }
+                
+                _hand.Add(_deck[0]);
+                _deck.RemoveAt(0);
+            }
+        }
+
+        private void ShuffleDiscardIntoDeck()
+        {
+            _deck.AddRange(_discard);
+            _deck.Shuffle();
+            _discard.Clear();
         }
 
         private void OnAttackResolved()
         {
             deckPreviewQueue.gameObject.SetActive(true);
-            gameUI.DeckPreviewQueue.gameObject.SetActive(true);
+            gameUI.PreviewQueueUI.gameObject.SetActive(true);
+            DrawNewHand();
+            SetupPreviewQueue();
         }
         
         private async void OnDetailDequeued()
         {
-            await gameUI.DeckPreviewQueue.SetNextAndDecrement(_deck.FirstOrDefault(), _deck.Count);
+            await gameUI.PreviewQueueUI.SetNextAndDecrement(_hand.FirstOrDefault(), _hand.Count);
 
             if (!_deckRefilled) return;
             
@@ -205,8 +244,7 @@ namespace Hex.Managers
             {
                 await Task.Delay(10);
             }
-            deckPreviewQueue.GeneratePreviewQueue();
-            gameUI.DeckPreviewQueue.Initialize(GetUnitAtIndex(0), _deck.Count);
+            gameUI.PreviewQueueUI.Initialize(GetUnitFromHand(0), _hand.Count);
             _deckRefilled = false;
         }
         
@@ -240,9 +278,9 @@ namespace Hex.Managers
             _attackManager.UpdateDamagePreview();
         }
 
-        private UnitData GetUnitAtIndex(int index)
+        private UnitData GetUnitFromHand(int index)
         {
-            return index < _deck.Count ? _deck[index] : null;
+            return index < _hand.Count ? _hand[index] : null;
         }
 
         private void OnCellsDragContinued(List<HexCell> cells)

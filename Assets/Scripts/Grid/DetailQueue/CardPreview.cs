@@ -27,7 +27,7 @@ namespace Hex.Grid.DetailQueue
             _rotateCoroutine = StartCoroutine(RotateDetail());
         }
 
-        public void ApplyPreview(UnitData unitData, bool isMain, bool applyScale = true)
+        public void ApplyPreview(UnitData unitData, bool isNext, bool applyScale = true)
         {
             if (previewAnchor.childCount > 0)
             {
@@ -36,6 +36,7 @@ namespace Hex.Grid.DetailQueue
             
             _cellInfoHolder = Instantiate(previewPrefab, previewAnchor);
             _cellInfoHolder.SpawnUnit(unitData);
+            _cellInfoHolder.ToggleInfo(isNext);
             
             var renderers = GetComponentsInChildren<MeshRenderer>();
             foreach (var r in renderers)
@@ -43,42 +44,39 @@ namespace Hex.Grid.DetailQueue
                 r.shadowCastingMode = ShadowCastingMode.Off;
             }
 
-            if (!applyScale) return;
-            
-            var scale = isMain ? 1f : .5f;
-            transform.localScale = new Vector3(scale, scale, scale);
+            // if (!applyScale) return;
+            // var scale = isMain ? 1f : .5f;
+            // transform.localScale = new Vector3(scale, scale, scale);
         }
 
-        public async Task ApplyDetailAndLerp(UnitData unitData, Transform newAnchor, bool isMain, Action completeAction = null)
+        public async Task ApplyDetailAndLerp(UnitData unitData, Vector3 endPosition, bool isNext, int index, Action<int> completeAction = null)
         {
             const float duration = .25f;
             var t = transform;
             var typeSwapped = false;
             
-            var startScale = t.localScale;
-            var scale = isMain ? 1f : .5f;
-            var endScale = new Vector3(scale, scale, scale);
+            // var startScale = t.localScale;
+            // var scale = isMain ? 1f : .5f;
+            // var endScale = new Vector3(scale, scale, scale);
 
             var startPosition = t.position;
-            var endPosition = newAnchor.transform.position;
 
             await MathUtil.DoInterpolation(duration, DoLerp);
 
-            t.localScale = endScale;
+            //t.localScale = endScale;
             t.position = endPosition;
-            t.SetParent(newAnchor);
             
-            completeAction?.Invoke();
+            completeAction?.Invoke(index);
             
             void DoLerp(float progress)
             {
-                var scaleDiff = endScale - startScale;
-                t.localScale = startScale + dequeueLerpCurve.Evaluate(progress) * scaleDiff;
+                //var scaleDiff = endScale - startScale;
+                //t.localScale = startScale + dequeueLerpCurve.Evaluate(progress) * scaleDiff;
                 t.position = Vector3.Lerp(startPosition, endPosition, progress);
 
                 if (progress >= .5f && !typeSwapped)
                 {
-                    ApplyPreview(unitData, isMain, false);
+                    ApplyPreview(unitData, isNext, false);
                     typeSwapped = true;
                 }
             }
