@@ -1211,7 +1211,7 @@ GameObject:
   - component: {fileID: 275954090}
   - component: {fileID: 275954089}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: GridInteractionManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1239,7 +1239,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fd4288cdc9a18460fbce7670194a346c, type: 2}
   - {fileID: 11400000, guid: fd4288cdc9a18460fbce7670194a346c, type: 2}
   - {fileID: 11400000, guid: fd4288cdc9a18460fbce7670194a346c, type: 2}
-  startingHandSize: 5
+  startingHandSize: 10
   _interactionHandler: {fileID: 707193174}
   deckPreviewQueue: {fileID: 1378272704}
   grid: {fileID: 707193171}
@@ -1248,6 +1248,7 @@ MonoBehaviour:
   gameUI: {fileID: 1400717077}
   topBarUI: {fileID: 183852980}
   _attackManager: {fileID: 360976172}
+  _playerUnitManager: {fileID: 1026222877}
   mergePulseIntensity: 0.25
   mergeUpgradePulseIntensity: 0.75
 --- !u!4 &275954090
@@ -1500,22 +1501,7 @@ MonoBehaviour:
   _beamEffectPlayerMiss: {fileID: 3711066673474972241, guid: 4b22b1c0f7c504e7d96dd7f7dc806f28,
     type: 3}
   _attackTextDisplayDelaySeconds: 2.98
-  _debugAttacks:
-  - x: 1
-    y: 5
-    z: 3
-  - x: 2
-    y: 4
-    z: 3
-  - x: 3
-    y: 3
-    z: 3
-  - x: 4
-    y: 2
-    z: 3
-  - x: 5
-    y: 1
-    z: 3
+  _debugAttacks: []
 --- !u!4 &360976173
 Transform:
   m_ObjectHideFlags: 0
@@ -3591,6 +3577,63 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!1 &1026222876
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1026222878}
+  - component: {fileID: 1026222877}
+  m_Layer: 0
+  m_Name: PlayerUnitManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1026222877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026222876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffb5fb3bebb446f0aa6dadd5207d048f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingDeck:
+  - {fileID: 11400000, guid: c8590a2ec191d49ccb24956376041225, type: 2}
+  - {fileID: 11400000, guid: c8590a2ec191d49ccb24956376041225, type: 2}
+  - {fileID: 11400000, guid: c8590a2ec191d49ccb24956376041225, type: 2}
+  - {fileID: 11400000, guid: 68e377ae89faf41479e5892a7ffb919f, type: 2}
+  - {fileID: 11400000, guid: 68e377ae89faf41479e5892a7ffb919f, type: 2}
+  - {fileID: 11400000, guid: 68e377ae89faf41479e5892a7ffb919f, type: 2}
+  - {fileID: 11400000, guid: fd4288cdc9a18460fbce7670194a346c, type: 2}
+  - {fileID: 11400000, guid: fd4288cdc9a18460fbce7670194a346c, type: 2}
+  - {fileID: 11400000, guid: fd4288cdc9a18460fbce7670194a346c, type: 2}
+  startingHandSize: 5
+  deckPreviewQueue: {fileID: 1378272704}
+  gameUI: {fileID: 1400717077}
+--- !u!4 &1026222878
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026222876}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1030148580
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7244,6 +7287,7 @@ SceneRoots:
   - {fileID: 889139185}
   - {fileID: 740895457}
   - {fileID: 275954090}
+  - {fileID: 1026222878}
   - {fileID: 360976173}
   - {fileID: 835652158}
   - {fileID: 707193172}

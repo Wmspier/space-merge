@@ -36,6 +36,12 @@ namespace Hex.Grid.Cell
 				return;
 			}
 
+			if (unitData == null)
+			{
+				Debug.LogError("Trying to spawn unit with null data");
+				return;
+			}
+
 			HeldPlayerUnit = unitData;
 			Instantiate(unitData.Prefab, UnitAnchor);
 			

@@ -32,7 +32,7 @@ namespace Hex.Managers
             
             mainMenuUI.gameObject.SetActive(false);
             gridRoot.SetActive(true);
-            ApplicationManager.GetGameManager().Play();
+            ApplicationManager.GetGameManager().Initialize();
             
             topBarUI.ToggleHomeButton(true);
         }
@@ -41,7 +41,7 @@ namespace Hex.Managers
         {
             mainMenuUI.gameObject.SetActive(true);
             gridRoot.SetActive(false);
-            ApplicationManager.GetGameManager().Leave();
+            ApplicationManager.GetGameManager().Dispose();
             
             topBarUI.ToggleHomeButton(false);
         }

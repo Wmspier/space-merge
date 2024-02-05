@@ -85,7 +85,7 @@ namespace Hex.Enemy
 			_enemyHealthBar.SetHealthToMax(100);
 		}
 
-		public void Cleanup()
+		public void Dispose()
 		{
 			foreach (var (_, info) in _attacksByCoord)
 			{

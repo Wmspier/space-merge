@@ -33,6 +33,6 @@ namespace Hex.Managers
             throw new KeyNotFoundException($"{typeof(T)} not found in resource map.");
         }
 
-        public static MergeGameManager GetGameManager() => GetResource<MergeGameManager>();
+        public static GridInteractionManager GetGameManager() => GetResource<GridInteractionManager>();
     }
 }
