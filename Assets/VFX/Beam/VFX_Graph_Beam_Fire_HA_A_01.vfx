@@ -178,14 +178,14 @@ MonoBehaviour:
     - model: {fileID: 8926484042661616329}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661616589}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661616591}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661616603}
       id: 0
+      isStickyNote: 0
+    - model: {fileID: 8926484042661616301}
+      id: 5
+      isStickyNote: 0
+    - model: {fileID: 8926484042661616299}
+      id: 9
       isStickyNote: 0
   - title: Back
     position:
@@ -207,14 +207,14 @@ MonoBehaviour:
     - model: {fileID: 8926484042661616382}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661616589}
-      id: 1
-      isStickyNote: 0
-    - model: {fileID: 8926484042661616591}
-      id: 1
-      isStickyNote: 0
     - model: {fileID: 8926484042661616609}
       id: 0
+      isStickyNote: 0
+    - model: {fileID: 8926484042661616301}
+      id: 6
+      isStickyNote: 0
+    - model: {fileID: 8926484042661616299}
+      id: 8
       isStickyNote: 0
   - title: fresnel
     position:
@@ -236,14 +236,14 @@ MonoBehaviour:
     - model: {fileID: 8926484042661616438}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661616589}
-      id: 2
-      isStickyNote: 0
-    - model: {fileID: 8926484042661616591}
-      id: 2
-      isStickyNote: 0
     - model: {fileID: 8926484042661616615}
       id: 0
+      isStickyNote: 0
+    - model: {fileID: 8926484042661616301}
+      id: 7
+      isStickyNote: 0
+    - model: {fileID: 8926484042661616299}
+      id: 7
       isStickyNote: 0
   - title: Voronoi
     position:
@@ -265,14 +265,14 @@ MonoBehaviour:
     - model: {fileID: 8926484042661616493}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661616589}
-      id: 3
-      isStickyNote: 0
-    - model: {fileID: 8926484042661616591}
-      id: 3
-      isStickyNote: 0
     - model: {fileID: 8926484042661616621}
       id: 0
+      isStickyNote: 0
+    - model: {fileID: 8926484042661616301}
+      id: 8
+      isStickyNote: 0
+    - model: {fileID: 8926484042661616299}
+      id: 6
       isStickyNote: 0
   - title: Voronoi 2
     position:
@@ -294,14 +294,14 @@ MonoBehaviour:
     - model: {fileID: 8926484042661616554}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661616589}
-      id: 4
-      isStickyNote: 0
-    - model: {fileID: 8926484042661616591}
-      id: 4
-      isStickyNote: 0
     - model: {fileID: 8926484042661616627}
       id: 0
+      isStickyNote: 0
+    - model: {fileID: 8926484042661616301}
+      id: 9
+      isStickyNote: 0
+    - model: {fileID: 8926484042661616299}
+      id: 5
       isStickyNote: 0
   - title: Collission
     position:
@@ -329,7 +329,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: -4282
     y: 9956
-    width: 3403
+    width: 3404
     height: 7459
 --- !u!114 &114350483966674976
 MonoBehaviour:
@@ -388,8 +388,6 @@ MonoBehaviour:
   - {fileID: 8926484042661616534}
   - {fileID: 8926484042661616552}
   - {fileID: 8926484042661616554}
-  - {fileID: 8926484042661616589}
-  - {fileID: 8926484042661616591}
   - {fileID: 8926484042661616603}
   - {fileID: 8926484042661616609}
   - {fileID: 8926484042661616615}
@@ -427,38 +425,6 @@ MonoBehaviour:
     descendantCount: 0
   - name: Duration
     path: Duration
-    tooltip: 
-    space: -1
-    spaceable: 0
-    sheetType: m_Float
-    realType: Single
-    defaultValue:
-      m_Type:
-        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-          PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 2
-    min: -Infinity
-    max: Infinity
-    enumValues: []
-    descendantCount: 0
-  - name: Height 1
-    path: Height 1
-    tooltip: 
-    space: -1
-    spaceable: 0
-    sheetType: m_Float
-    realType: Single
-    defaultValue:
-      m_Type:
-        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-          PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 1
-    min: -Infinity
-    max: Infinity
-    enumValues: []
-    descendantCount: 0
-  - name: Duration 1
-    path: Duration 1
     tooltip: 
     space: -1
     spaceable: 0
@@ -10996,6 +10962,41 @@ MonoBehaviour:
     position: {x: -1467.5, y: 13854.5}
     expandedSlots: []
     expanded: 0
+  - m_Id: 5
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661616300}
+      inputSlot: {fileID: 8926484042661616578}
+    position: {x: -1531.5, y: 11347}
+    expandedSlots: []
+    expanded: 0
+  - m_Id: 6
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661616300}
+      inputSlot: {fileID: 8926484042661616517}
+    position: {x: -2240, y: 11337}
+    expandedSlots: []
+    expanded: 0
+  - m_Id: 7
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661616300}
+      inputSlot: {fileID: 8926484042661616456}
+    position: {x: -2942.3076, y: 11308.535}
+    expandedSlots: []
+    expanded: 0
+  - m_Id: 8
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661616300}
+      inputSlot: {fileID: 8926484042661616395}
+    position: {x: -3561.5, y: 11414}
+    expandedSlots: []
+    expanded: 0
+  - m_Id: 9
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661616300}
+      inputSlot: {fileID: 8926484042661616342}
+    position: {x: -4242.9004, y: 11354.076}
+    expandedSlots: []
+    expanded: 0
 --- !u!114 &8926484042661616300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11035,6 +11036,11 @@ MonoBehaviour:
   - {fileID: 8926484042661616152}
   - {fileID: 8926484042661616220}
   - {fileID: 8926484042661616288}
+  - {fileID: 8926484042661616578}
+  - {fileID: 8926484042661616517}
+  - {fileID: 8926484042661616456}
+  - {fileID: 8926484042661616395}
+  - {fileID: 8926484042661616342}
 --- !u!114 &8926484042661616301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11108,6 +11114,41 @@ MonoBehaviour:
     position: {x: -1518, y: 13041.5}
     expandedSlots: []
     expanded: 0
+  - m_Id: 5
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661616302}
+      inputSlot: {fileID: 8926484042661616325}
+    position: {x: -4220.9116, y: 10517.669}
+    expandedSlots: []
+    expanded: 0
+  - m_Id: 6
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661616302}
+      inputSlot: {fileID: 8926484042661616378}
+    position: {x: -3570.7495, y: 10571.981}
+    expandedSlots: []
+    expanded: 0
+  - m_Id: 7
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661616302}
+      inputSlot: {fileID: 8926484042661616434}
+    position: {x: -2933.6252, y: 10562.876}
+    expandedSlots: []
+    expanded: 0
+  - m_Id: 8
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661616302}
+      inputSlot: {fileID: 8926484042661616489}
+    position: {x: -2267.7397, y: 10550.119}
+    expandedSlots: []
+    expanded: 0
+  - m_Id: 9
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661616302}
+      inputSlot: {fileID: 8926484042661616550}
+    position: {x: -1538.675, y: 10535.851}
+    expandedSlots: []
+    expanded: 0
 --- !u!114 &8926484042661616302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11147,6 +11188,11 @@ MonoBehaviour:
   - {fileID: 8926484042661616123}
   - {fileID: 8926484042661616185}
   - {fileID: 8926484042661616253}
+  - {fileID: 8926484042661616325}
+  - {fileID: 8926484042661616378}
+  - {fileID: 8926484042661616434}
+  - {fileID: 8926484042661616489}
+  - {fileID: 8926484042661616550}
 --- !u!114 &8926484042661616303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11898,7 +11944,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots:
-  - {fileID: 8926484042661616592}
+  - {fileID: 8926484042661616302}
 --- !u!114 &8926484042661616326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12384,7 +12430,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots:
-  - {fileID: 8926484042661616590}
+  - {fileID: 8926484042661616300}
 --- !u!114 &8926484042661616343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13570,7 +13616,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots:
-  - {fileID: 8926484042661616592}
+  - {fileID: 8926484042661616302}
 --- !u!114 &8926484042661616379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14057,7 +14103,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots:
-  - {fileID: 8926484042661616590}
+  - {fileID: 8926484042661616300}
 --- !u!114 &8926484042661616396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15339,7 +15385,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots:
-  - {fileID: 8926484042661616592}
+  - {fileID: 8926484042661616302}
 --- !u!114 &8926484042661616435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16004,7 +16050,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots:
-  - {fileID: 8926484042661616590}
+  - {fileID: 8926484042661616300}
 --- !u!114 &8926484042661616457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17087,7 +17133,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots:
-  - {fileID: 8926484042661616592}
+  - {fileID: 8926484042661616302}
 --- !u!114 &8926484042661616490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17958,7 +18004,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots:
-  - {fileID: 8926484042661616590}
+  - {fileID: 8926484042661616300}
 --- !u!114 &8926484042661616518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19041,7 +19087,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots:
-  - {fileID: 8926484042661616592}
+  - {fileID: 8926484042661616302}
 --- !u!114 &8926484042661616551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19912,7 +19958,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots:
-  - {fileID: 8926484042661616590}
+  - {fileID: 8926484042661616300}
 --- !u!114 &8926484042661616579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20244,230 +20290,6 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
   m_Direction: 0
   m_LinkedSlots: []
---- !u!114 &8926484042661616589
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 330e0fca1717dde4aaa144f48232aa64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UIIgnoredErrors: []
-  m_Parent: {fileID: 114350483966674976}
-  m_Children: []
-  m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
-  m_UISuperCollapsed: 0
-  m_InputSlots: []
-  m_OutputSlots:
-  - {fileID: 8926484042661616590}
-  m_ExposedName: Height 1
-  m_Exposed: 1
-  m_Order: 2
-  m_Category: 
-  m_Min:
-    m_Type:
-      m_SerializableType: 
-    m_SerializableObject: 
-  m_Max:
-    m_Type:
-      m_SerializableType: 
-    m_SerializableObject: 
-  m_IsOutput: 0
-  m_EnumValues: []
-  m_ValueFilter: 0
-  m_Tooltip: 
-  m_Nodes:
-  - m_Id: 0
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661616590}
-      inputSlot: {fileID: 8926484042661616342}
-    position: {x: -4242, y: 11434.5}
-    expandedSlots: []
-    expanded: 0
-  - m_Id: 1
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661616590}
-      inputSlot: {fileID: 8926484042661616395}
-    position: {x: -3538.5, y: 11478}
-    expandedSlots: []
-    expanded: 0
-  - m_Id: 2
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661616590}
-      inputSlot: {fileID: 8926484042661616456}
-    position: {x: -2868, y: 11383.5}
-    expandedSlots: []
-    expanded: 0
-  - m_Id: 3
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661616590}
-      inputSlot: {fileID: 8926484042661616517}
-    position: {x: -2186.5, y: 11425.5}
-    expandedSlots: []
-    expanded: 0
-  - m_Id: 4
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661616590}
-      inputSlot: {fileID: 8926484042661616578}
-    position: {x: -1501, y: 11424}
-    expandedSlots: []
-    expanded: 0
---- !u!114 &8926484042661616590
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UIIgnoredErrors: []
-  m_Parent: {fileID: 0}
-  m_Children: []
-  m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
-  m_UISuperCollapsed: 0
-  m_MasterSlot: {fileID: 8926484042661616590}
-  m_MasterData:
-    m_Owner: {fileID: 8926484042661616589}
-    m_Value:
-      m_Type:
-        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-          PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 1
-    m_Space: -1
-  m_Property:
-    name: o
-    m_serializedType:
-      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-  m_Direction: 1
-  m_LinkedSlots:
-  - {fileID: 8926484042661616342}
-  - {fileID: 8926484042661616395}
-  - {fileID: 8926484042661616456}
-  - {fileID: 8926484042661616517}
-  - {fileID: 8926484042661616578}
---- !u!114 &8926484042661616591
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 330e0fca1717dde4aaa144f48232aa64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UIIgnoredErrors: []
-  m_Parent: {fileID: 114350483966674976}
-  m_Children: []
-  m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
-  m_UISuperCollapsed: 0
-  m_InputSlots: []
-  m_OutputSlots:
-  - {fileID: 8926484042661616592}
-  m_ExposedName: Duration 1
-  m_Exposed: 1
-  m_Order: 3
-  m_Category: 
-  m_Min:
-    m_Type:
-      m_SerializableType: 
-    m_SerializableObject: 
-  m_Max:
-    m_Type:
-      m_SerializableType: 
-    m_SerializableObject: 
-  m_IsOutput: 0
-  m_EnumValues: []
-  m_ValueFilter: 0
-  m_Tooltip: 
-  m_Nodes:
-  - m_Id: 0
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661616592}
-      inputSlot: {fileID: 8926484042661616325}
-    position: {x: -4243, y: 10608}
-    expandedSlots: []
-    expanded: 0
-  - m_Id: 1
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661616592}
-      inputSlot: {fileID: 8926484042661616378}
-    position: {x: -3557, y: 10633}
-    expandedSlots: []
-    expanded: 0
-  - m_Id: 2
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661616592}
-      inputSlot: {fileID: 8926484042661616434}
-    position: {x: -2903, y: 10630.5}
-    expandedSlots: []
-    expanded: 0
-  - m_Id: 3
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661616592}
-      inputSlot: {fileID: 8926484042661616489}
-    position: {x: -2223, y: 10641.5}
-    expandedSlots: []
-    expanded: 0
-  - m_Id: 4
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661616592}
-      inputSlot: {fileID: 8926484042661616550}
-    position: {x: -1551.5, y: 10627}
-    expandedSlots: []
-    expanded: 0
---- !u!114 &8926484042661616592
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UIIgnoredErrors: []
-  m_Parent: {fileID: 0}
-  m_Children: []
-  m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
-  m_UISuperCollapsed: 0
-  m_MasterSlot: {fileID: 8926484042661616592}
-  m_MasterData:
-    m_Owner: {fileID: 8926484042661616591}
-    m_Value:
-      m_Type:
-        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-          PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 2
-    m_Space: -1
-  m_Property:
-    name: o
-    m_serializedType:
-      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-  m_Direction: 1
-  m_LinkedSlots:
-  - {fileID: 8926484042661616325}
-  - {fileID: 8926484042661616378}
-  - {fileID: 8926484042661616434}
-  - {fileID: 8926484042661616489}
-  - {fileID: 8926484042661616550}
 --- !u!114 &8926484042661616603
 MonoBehaviour:
   m_ObjectHideFlags: 0
