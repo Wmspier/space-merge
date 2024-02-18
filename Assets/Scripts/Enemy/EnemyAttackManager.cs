@@ -69,10 +69,6 @@ namespace Hex.Enemy
 		public Action AttackResolved;
 
 		public bool IsAttackPhase => _ui.TurnsBeforeAttack == 0;
-
-		public IReadOnlyDictionary<int3, EnemyAttackInfo> AttacksByCoordByCoord => _attacksByCoord;
-
-		public bool ElapseTurn() => _ui.ElapseTurn();
 		public void ResetTurns() => _ui.ResetTurns();
 
 		public void Initialize(HexGrid grid)

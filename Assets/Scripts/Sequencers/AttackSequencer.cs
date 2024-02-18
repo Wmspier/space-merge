@@ -42,7 +42,7 @@ namespace Hex.Sequencers
 			if (result is AttackResultType.ContestedEnemyWin or AttackResultType.SoloEnemy)
 			{
 				impactEffectInstance = Instantiate(_impactPlayerEffect, transform);
-				impactEffectInstance.transform.position = attackInfo.TargetCell.transform.position;
+				impactEffectInstance.transform.position = attackInfo.TargetCell.SurfaceAnchor.position;
 			}
 			else if (result is AttackResultType.ContestedPlayerWin or AttackResultType.SoloPlayer)
 			{
