@@ -4,6 +4,7 @@ using System.Linq;
 using Hex.Extensions;
 using Hex.Grid;
 using Hex.Grid.Cell;
+using Hex.Sequencers;
 using Hex.UI;
 using Unity.Mathematics;
 using UnityEngine;
@@ -14,10 +15,12 @@ namespace Hex.Enemy
 {
 	public enum AttackResultType
 	{
-		Contested,
-		PlayerHit,
-		PlayerMiss,
-		EnemyHit
+		None,
+		ContestedEnemyWin,
+		ContestedPlayerWin,
+		SoloPlayer,
+		SoloEnemy,
+		MissPlayer
 	}
 
 	public struct EnemyAttackInfo
@@ -49,11 +52,8 @@ namespace Hex.Enemy
 		[Header("VFX")] 
 		[SerializeField] private Transform _vfxAnchor;
 		[SerializeField] private VisualEffect _targetingEffect;
-		[SerializeField] private VisualEffect _beamEffectContested;
-		[SerializeField] private VisualEffect _beamEffectEnemyHit;
-		[SerializeField] private VisualEffect _beamEffectPlayerHit;
-		[SerializeField] private VisualEffect _beamEffectPlayerMiss;
 		[SerializeField] private float _attackTextDisplayDelaySeconds = 2f;
+		[SerializeField] private AttackSequencer _attackSequencer;
 
 		[Space] 
 		[Header("Debug")] 
@@ -206,24 +206,20 @@ namespace Hex.Enemy
 					var cellHoldingUint = cell.HoldingUnit;
 					if (!cell.HoldingEnemyAttack) continue; // Cell does not contain enemy attack
 
-					var attackResult = AttackResultType.Contested;
+					var attackResult = AttackResultType.None;
 					
 					var powerDifference = cell.InfoHolder.ResolveAttack();
 					if (powerDifference > 0)
 					{
 						// Player unit is stronger
 						_enemyHealthBar.ModifyValue(-powerDifference);
-						attackResult = AttackResultType.PlayerHit;
+						attackResult = AttackResultType.ContestedPlayerWin;
 					}
 					else if (powerDifference < 0)
 					{
 						// Enemy Attack is stronger
 						_playerHealthBar.ModifyValue(powerDifference);
-						attackResult = AttackResultType.EnemyHit;
-					}
-					else
-					{
-						attackResult = AttackResultType.Contested;
+						attackResult = cellHoldingUint ? AttackResultType.ContestedEnemyWin : AttackResultType.SoloEnemy;
 					}
 
 					if (!_attacksByCoord.TryGetValue(cell.Coordinates, out var attackInfo))
@@ -232,7 +228,7 @@ namespace Hex.Enemy
 						continue;
 					}
 					
-					resolutionTasks.Add(PlayBeamSequence(attackInfo, attackResult, () =>
+					resolutionTasks.Add(_attackSequencer.PlayBeamSequence(attackInfo, attackResult, () =>
 					{
 						if (cellHoldingUint)
 						{
@@ -298,22 +294,5 @@ namespace Hex.Enemy
 			}
 		}
 
-		private async Task PlayBeamSequence(EnemyAttackInfo attackInfo, AttackResultType result, Action onComplete)
-		{
-			var effectPrefab = result switch
-			{
-				AttackResultType.Contested => _beamEffectContested,
-				AttackResultType.EnemyHit => _beamEffectEnemyHit,
-				AttackResultType.PlayerHit => _beamEffectPlayerHit,
-				AttackResultType.PlayerMiss => _beamEffectPlayerMiss,
-				_ => throw new ArgumentOutOfRangeException(nameof(result), result, null)
-			};
-			
-			var effectInstance = Instantiate(effectPrefab, _vfxAnchor);
-			effectInstance.transform.position = attackInfo.OriginPosition;
-			
-			await Task.Delay((int)effectInstance.GetFloat("Duration") * 1000);
-			Destroy(effectInstance);
-		}
 	}
 }

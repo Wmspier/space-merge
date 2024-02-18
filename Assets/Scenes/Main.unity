@@ -1288,7 +1288,6 @@ MonoBehaviour:
   cellOutlineCanCombine: {r: 0.5254902, g: 1, b: 0.54902506, a: 0}
   cellOutlineCannotCombine: {r: 1, g: 0.5956088, b: 0.23137254, a: 0}
   _attackManager: {fileID: 360976172}
-  _playerUnitManager: {fileID: 1026222877}
   mergePulseIntensity: 0.25
   mergeUpgradePulseIntensity: 0.75
 --- !u!4 &275954090
@@ -1506,6 +1505,7 @@ GameObject:
   m_Component:
   - component: {fileID: 360976173}
   - component: {fileID: 360976172}
+  - component: {fileID: 360976174}
   m_Layer: 0
   m_Name: EnemyManager
   m_TagString: Untagged
@@ -1530,17 +1530,10 @@ MonoBehaviour:
   _playerHealthBar: {fileID: 204190700}
   _shipSpawner: {fileID: 689474847}
   _vfxAnchor: {fileID: 1855581969}
-  _targetingEffect: {fileID: 806958650295839093, guid: 96f4829b621bc41368d1b85477b29835,
-    type: 3}
-  _beamEffectContested: {fileID: 3711066673474972241, guid: 4b22b1c0f7c504e7d96dd7f7dc806f28,
-    type: 3}
-  _beamEffectEnemyHit: {fileID: 3711066673474972241, guid: 4b22b1c0f7c504e7d96dd7f7dc806f28,
-    type: 3}
-  _beamEffectPlayerHit: {fileID: 3711066673474972241, guid: 4b22b1c0f7c504e7d96dd7f7dc806f28,
-    type: 3}
-  _beamEffectPlayerMiss: {fileID: 3711066673474972241, guid: 4b22b1c0f7c504e7d96dd7f7dc806f28,
+  _targetingEffect: {fileID: 1619537581932772594, guid: 485f31929cf084c5890e52e10454a2de,
     type: 3}
   _attackTextDisplayDelaySeconds: 2.98
+  _attackSequencer: {fileID: 360976174}
   _debugAttacks: []
 --- !u!4 &360976173
 Transform:
@@ -1561,6 +1554,33 @@ Transform:
   - {fileID: 1855581969}
   m_Father: {fileID: 217056755}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &360976174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360976171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e241aff0194b441a95d59ac8ccc90781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _vfxAnchor: {fileID: 1855581969}
+  _attackContestedEnemyWinEffect: {fileID: 5866574138885251375, guid: 8b5f4da2020224383bc6bea8a38074a1,
+    type: 3}
+  _attackContestedPlayerWinEffect: {fileID: 331344821501851106, guid: 2de75677dfd31404b845f6e52979ca64,
+    type: 3}
+  _attackSoloEnemyEffect: {fileID: 8977474571095527810, guid: 2f224760e437f4297a22a77260f55ed2,
+    type: 3}
+  _attackSoloPlayerEffect: {fileID: 2571956204640829129, guid: d7f71f361d78a42048bc6a1584b349d5,
+    type: 3}
+  _attackMissPlayerEffect: {fileID: 2978809657948785366, guid: 73e9520b72f9a4eb1b513cd9b15ed33c,
+    type: 3}
+  _impactEnemyEffect: {fileID: 5813233495155966100, guid: 84c8204cf6c314fc4b302cb617fa7218,
+    type: 3}
+  _impactPlayerEffect: {fileID: 8739684128680943573, guid: f82d411839f40403e825a8650c618fbf,
+    type: 3}
 --- !u!1 &370491496
 GameObject:
   m_ObjectHideFlags: 0

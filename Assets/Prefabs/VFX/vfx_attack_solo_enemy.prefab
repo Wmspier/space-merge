@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &19547274424001137
+--- !u!1 &5333226205448642505
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,40 +8,40 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6335946804273597955}
-  - component: {fileID: 3711066673474972241}
-  - component: {fileID: 279256967108216594}
+  - component: {fileID: 2975641499777345644}
+  - component: {fileID: 8977474571095527810}
+  - component: {fileID: 3724232340751228740}
   m_Layer: 0
-  m_Name: vfx_Beam_Fire_HA_H_01
+  m_Name: vfx_attack_solo_enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6335946804273597955
+--- !u!4 &2975641499777345644
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 19547274424001137}
+  m_GameObject: {fileID: 5333226205448642505}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 12.0102, z: -3.4635}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!2083052967 &3711066673474972241
+--- !u!2083052967 &8977474571095527810
 VisualEffect:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 19547274424001137}
+  m_GameObject: {fileID: 5333226205448642505}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: 660305dd9535b46628bb69aef9dc2387, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: 5723dd1cc8ab3473cb4b3cf8cfa5f259, type: 3}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
@@ -71,14 +71,14 @@ VisualEffect:
       m_Array: []
     m_Bool:
       m_Array: []
---- !u!73398921 &279256967108216594
+--- !u!73398921 &3724232340751228740
 VFXRenderer:
   serializedVersion: 1
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 19547274424001137}
+  m_GameObject: {fileID: 5333226205448642505}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 0
@@ -89,6 +89,8 @@ VFXRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_StaticBatchInfo:

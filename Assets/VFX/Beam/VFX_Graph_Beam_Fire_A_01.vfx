@@ -120,10 +120,10 @@ MonoBehaviour:
   - title: Voronoi 2
     position:
       serializedVersion: 2
-      x: 3493
+      x: 3443
       y: -330
-      width: 614
-      height: 1840
+      width: 664
+      height: 1916
     contents:
     - model: {fileID: 8926484042661614828}
       id: 0
@@ -7540,7 +7540,7 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children:
   - {fileID: 8926484042661614849}
-  m_UIPosition: {x: 3650, y: 100}
+  m_UIPosition: {x: 3648, y: 102}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:
@@ -10596,7 +10596,7 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 8926484042661614964}
       inputSlot: {fileID: 8926484042661614850}
-    position: {x: 3467.8635, y: 324.94775}
+    position: {x: 3468, y: 325}
     expandedSlots: []
     expanded: 0
 --- !u!114 &8926484042661614964
