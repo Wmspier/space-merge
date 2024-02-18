@@ -162,10 +162,10 @@ MonoBehaviour:
   categories: []
   uiBounds:
     serializedVersion: 2
-    x: 752
-    y: -331
-    width: 3355
-    height: 2026
+    x: 0
+    y: -272
+    width: 4082
+    height: 1943
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -11078,7 +11078,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615008}
   m_ExposedName: Color_A_Back
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 3
   m_Category: 
   m_Min:
     m_Type:
@@ -11294,7 +11294,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615014}
   m_ExposedName: Color_A_Fresnel
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 4
   m_Category: 
   m_Min:
     m_Type:
@@ -11510,7 +11510,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615020}
   m_ExposedName: Color_A_Voronoi
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 5
   m_Category: 
   m_Min:
     m_Type:
@@ -11726,7 +11726,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615026}
   m_ExposedName: Color_A_Voronoi2
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 6
   m_Category: 
   m_Min:
     m_Type:
