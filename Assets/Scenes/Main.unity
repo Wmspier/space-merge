@@ -1671,7 +1671,16 @@ MonoBehaviour:
     type: 3}
   _attackTextDisplayDelaySeconds: 2.98
   _attackSequencer: {fileID: 360976174}
-  _debugAttacks: []
+  _debugAttacks:
+  - x: 1
+    y: 5
+    z: 3
+  - x: 1
+    y: 4
+    z: 4
+  - x: 1
+    y: 3
+    z: 5
 --- !u!4 &360976173
 Transform:
   m_ObjectHideFlags: 0
@@ -1704,9 +1713,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _vfxAnchor: {fileID: 1855581969}
-  _attackContestedEnemyWinEffect: {fileID: 5866574138885251375, guid: 8b5f4da2020224383bc6bea8a38074a1,
+  _attackContestedEnemyWinEffect: {fileID: 331344821501851106, guid: 2de75677dfd31404b845f6e52979ca64,
     type: 3}
-  _attackContestedPlayerWinEffect: {fileID: 331344821501851106, guid: 2de75677dfd31404b845f6e52979ca64,
+  _attackContestedPlayerWinEffect: {fileID: 5866574138885251375, guid: 8b5f4da2020224383bc6bea8a38074a1,
     type: 3}
   _attackSoloEnemyEffect: {fileID: 8977474571095527810, guid: 2f224760e437f4297a22a77260f55ed2,
     type: 3}
