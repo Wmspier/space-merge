@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Hex.Enemy;
+using Hex.Grid.Cell;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -20,7 +21,7 @@ namespace Hex.Sequencers
 		[SerializeField] private ParticleSystem _impactPlayerEffect;
 		
 		
-		public async Task PlayBeamSequence(EnemyAttackInfo attackInfo, AttackResultType result, Action onComplete)
+		public async Task PlayBeamSequence(EnemyAttackInfo attackInfo, AttackResultType result, Action<EnemyAttackInfo> onComplete)
 		{
 			var effectPrefab = result switch
 			{
@@ -56,7 +57,7 @@ namespace Hex.Sequencers
 				Destroy(impactEffectInstance.gameObject);
 			}
 
-			onComplete?.Invoke();
+			onComplete?.Invoke(attackInfo);
 		}
 	}
 }

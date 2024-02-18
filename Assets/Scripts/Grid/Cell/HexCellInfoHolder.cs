@@ -87,7 +87,9 @@ namespace Hex.Grid.Cell
 			_ui.SetRarityBaseZero(PlayerRarity);
 		}
 
-		public int ResolveAttack()
+		public int PowerDifference => PlayerPower - EnemyPower;
+		
+		public void ResolveAttack()
 		{
 			var powerDifference = PlayerPower - EnemyPower;
 			
@@ -101,8 +103,6 @@ namespace Hex.Grid.Cell
 				PlayerPower -= EnemyPower;
 				_ui.SetPlayerPower(PlayerPower);
 			}
-			
-			return powerDifference;
 		}
 
 		public void ClearUnit()
