@@ -193,8 +193,8 @@
     },
     "m_FragmentContext": {
         "m_Position": {
-            "x": -352.0000305175781,
-            "y": 171.99998474121095
+            "x": -351.9999694824219,
+            "y": 164.00001525878907
         },
         "m_Blocks": [
             {
@@ -524,6 +524,8 @@
     "m_AlphaClip": true,
     "m_CastShadows": true,
     "m_ReceiveShadows": true,
+    "m_AdditionalMotionVectorMode": 0,
+    "m_AlembicMotionVectors": false,
     "m_SupportsLODCrossFade": false,
     "m_CustomEditorGUI": "",
     "m_SupportVFX": true
