@@ -439,7 +439,7 @@ MonoBehaviour:
   _previewFillBar: {fileID: 778171911188525291}
   _previewText: {fileID: 2035132290972174605}
   _text: {fileID: 2543745923658149910}
-  _secondaryFillTimeSeconds: 10
+  _secondaryFillTimeSeconds: 2
   _currentHealthTextSize: 100
   _totalHealthTextSize: 75
   _showTotalHealth: 1
