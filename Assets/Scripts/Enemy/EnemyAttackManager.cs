@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Hex.Data;
@@ -70,8 +71,6 @@ namespace Hex.Enemy
 		//private readonly Dictionary<int3, EnemyAttackInfo> _attacksByCoord = new();
 		private readonly Dictionary<int3, EnemyShip> _shipsByCoord = new();
 
-		private int _attackPhaseCount;
-		private int _staggeredPhaseCount;
 		private HexGrid _grid;
 		private BattleData _battleData;
 
@@ -84,7 +83,6 @@ namespace Hex.Enemy
 		{
 			_grid = grid;
 			_ui.ResolveAttackPressed = ResolveAttacks;
-			_attackPhaseCount = _staggeredPhaseCount = 0;
 			
 			_playerHealthBar.SetHealthToMax(50);;
 			_enemyHealthBar.SetHealthToMax(100);
@@ -92,7 +90,7 @@ namespace Hex.Enemy
 			_battleData = battleData;
 			foreach (var enemy in _battleData.Enemies)
 			{
-				SpawnShip(enemy);
+				StartCoroutine(SpawnShip(enemy));
 			}
 		}
 
@@ -105,25 +103,28 @@ namespace Hex.Enemy
 			_shipsByCoord.Clear();
 		}
 
-		public void SpawnShip(BattleData.BattleEnemy enemyData)
+		private IEnumerator SpawnShip(BattleData.BattleEnemy enemyData)
 		{
 			if (_shipsByCoord.ContainsKey(enemyData.StartingPosition))
 			{
 				Debug.LogError($"Trying to spawn ship at occupied space: {enemyData.StartingPosition}");
-				return;
+				yield break;
 			}
 			
 			var targetCell = _grid.Registry[enemyData.StartingPosition];
 			var newShipInstance = _shipSpawner.SpawnSmallShip(targetCell.Coordinates, out var originPosition);
 			var newShip = new EnemyShip(newShipInstance, targetCell, originPosition, enemyData, _battleData.AttackPattern);
 			_shipsByCoord[enemyData.StartingPosition] = newShip;
+
+			yield return newShip.PlayEnter();
+			yield return new WaitForSeconds(.5f);
 			
 			targetCell.InfoHolder.HoldEnemyAttack(newShip.CurrentAttackDamage, false);
 
 			PlayTargetSequence(originPosition, targetCell, UpdateDamagePreview);
 		}
 		
-		public void MoveShips()
+		private void MoveShips()
 		{
 			var allShips = _shipsByCoord.Values.ToList();
 			foreach (var ship in allShips)

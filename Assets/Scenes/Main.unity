@@ -407,6 +407,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2635124790645211741, guid: c41a9f35a89754c2a96f9096eccf748b,
         type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2635124790645211741, guid: c41a9f35a89754c2a96f9096eccf748b,
+        type: 3}
       propertyPath: m_PixelsPerUnitMultiplier
       value: 0.75
       objectReference: {fileID: 0}
@@ -493,12 +498,12 @@ PrefabInstance:
     - target: {fileID: 7637794164846053565, guid: c41a9f35a89754c2a96f9096eccf748b,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -150
+      value: -60
       objectReference: {fileID: 0}
     - target: {fileID: 7637794164846053565, guid: c41a9f35a89754c2a96f9096eccf748b,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -100
+      value: -60
       objectReference: {fileID: 0}
     - target: {fileID: 7637794164846053565, guid: c41a9f35a89754c2a96f9096eccf748b,
         type: 3}
@@ -2717,9 +2722,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _planePositions: {fileID: 696568559}
   _shipAnchor: {fileID: 279352935}
-  _enemyShipPrefabSmall: {fileID: 8932813787173009617, guid: f920a635959994d38972ba845d3b03b6,
+  _enemyShipPrefabSmall: {fileID: 6018792156681703549, guid: 1dc01a97fac6347ea83a881455673f93,
     type: 3}
-  _enemyShipPrefabLarge: {fileID: 8932813787173009617, guid: 5c6b06529959944658b8178fad7d331c,
+  _enemyShipPrefabLarge: {fileID: 2604474437368534148, guid: 2345f7050fc9a4f4da3986a1ecb19c3d,
     type: 3}
 --- !u!4 &689474848
 Transform:

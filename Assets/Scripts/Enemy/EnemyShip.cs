@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using Hex.Data;
@@ -31,6 +32,20 @@ namespace Hex.Enemy
 			CurrentAttackDamage = _attackPattern[0];
 		}
 
+		public IEnumerator PlayEnter()
+		{
+			var enterOrigin = CurrentWorldSpacePosition;
+			enterOrigin.y += 50f;
+
+			ShipInstance.transform.position = enterOrigin;
+			var tween = ShipInstance.transform.DOMove(CurrentWorldSpacePosition, 1.5f).SetEase(Ease.InOutCubic);
+
+			while (tween.IsActive() && tween.IsPlaying())
+			{
+				yield return null;
+			}
+		}
+
 		public void ElapseTurn()
 		{
 			_lifeTimeCount++;
@@ -46,7 +61,7 @@ namespace Hex.Enemy
 			
 			CurrentWorldSpacePosition = newWorldSpacePos;
 			
-			ShipInstance.transform.DOMove(CurrentWorldSpacePosition, 1f).SetEase(Ease.InExpo).OnComplete(() =>
+			ShipInstance.transform.DOMove(CurrentWorldSpacePosition, 1f).SetEase(Ease.InOutCubic).OnComplete(() =>
 			{
 				TargetingCell.InfoHolder.HoldEnemyAttack(CurrentAttackDamage);
 			});
