@@ -10,7 +10,7 @@ namespace Hex.Enemy
 {
 	public class EnemyShip
 	{
-		[field: SerializeField] public GameObject ShipInstance { get; private set; }
+		[field: SerializeField] public EnemyShipInstance ShipInstance { get; private set; }
 		[field: SerializeField] public int CurrentHealth { get; private set; }
 		[field: SerializeField] public int CurrentAttackDamage { get; private set; }
 		[field: SerializeField] public int3 CurrentPosition { get; private set; }
@@ -20,7 +20,9 @@ namespace Hex.Enemy
 		private readonly List<int> _attackPattern;
 		private int _lifeTimeCount;
 
-		public EnemyShip(GameObject shipInstance, HexCell targetingCell, Vector3 startingWorldSpacePos, BattleData.BattleEnemy data, List<int> attackPattern)
+		public void DealDamage(int amount) => CurrentHealth -= amount;
+
+		public EnemyShip(EnemyShipInstance shipInstance, HexCell targetingCell, Vector3 startingWorldSpacePos, BattleData.BattleEnemy data, List<int> attackPattern)
 		{
 			ShipInstance = shipInstance;
 			TargetingCell = targetingCell;
@@ -45,7 +47,7 @@ namespace Hex.Enemy
 				yield return null;
 			}
 		}
-
+		
 		public void ElapseTurn()
 		{
 			_lifeTimeCount++;

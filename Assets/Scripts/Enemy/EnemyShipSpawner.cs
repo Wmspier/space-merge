@@ -9,10 +9,10 @@ namespace Hex.Enemy
 		[SerializeField] private EnemyPlanePositions _planePositions;
 		[SerializeField] private Transform _shipAnchor;
 		
-		[SerializeField] private GameObject _enemyShipPrefabSmall;
-		[SerializeField] private GameObject _enemyShipPrefabLarge;
+		[SerializeField] private EnemyShipInstance _enemyShipPrefabSmall;
+		[SerializeField] private EnemyShipInstance _enemyShipPrefabLarge;
 		
-		public GameObject SpawnSmallShip(int3 coord, out Vector3 originPosition)
+		public EnemyShipInstance SpawnSmallShip(int3 coord, out Vector3 originPosition)
 		{
 			if (!_planePositions.Positions.TryGetValue(coord, out var position))
 			{
@@ -29,7 +29,7 @@ namespace Hex.Enemy
 			return shipInstance;
 		}
 		
-		public GameObject SpawnBigShip(int3 coord)
+		public EnemyShipInstance SpawnBigShip(int3 coord)
 		{
 			if (!_planePositions.Positions.TryGetValue(coord, out var position))
 			{

@@ -15,6 +15,7 @@ namespace Hex.UI
 		[SerializeField] private float _secondaryFillTimeSeconds = 1f;
 		[SerializeField][Range(1,100)] private int _currentHealthTextSize;
 		[SerializeField][Range(1,100)] private int _totalHealthTextSize;
+		[SerializeField] private bool _showTotalHealth = true;
 
 		private int _totalHealth = 100;
 		private int _currentHealth = 100;
@@ -63,7 +64,14 @@ namespace Hex.UI
 			var currentHealth = currentHealthOverride ?? _currentHealth.ToString();
 			
 			_textBuilder.Clear();
-			_textBuilder.Append($"<size={_currentHealthTextSize}%>{currentHealth}</size><size={_totalHealthTextSize}%>/{_totalHealth}</size>");
+			if (_showTotalHealth)
+			{
+				_textBuilder.Append($"<size={_currentHealthTextSize}%>{currentHealth}</size><size={_totalHealthTextSize}%>/{_totalHealth}</size>");
+			}
+			else
+			{
+				_textBuilder.Append($"<size={_currentHealthTextSize}%>{currentHealth}</size>");
+			}
 			_text.text = _textBuilder.ToString();
 		}
 		

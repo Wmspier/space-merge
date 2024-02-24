@@ -28,17 +28,9 @@ namespace Hex.Enemy
 	public struct EnemyAttackInfo
 	{
 		public int Damage;
-		public GameObject Ship;
+		public EnemyShipInstance Ship;
 		public HexCell TargetCell;
 		public Vector3 OriginPosition;
-
-		public EnemyAttackInfo(int damage, GameObject ship, HexCell target, Vector3 originPos)
-		{
-			Damage = damage;
-			Ship = ship;
-			TargetCell = target;
-			OriginPosition = originPos;
-		}
 
 		public EnemyAttackInfo(EnemyShip ship)
 		{
@@ -52,9 +44,9 @@ namespace Hex.Enemy
 	public class EnemyAttackManager : MonoBehaviour
 	{
 		[SerializeField] private EnemyAttackUI _ui;
-		[SerializeField] private HealthBar _enemyHealthBar;
 		[SerializeField] private HealthBar _playerHealthBar;
 		[SerializeField] private EnemyShipSpawner _shipSpawner;
+		[SerializeField] private EnemyHealthBarManager _enemyHealthBarManager;
 
 		[Space] 
 		[Header("VFX")] 
@@ -63,11 +55,6 @@ namespace Hex.Enemy
 		[SerializeField] private float _attackTextDisplayDelaySeconds = 2f;
 		[SerializeField] private AttackSequencer _attackSequencer;
 
-		[Space] 
-		[Header("Debug")] 
-		[SerializeField]
-		private List<int3> _debugAttacks;
-		
 		//private readonly Dictionary<int3, EnemyAttackInfo> _attacksByCoord = new();
 		private readonly Dictionary<int3, EnemyShip> _shipsByCoord = new();
 
@@ -85,7 +72,6 @@ namespace Hex.Enemy
 			_ui.ResolveAttackPressed = ResolveAttacks;
 			
 			_playerHealthBar.SetHealthToMax(50);;
-			_enemyHealthBar.SetHealthToMax(100);
 
 			_battleData = battleData;
 			foreach (var enemy in _battleData.Enemies)
@@ -98,9 +84,11 @@ namespace Hex.Enemy
 		{
 			foreach (var (_, ship) in _shipsByCoord)
 			{
-				Destroy(ship.ShipInstance);
+				Destroy(ship.ShipInstance.gameObject);
 			}
 			_shipsByCoord.Clear();
+			
+			_enemyHealthBarManager.Dispose();
 		}
 
 		private IEnumerator SpawnShip(BattleData.BattleEnemy enemyData)
@@ -115,6 +103,8 @@ namespace Hex.Enemy
 			var newShipInstance = _shipSpawner.SpawnSmallShip(targetCell.Coordinates, out var originPosition);
 			var newShip = new EnemyShip(newShipInstance, targetCell, originPosition, enemyData, _battleData.AttackPattern);
 			_shipsByCoord[enemyData.StartingPosition] = newShip;
+			
+			_enemyHealthBarManager.SpawnEnemyHealthBar(newShip);
 
 			yield return newShip.PlayEnter();
 			yield return new WaitForSeconds(.5f);
@@ -122,6 +112,14 @@ namespace Hex.Enemy
 			targetCell.InfoHolder.HoldEnemyAttack(newShip.CurrentAttackDamage, false);
 
 			PlayTargetSequence(originPosition, targetCell, UpdateDamagePreview);
+		}
+
+		private void DestroyShip(EnemyShip ship)
+		{
+			Destroy(ship.ShipInstance.gameObject);
+			_shipsByCoord.Remove(ship.CurrentPosition);
+			_enemyHealthBarManager.DestroyEnemy(ship);
+			ship.TargetingCell.InfoHolder.ClearEnemyAttack();
 		}
 		
 		private void MoveShips()
@@ -152,111 +150,13 @@ namespace Hex.Enemy
 				// Elapse turn
 				ship.ElapseTurn();
 			}
-			
-			/*
-			var isEvenAttack = _attackPhaseCount % 2 == 0;
-			var numToSpawn = isEvenAttack ? 2 : 3;
-			var attackList = new List<int>().FillWithDefault(numToSpawn);
-			
-			// Always assign at least two attacks using the current attack index
-			for (var i = 0; i < 2; i++)
-			{
-				attackList[i] = AttackPowerList[Mathf.Min(AttackPowerList.Length - 1, Mathf.Max(0, isEvenAttack ? _staggeredPhaseCount : _staggeredPhaseCount-1))];
-			}
-			
-			// If we're on a turn on which 3 attacks spawn, spawn one at a higher index
-			if (!isEvenAttack)
-			{
-				attackList[2] = AttackPowerList[Mathf.Min(AttackPowerList.Length - 1, _staggeredPhaseCount)];
-			}
-
-			attackList.Shuffle();
-
-			var cellsByXPos = _grid.GetCellsByXPosRounded()
-				.Where(kvp => !kvp.Value.Any(c => c.HoldingEnemyAttack))
-				.Where(kvp => kvp.Value.Any(c => c.Coordinates.x == 1))
-				.ToList()
-				.Shuffle();
-
-			if (_debugAttacks.Count > 0)
-			{
-				foreach (var attack in _debugAttacks)
-				{
-					var cell = _grid.Registry[attack];
-					
-					// Assign attack 
-					cell.InfoHolder.HoldEnemyAttack(999, false);
- 
-					// Create and store attack info
-					var newShip = _shipSpawner.SpawnSmallShip(cell.Coordinates, out var originPosition);
-					var attackInfo = new EnemyAttackInfo(999, newShip, cell, originPosition);
-					_attacksByCoord[cell.Coordinates] = attackInfo;
-				
-					// Start vfx sequence
-					PlayTargetSequence(originPosition, cell, UpdateDamagePreview);
-				}
-			}
-			else
-			{
-				while (attackList.Count > 0)
-				{
-					HexCell randomCell;
-					if (cellsByXPos.Count == 0)
-					{
-						randomCell = _grid.GetRandomCell();
-					}
-					else
-					{
-						// Pick the first column (list should be shuffled)
-						var cellsInRow = cellsByXPos[0].Value;
-						// Pick a random cell in this row
-						randomCell = cellsInRow.FirstOrDefault(c => c.Coordinates.x == 1); //cellsInRow.Shuffle().First();
-
-						if (randomCell == null)
-						{
-							Debug.LogWarning("Issue when assigning attack: Random Cell is null");
-							return;
-						}
-
-						if (_attacksByCoord.ContainsKey(randomCell.Coordinates))
-						{
-							Debug.LogWarning("Issue when assigning attack: Attack is already on cell");
-							return;
-						}
-					
-						// Remove row
-						cellsByXPos.RemoveAt(0);
-					}
-
-					var attackValue = attackList[0];
-				
-					// Assign attack 
-					randomCell.InfoHolder.HoldEnemyAttack(attackValue, false);
-
-					// Create and store attack info
-					var newShip = _shipSpawner.SpawnSmallShip(randomCell.Coordinates, out var originPosition);
-					var attackInfo = new EnemyAttackInfo(attackValue, newShip, randomCell, originPosition);
-					_attacksByCoord[randomCell.Coordinates] = attackInfo;
-				
-					// Start vfx sequence
-					PlayTargetSequence(originPosition, randomCell, UpdateDamagePreview);
-				
-					// Remove attack
-					attackList.RemoveAt(0);
-				}
-
-			}
-			_attackPhaseCount++;
-			if (isEvenAttack) _staggeredPhaseCount++;
-			
-			*/
 		}
 
 		private async void ResolveAttacks()
 		{
 			var resolutionTasks = new List<Task>();
-			var cumulativeEnemyDamageTaken = 0;
 			var cumulativePlayerDamageTaken = 0;
+			var enemyDamageTaken = new Dictionary<EnemyShip, int>();
 			
 			var cellsByRow = _grid.GetCellsByXPosRounded();
 			foreach (var row in cellsByRow)
@@ -265,6 +165,12 @@ namespace Hex.Enemy
 				{
 					var cellHoldingUint = cell.HoldingUnit;
 					if (!cell.HoldingEnemyAttack) continue; // Cell does not contain enemy attack
+					
+					if (!_shipsByCoord.TryGetValue(cell.Coordinates, out var enemyShip))
+					{
+						Debug.LogError("Ship not found when resolving attack");
+						continue;
+					}
 
 					var attackResult = AttackResultType.None;
 
@@ -272,7 +178,7 @@ namespace Hex.Enemy
 					if (powerDifference > 0)
 					{
 						// Player unit is stronger
-						cumulativeEnemyDamageTaken += -powerDifference;
+						enemyDamageTaken[enemyShip] = powerDifference;
 						attackResult = AttackResultType.ContestedPlayerWin;
 					}
 					else if (powerDifference < 0)
@@ -280,12 +186,6 @@ namespace Hex.Enemy
 						// Enemy Attack is stronger
 						cumulativePlayerDamageTaken += powerDifference;
 						attackResult = cellHoldingUint ? AttackResultType.ContestedEnemyWin : AttackResultType.SoloEnemy;
-					}
-
-					if (!_shipsByCoord.TryGetValue(cell.Coordinates, out var enemyShip))
-					{
-						Debug.LogError("Ship not found when resolving attack");
-						continue;
 					}
 
 					var attackInfo = new EnemyAttackInfo(enemyShip);
@@ -296,44 +196,26 @@ namespace Hex.Enemy
 			await Task.WhenAll(resolutionTasks);
 			
 			_playerHealthBar.ModifyValue(cumulativePlayerDamageTaken);
-			_enemyHealthBar.ModifyValue(cumulativeEnemyDamageTaken);
+			_playerHealthBar.HidePreview();
+			foreach (var (ship, damage) in enemyDamageTaken)
+			{
+				var healthBar = _enemyHealthBarManager.HealthBars[ship];
+				healthBar.ModifyValue(-damage);
+				healthBar.HidePreview();
+				ship.DealDamage(damage);
+
+				if (ship.CurrentHealth <= 0) DestroyShip(ship);
+			}
 			
 			_ui.ResetTurns();
 			MoveShips();
 
 			AttackResolved?.Invoke();
-
-			/*
-			void ClearAttackInfo(EnemyAttackInfo attackInfo)
-			{
-				var cell = attackInfo.TargetCell;
-				cell.InfoHolder.ResolveAttack();
-				if (cell.HoldingUnit)
-				{
-					cell.InfoHolder.ClearEnemyAttack();
-
-					// Remove stored attack info
-					Destroy(attackInfo.Ship);
-					_attacksByCoord.Remove(cell.Coordinates);
-				}
-			}
-			*/
 		}
 
 		public void UpdateDamagePreview()
 		{
-			var totalEnemyDamageTaken = GridUtility.GetTotalEnemyDamageTaken(_grid);
 			var totalPlayerDamageTaken = GridUtility.GetTotalPlayerDamageTaken(_grid);
-
-			// Update enemy total damage preview
-			if (totalEnemyDamageTaken > 0)
-			{
-				_enemyHealthBar.ShowPreview(totalEnemyDamageTaken);
-			}
-			else
-			{
-				_enemyHealthBar.HidePreview();
-			}
 			
 			// Update player total damage preview
 			if (totalPlayerDamageTaken > 0)
@@ -343,6 +225,22 @@ namespace Hex.Enemy
 			else
 			{
 				_playerHealthBar.HidePreview();
+			}
+
+			foreach (var (enemyShip, bar) in _enemyHealthBarManager.HealthBars)
+			{
+				var playerUnitDamage = enemyShip.TargetingCell.InfoHolder.PlayerPower;
+				var enemyDamage = enemyShip.CurrentAttackDamage;
+
+				var difference = playerUnitDamage - enemyDamage;
+				if (difference <= 0)
+				{
+					bar.HidePreview();
+				}
+				else
+				{
+					bar.ShowPreview(difference);
+				}
 			}
 		}
 
