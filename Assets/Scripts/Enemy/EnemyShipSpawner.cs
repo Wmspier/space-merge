@@ -9,11 +9,9 @@ namespace Hex.Enemy
 		[SerializeField] private EnemyPlanePositions _planePositions;
 		[SerializeField] private Transform _shipAnchor;
 		
-		
 		[SerializeField] private GameObject _enemyShipPrefabSmall;
 		[SerializeField] private GameObject _enemyShipPrefabLarge;
 		
-
 		public GameObject SpawnSmallShip(int3 coord, out Vector3 originPosition)
 		{
 			if (!_planePositions.Positions.TryGetValue(coord, out var position))
@@ -44,6 +42,15 @@ namespace Hex.Enemy
 			shipInstance.transform.position = position;
 			
 			return shipInstance;
+		}
+
+		public Vector3 GetPositionForCoord(int3 coord)
+		{
+			if (_planePositions.Positions.TryGetValue(coord, out var position))
+				return position;
+
+			Debug.LogError($"Failed to find position to spawn ship: {coord}");
+			return Vector3.zero;
 		}
 	}
 }

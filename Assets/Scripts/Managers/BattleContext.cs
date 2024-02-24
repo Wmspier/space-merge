@@ -1,4 +1,5 @@
 using System;
+using Hex.Data;
 using Hex.Enemy;
 using Hex.Model;
 using Hex.UI;
@@ -14,6 +15,9 @@ namespace Hex.Managers
 
 		[Header("UI")]
 		[SerializeField] private GameUI _gameUI;
+
+		[Header("Debug")] 
+		[SerializeField] private BattleData _testBattle;
 		
 		public void StartBattle()
 		{
@@ -28,9 +32,8 @@ namespace Hex.Managers
 			_playerUnitManager.Initialize();
             
 			_enemyAttackManager.ResetTurns();
-			_enemyAttackManager.Initialize(_gridInteractionManager.Grid);
+			_enemyAttackManager.Initialize(_gridInteractionManager.Grid, _testBattle);
 			_enemyAttackManager.AttackResolved = OnAttackResolved;
-			_enemyAttackManager.AssignAttacksToGrid();
 			
 			_gameUI.gameObject.SetActive(true);
 		}

@@ -274,7 +274,6 @@ GameObject:
   m_Component:
   - component: {fileID: 74389675}
   - component: {fileID: 74389674}
-  - component: {fileID: 74389673}
   - component: {fileID: 74389672}
   m_Layer: 0
   m_Name: UICamera
@@ -327,14 +326,6 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!81 &74389673
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 74389671}
-  m_Enabled: 1
 --- !u!20 &74389674
 Camera:
   m_ObjectHideFlags: 0
@@ -981,6 +972,7 @@ MonoBehaviour:
   _enemyAttackManager: {fileID: 360976172}
   _playerUnitManager: {fileID: 1026222877}
   _gameUI: {fileID: 1400717077}
+  _testBattle: {fileID: 11400000, guid: 08499999c2c0f4e0783cafc13a748d4c, type: 2}
 --- !u!4 &217056755
 Transform:
   m_ObjectHideFlags: 0
@@ -3662,7 +3654,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1010254556}
   - component: {fileID: 1010254559}
-  - component: {fileID: 1010254558}
   - component: {fileID: 1010254557}
   m_Layer: 0
   m_Name: MainCamera
@@ -3731,14 +3722,6 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!81 &1010254558
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1010254555}
-  m_Enabled: 1
 --- !u!20 &1010254559
 Camera:
   m_ObjectHideFlags: 0

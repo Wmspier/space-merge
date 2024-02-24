@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hex.Data;
 using Hex.Extensions;
 using Hex.Grid;
 using Hex.Grid.Cell;
@@ -37,12 +38,18 @@ namespace Hex.Enemy
 			TargetCell = target;
 			OriginPosition = originPos;
 		}
+
+		public EnemyAttackInfo(EnemyShip ship)
+		{
+			Damage = ship.CurrentAttackDamage;
+			Ship = ship.ShipInstance;
+			TargetCell = ship.TargetingCell;
+			OriginPosition = ship.CurrentWorldSpacePosition;
+		}
 	}
 	
 	public class EnemyAttackManager : MonoBehaviour
 	{
-		private static readonly int[] AttackPowerList = { 3, 5, 8, 12, 17, 23, 30, 38, 47 };
-
 		[SerializeField] private EnemyAttackUI _ui;
 		[SerializeField] private HealthBar _enemyHealthBar;
 		[SerializeField] private HealthBar _playerHealthBar;
@@ -60,18 +67,20 @@ namespace Hex.Enemy
 		[SerializeField]
 		private List<int3> _debugAttacks;
 		
-		private readonly Dictionary<int3, EnemyAttackInfo> _attacksByCoord = new();
+		//private readonly Dictionary<int3, EnemyAttackInfo> _attacksByCoord = new();
+		private readonly Dictionary<int3, EnemyShip> _shipsByCoord = new();
 
 		private int _attackPhaseCount;
 		private int _staggeredPhaseCount;
 		private HexGrid _grid;
+		private BattleData _battleData;
 
 		public Action AttackResolved;
 
 		public bool IsAttackPhase => _ui.TurnsBeforeAttack == 0;
 		public void ResetTurns() => _ui.ResetTurns();
 
-		public void Initialize(HexGrid grid)
+		public void Initialize(HexGrid grid, BattleData battleData)
 		{
 			_grid = grid;
 			_ui.ResolveAttackPressed = ResolveAttacks;
@@ -79,19 +88,71 @@ namespace Hex.Enemy
 			
 			_playerHealthBar.SetHealthToMax(50);;
 			_enemyHealthBar.SetHealthToMax(100);
+
+			_battleData = battleData;
+			foreach (var enemy in _battleData.Enemies)
+			{
+				SpawnShip(enemy);
+			}
 		}
 
 		public void Dispose()
 		{
-			foreach (var (_, info) in _attacksByCoord)
+			foreach (var (_, ship) in _shipsByCoord)
 			{
-				Destroy(info.Ship);
+				Destroy(ship.ShipInstance);
 			}
-			_attacksByCoord.Clear();
+			_shipsByCoord.Clear();
+		}
+
+		public void SpawnShip(BattleData.BattleEnemy enemyData)
+		{
+			if (_shipsByCoord.ContainsKey(enemyData.StartingPosition))
+			{
+				Debug.LogError($"Trying to spawn ship at occupied space: {enemyData.StartingPosition}");
+				return;
+			}
+			
+			var targetCell = _grid.Registry[enemyData.StartingPosition];
+			var newShipInstance = _shipSpawner.SpawnSmallShip(targetCell.Coordinates, out var originPosition);
+			var newShip = new EnemyShip(newShipInstance, targetCell, originPosition, enemyData, _battleData.AttackPattern);
+			_shipsByCoord[enemyData.StartingPosition] = newShip;
+			
+			targetCell.InfoHolder.HoldEnemyAttack(newShip.CurrentAttackDamage, false);
+
+			PlayTargetSequence(originPosition, targetCell, UpdateDamagePreview);
 		}
 		
-		public void AssignAttacksToGrid()
+		public void MoveShips()
 		{
+			var allShips = _shipsByCoord.Values.ToList();
+			foreach (var ship in allShips)
+			{
+				var cellsByXPos = _grid.GetCellsByXPosRounded()
+					.Where(kvp => !kvp.Value.Any(c => _shipsByCoord.Keys.Contains(c.Coordinates)))
+					.Where(kvp => kvp.Value.Any(c => c.Coordinates.x == 1))
+					.ToList()
+					.Shuffle();
+				
+				// Pick the first column (list should be shuffled)
+				var cellsInRow = cellsByXPos[0].Value;
+				// Pick a random cell in this row
+				var randomCell = cellsInRow.Shuffle().First();
+
+				// Change ship position in map
+				var oldCoord = ship.CurrentPosition;
+				var newCoord = randomCell.Coordinates;
+				_shipsByCoord.Remove(oldCoord);
+				_shipsByCoord[newCoord] = ship;
+				
+				// Move ship to new coord
+				ship.MoveTo(randomCell, _shipSpawner.GetPositionForCoord(randomCell.Coordinates));
+				
+				// Elapse turn
+				ship.ElapseTurn();
+			}
+			
+			/*
 			var isEvenAttack = _attackPhaseCount % 2 == 0;
 			var numToSpawn = isEvenAttack ? 2 : 3;
 			var attackList = new List<int>().FillWithDefault(numToSpawn);
@@ -124,14 +185,14 @@ namespace Hex.Enemy
 					
 					// Assign attack 
 					cell.InfoHolder.HoldEnemyAttack(999, false);
-
+ 
 					// Create and store attack info
 					var newShip = _shipSpawner.SpawnSmallShip(cell.Coordinates, out var originPosition);
 					var attackInfo = new EnemyAttackInfo(999, newShip, cell, originPosition);
 					_attacksByCoord[cell.Coordinates] = attackInfo;
 				
 					// Start vfx sequence
-					PlayTargetSequence(attackInfo, UpdateDamagePreview);
+					PlayTargetSequence(originPosition, cell, UpdateDamagePreview);
 				}
 			}
 			else
@@ -177,7 +238,7 @@ namespace Hex.Enemy
 					_attacksByCoord[randomCell.Coordinates] = attackInfo;
 				
 					// Start vfx sequence
-					PlayTargetSequence(attackInfo, UpdateDamagePreview);
+					PlayTargetSequence(originPosition, randomCell, UpdateDamagePreview);
 				
 					// Remove attack
 					attackList.RemoveAt(0);
@@ -186,6 +247,8 @@ namespace Hex.Enemy
 			}
 			_attackPhaseCount++;
 			if (isEvenAttack) _staggeredPhaseCount++;
+			
+			*/
 		}
 
 		private async void ResolveAttacks()
@@ -218,13 +281,14 @@ namespace Hex.Enemy
 						attackResult = cellHoldingUint ? AttackResultType.ContestedEnemyWin : AttackResultType.SoloEnemy;
 					}
 
-					if (!_attacksByCoord.TryGetValue(cell.Coordinates, out var attackInfo))
+					if (!_shipsByCoord.TryGetValue(cell.Coordinates, out var enemyShip))
 					{
-						Debug.LogError("Attack info not found when resolving attack");
+						Debug.LogError("Ship not found when resolving attack");
 						continue;
 					}
-					
-					resolutionTasks.Add(_attackSequencer.PlayBeamSequence(attackInfo, attackResult, ClearAttackInfo));
+
+					var attackInfo = new EnemyAttackInfo(enemyShip);
+					resolutionTasks.Add(_attackSequencer.PlayBeamSequence(attackInfo, attackResult, null));
 				}
 			}
 
@@ -234,10 +298,11 @@ namespace Hex.Enemy
 			_enemyHealthBar.ModifyValue(cumulativeEnemyDamageTaken);
 			
 			_ui.ResetTurns();
-			AssignAttacksToGrid();
+			MoveShips();
 
 			AttackResolved?.Invoke();
 
+			/*
 			void ClearAttackInfo(EnemyAttackInfo attackInfo)
 			{
 				var cell = attackInfo.TargetCell;
@@ -251,6 +316,7 @@ namespace Hex.Enemy
 					_attacksByCoord.Remove(cell.Coordinates);
 				}
 			}
+			*/
 		}
 
 		public void UpdateDamagePreview()
@@ -279,15 +345,15 @@ namespace Hex.Enemy
 			}
 		}
 
-		private async void PlayTargetSequence(EnemyAttackInfo attackInfo, Action completeAction)
+		private async void PlayTargetSequence(Vector3 originPosition, HexCell targetCell, Action completeAction)
 		{
 			var effectInstance = Instantiate(_targetingEffect, _vfxAnchor);
-			effectInstance.transform.position = attackInfo.OriginPosition;
+			effectInstance.transform.position = originPosition;
 			
 			WaitThenDestroyVFX(effectInstance.gameObject, (int)effectInstance.GetFloat("Duration") * 1000);
 			
 			await Task.Delay((int)_attackTextDisplayDelaySeconds * 1000);
-			attackInfo.TargetCell.UI.ToggleAttackCanvas(true);
+			targetCell.UI.ToggleAttackCanvas(true);
 			
 			completeAction?.Invoke();
 
