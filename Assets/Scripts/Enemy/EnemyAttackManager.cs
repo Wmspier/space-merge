@@ -20,6 +20,7 @@ namespace Hex.Enemy
 		None,
 		ContestedEnemyWin,
 		ContestedPlayerWin,
+		ContestedTie,
 		SoloPlayer,
 		SoloEnemy,
 		MissPlayer
@@ -122,9 +123,10 @@ namespace Hex.Enemy
 			ship.TargetingCell.InfoHolder.ClearEnemyAttack();
 		}
 		
-		private void MoveShips()
+		private async Task MoveShips()
 		{
 			var allShips = _shipsByCoord.Values.ToList();
+			var moveTasks = new List<Task>();
 			foreach (var ship in allShips)
 			{
 				var cellsByXPos = _grid.GetCellsByXPosRounded()
@@ -145,11 +147,13 @@ namespace Hex.Enemy
 				_shipsByCoord[newCoord] = ship;
 				
 				// Move ship to new coord
-				ship.MoveTo(randomCell, _shipSpawner.GetPositionForCoord(randomCell.Coordinates));
+				moveTasks.Add(ship.MoveTo(randomCell, _shipSpawner.GetPositionForCoord(randomCell.Coordinates)));
 				
 				// Elapse turn
 				ship.ElapseTurn();
 			}
+
+			await Task.WhenAll(moveTasks);
 		}
 
 		private async void ResolveAttacks()
@@ -157,6 +161,7 @@ namespace Hex.Enemy
 			var resolutionTasks = new List<Task>();
 			var cumulativePlayerDamageTaken = 0;
 			var enemyDamageTaken = new Dictionary<EnemyShip, int>();
+			var cellsToResolve = new List<HexCellInfoHolder>();
 			
 			var cellsByRow = _grid.GetCellsByXPosRounded();
 			foreach (var row in cellsByRow)
@@ -187,6 +192,12 @@ namespace Hex.Enemy
 						cumulativePlayerDamageTaken += powerDifference;
 						attackResult = cellHoldingUint ? AttackResultType.ContestedEnemyWin : AttackResultType.SoloEnemy;
 					}
+					else
+					{
+						attackResult = AttackResultType.ContestedTie;
+					}
+					
+					cellsToResolve.Add(cell.InfoHolder);
 
 					var attackInfo = new EnemyAttackInfo(enemyShip);
 					resolutionTasks.Add(_attackSequencer.PlayBeamSequence(attackInfo, attackResult, null));
@@ -206,9 +217,15 @@ namespace Hex.Enemy
 
 				if (ship.CurrentHealth <= 0) DestroyShip(ship);
 			}
+
+			foreach (var cell in cellsToResolve)
+			{
+				cell.ResolveAttack();
+			}
 			
 			_ui.ResetTurns();
-			MoveShips();
+			await MoveShips();
+			UpdateDamagePreview();
 
 			AttackResolved?.Invoke();
 		}

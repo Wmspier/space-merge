@@ -29,8 +29,14 @@ namespace Hex.Sequencers
 				AttackResultType.SoloEnemy => _attackSoloEnemyEffect,
 				AttackResultType.SoloPlayer => _attackSoloPlayerEffect,
 				AttackResultType.MissPlayer => _attackMissPlayerEffect,
-				_ => throw new ArgumentOutOfRangeException(nameof(result), result, null)
+				_ => null
 			};
+
+			if (effectPrefab == null)
+			{
+				Debug.Log($"Unsupported attack result: {result}");
+				return;
+			}
 			
 			var beamEffectInstance = Instantiate(effectPrefab, _vfxAnchor);
 			beamEffectInstance.transform.position = attackInfo.OriginPosition;

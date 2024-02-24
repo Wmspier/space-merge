@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DG.Tweening;
 using Hex.Data;
 using Hex.Grid.Cell;
@@ -54,7 +56,7 @@ namespace Hex.Enemy
 			CurrentAttackDamage = _attackPattern[Mathf.Min(_attackPattern.Count - 1, _lifeTimeCount)];
 		}
 
-		public void MoveTo(HexCell newTarget, Vector3 newWorldSpacePos)
+		public Task MoveTo(HexCell newTarget, Vector3 newWorldSpacePos)
 		{
 			TargetingCell.InfoHolder.ClearEnemyAttack();
 			TargetingCell = newTarget;
@@ -62,11 +64,12 @@ namespace Hex.Enemy
 			CurrentPosition = newTarget.Coordinates;
 			
 			CurrentWorldSpacePosition = newWorldSpacePos;
-			
-			ShipInstance.transform.DOMove(CurrentWorldSpacePosition, 1f).SetEase(Ease.InOutCubic).OnComplete(() =>
-			{
-				TargetingCell.InfoHolder.HoldEnemyAttack(CurrentAttackDamage);
-			});
+
+			return ShipInstance.transform.DOMove(CurrentWorldSpacePosition, 1f).SetEase(Ease.InOutCubic)
+				.OnComplete(() =>
+				{
+					TargetingCell.InfoHolder.HoldEnemyAttack(CurrentAttackDamage);
+				}).AsyncWaitForCompletion();
 		}
 	}
 }
