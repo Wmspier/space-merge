@@ -16,6 +16,7 @@ namespace Hex.UI
 		[SerializeField][Range(1,100)] private int _currentHealthTextSize;
 		[SerializeField][Range(1,100)] private int _totalHealthTextSize;
 		[SerializeField] private bool _showTotalHealth = true;
+		[SerializeField] private bool _showPreviewFill = true;
 
 		private int _totalHealth = 100;
 		private int _currentHealth = 100;
@@ -44,7 +45,7 @@ namespace Hex.UI
 		
 		public void ShowPreview(int previewAmount)
 		{
-			_previewFillBar.gameObject.SetActive(true);
+			 if (_showPreviewFill) _previewFillBar.gameObject.SetActive(true);
 			_previewText.gameObject.SetActive(true);
 			
 			// Rect transforms don't like anchor Min/Max diffs of smaller than .07f
