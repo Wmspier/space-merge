@@ -17,11 +17,13 @@ namespace Hex.Grid.Cell
 
 		private Vector3 _unitAnchorOrigin;
 
-		public void ToggleInfo(bool visible)
+		public void ToggleUnitInfo(bool visible)
 		{
 			UnitAnchor.gameObject.SetActive(visible);
 			_ui.ToggleUnitInfoCanvas(visible);
 		}
+		
+		public void ToggleEnemyAttack(bool visible) => _ui.ToggleAttackCanvas(visible);
 		
 		private void Awake()
 		{

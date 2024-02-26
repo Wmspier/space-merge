@@ -12,6 +12,7 @@ namespace Hex.Sequencers
 		
 		[SerializeField] private VisualEffect _attackContestedEnemyWinEffect;
 		[SerializeField] private VisualEffect _attackContestedPlayerWinEffect;
+		[SerializeField] private VisualEffect _attackContestedTie;
 		[SerializeField] private VisualEffect _attackSoloEnemyEffect;
 		[SerializeField] private VisualEffect _attackSoloPlayerEffect;
 		[SerializeField] private VisualEffect _attackMissPlayerEffect;
@@ -26,6 +27,7 @@ namespace Hex.Sequencers
 			{
 				AttackResultType.ContestedEnemyWin => _attackContestedEnemyWinEffect,
 				AttackResultType.ContestedPlayerWin => _attackContestedPlayerWinEffect,
+				AttackResultType.ContestedTie => _attackContestedTie,
 				AttackResultType.SoloEnemy => _attackSoloEnemyEffect,
 				AttackResultType.SoloPlayer => _attackSoloPlayerEffect,
 				AttackResultType.MissPlayer => _attackMissPlayerEffect,

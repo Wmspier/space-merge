@@ -1791,6 +1791,12 @@ MonoBehaviour:
   _vfxAnchor: {fileID: 1855581969}
   _targetingEffect: {fileID: 1619537581932772594, guid: 485f31929cf084c5890e52e10454a2de,
     type: 3}
+  _targetingScaleByCellRow:
+  - 1
+  - 0.884
+  - 0.768
+  - 0.655
+  - 0.539
   _attackTextDisplayDelaySeconds: 1.95
   _attackSequencer: {fileID: 360976174}
 --- !u!4 &360976173
@@ -1828,6 +1834,8 @@ MonoBehaviour:
   _attackContestedEnemyWinEffect: {fileID: 331344821501851106, guid: 2de75677dfd31404b845f6e52979ca64,
     type: 3}
   _attackContestedPlayerWinEffect: {fileID: 5866574138885251375, guid: 8b5f4da2020224383bc6bea8a38074a1,
+    type: 3}
+  _attackContestedTie: {fileID: 5866574138885251375, guid: a3deeb371198640a28342f16bb426fa1,
     type: 3}
   _attackSoloEnemyEffect: {fileID: 8977474571095527810, guid: 2f224760e437f4297a22a77260f55ed2,
     type: 3}

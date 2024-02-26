@@ -53,6 +53,7 @@ namespace Hex.Enemy
 		[Header("VFX")] 
 		[SerializeField] private Transform _vfxAnchor;
 		[SerializeField] private VisualEffect _targetingEffect;
+		[SerializeField] private List<float> _targetingScaleByCellRow;
 		[SerializeField] private float _attackTextDisplayDelaySeconds = 2f;
 		[SerializeField] private AttackSequencer _attackSequencer;
 
@@ -112,7 +113,7 @@ namespace Hex.Enemy
 			
 			targetCell.InfoHolder.HoldEnemyAttack(newShip.CurrentAttackDamage, false);
 
-			PlayTargetSequence(originPosition, targetCell, UpdateDamagePreview);
+			PlayTargetSequence(newShip, UpdateDamagePreview);
 		}
 
 		private void DestroyShip(EnemyShip ship)
@@ -121,6 +122,7 @@ namespace Hex.Enemy
 			_shipsByCoord.Remove(ship.CurrentPosition);
 			_enemyHealthBarManager.DestroyEnemy(ship);
 			ship.TargetingCell.InfoHolder.ClearEnemyAttack();
+			ship.Dispose();
 		}
 		
 		private async Task MoveShips()
@@ -146,14 +148,20 @@ namespace Hex.Enemy
 				_shipsByCoord.Remove(oldCoord);
 				_shipsByCoord[newCoord] = ship;
 				
-				// Move ship to new coord
-				moveTasks.Add(ship.MoveTo(randomCell, _shipSpawner.GetPositionForCoord(randomCell.Coordinates)));
-				
 				// Elapse turn
 				ship.ElapseTurn();
+				
+				// Move ship to new coord
+				moveTasks.Add(ship.MoveTo(randomCell, _shipSpawner.GetPositionForCoord(randomCell.Coordinates)));
 			}
 
 			await Task.WhenAll(moveTasks);
+			
+			foreach (var ship in allShips)
+			{
+				if (ship.CurrentAttackDamage == 0) continue;
+				PlayTargetSequence(ship, () => ship.TargetingCell.InfoHolder.ToggleEnemyAttack(true));
+			}
 		}
 
 		private async void ResolveAttacks()
@@ -176,8 +184,11 @@ namespace Hex.Enemy
 						Debug.LogError("Ship not found when resolving attack");
 						continue;
 					}
+					
+					// Clear the targeting visual effect
+					enemyShip.ClearTargetInstance();
 
-					var attackResult = AttackResultType.None;
+					AttackResultType attackResult;
 
 					var powerDifference = cell.InfoHolder.PowerDifference;
 					if (powerDifference > 0)
@@ -199,6 +210,8 @@ namespace Hex.Enemy
 					
 					cellsToResolve.Add(cell.InfoHolder);
 
+					cell.InfoHolder.ToggleEnemyAttack(false);
+					
 					var attackInfo = new EnemyAttackInfo(enemyShip);
 					resolutionTasks.Add(_attackSequencer.PlayBeamSequence(attackInfo, attackResult, null));
 				}
@@ -261,24 +274,21 @@ namespace Hex.Enemy
 			}
 		}
 
-		private async void PlayTargetSequence(Vector3 originPosition, HexCell targetCell, Action completeAction)
+		private async void PlayTargetSequence(EnemyShip ship, Action completeAction)
 		{
+			var scale = _targetingScaleByCellRow[Mathf.Min(_targetingScaleByCellRow.Count - 1, ship.TargetingCell.Coordinates.x-1)];
+			
 			var effectInstance = Instantiate(_targetingEffect, _vfxAnchor);
-			effectInstance.transform.position = originPosition;
+			var effectTransform = effectInstance.transform;
+			effectTransform.position = ship.CurrentWorldSpacePosition;
+			effectTransform.localScale = new Vector3(1, scale, 1);
 			
-			WaitThenDestroyVFX(effectInstance.gameObject, (int)effectInstance.GetFloat("Duration") * 1000);
-			
+			ship.SetTargetInstance(effectInstance);
+
 			await Task.Delay((int)_attackTextDisplayDelaySeconds * 1000);
-			targetCell.UI.ToggleAttackCanvas(true);
+			ship.TargetingCell.UI.ToggleAttackCanvas(true);
 			
 			completeAction?.Invoke();
-
-			async void WaitThenDestroyVFX(GameObject vfxInstance, int delay)
-			{
-				await Task.Delay(delay);
-			
-				Destroy(vfxInstance);
-			}
 		}
 	}
 }

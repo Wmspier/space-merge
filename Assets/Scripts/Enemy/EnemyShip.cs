@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,12 +6,15 @@ using Hex.Data;
 using Hex.Grid.Cell;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.VFX;
+using Object = UnityEngine.Object;
 
 namespace Hex.Enemy
 {
 	public class EnemyShip
 	{
-		[field: SerializeField] public EnemyShipInstance ShipInstance { get; private set; }
+		[field: SerializeField] public EnemyShipInstance ShipInstance { get; }
+		[field: SerializeField] public VisualEffect TargetEffectInstance { get; private set; }
 		[field: SerializeField] public int CurrentHealth { get; private set; }
 		[field: SerializeField] public int CurrentAttackDamage { get; private set; }
 		[field: SerializeField] public int3 CurrentPosition { get; private set; }
@@ -36,6 +38,22 @@ namespace Hex.Enemy
 			CurrentAttackDamage = _attackPattern[0];
 		}
 
+		public void Dispose() => ClearTargetInstance();
+		
+		public void SetTargetInstance(VisualEffect instance)
+		{
+			ClearTargetInstance();
+			TargetEffectInstance = instance;
+		}
+
+		public void ClearTargetInstance()
+		{
+			if (TargetEffectInstance != null)
+			{
+				Object.Destroy(TargetEffectInstance.gameObject);
+			}
+		}
+		
 		public IEnumerator PlayEnter()
 		{
 			var enterOrigin = CurrentWorldSpacePosition;
@@ -60,16 +78,13 @@ namespace Hex.Enemy
 		{
 			TargetingCell.InfoHolder.ClearEnemyAttack();
 			TargetingCell = newTarget;
+			TargetingCell.InfoHolder.HoldEnemyAttack(CurrentAttackDamage, false);
 
 			CurrentPosition = newTarget.Coordinates;
 			
 			CurrentWorldSpacePosition = newWorldSpacePos;
 
-			return ShipInstance.transform.DOMove(CurrentWorldSpacePosition, 1f).SetEase(Ease.InOutCubic)
-				.OnComplete(() =>
-				{
-					TargetingCell.InfoHolder.HoldEnemyAttack(CurrentAttackDamage);
-				}).AsyncWaitForCompletion();
+			return ShipInstance.transform.DOMove(CurrentWorldSpacePosition, 1f).SetEase(Ease.InOutCubic).AsyncWaitForCompletion();
 		}
 	}
 }

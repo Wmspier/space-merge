@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -23,7 +22,6 @@ namespace Hex.Grid.Cell
 		[SerializeField] private TMP_Text playerPowerText;
 		[SerializeField] private TMP_Text resultText;
 		[SerializeField] private UnityEngine.UI.Image resultDirection;
-		[SerializeField] private GameObject attackTarget;
 
 		private int cachedPlayerPower;
 		private int cachedEnemyPower;
@@ -36,8 +34,6 @@ namespace Hex.Grid.Cell
 		public void ToggleAttackCanvas(bool visible)
 		{
 			attackCanvasRoot.SetActive(visible);
-			attackTarget.SetActive(visible);
-			
 			PositionAttackCanvas();
 		}
 

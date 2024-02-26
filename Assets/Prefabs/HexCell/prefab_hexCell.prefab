@@ -1197,7 +1197,6 @@ MonoBehaviour:
   playerPowerText: {fileID: 3655026372257253356}
   resultText: {fileID: 7537960222650148089}
   resultDirection: {fileID: 5212142865625962701}
-  attackTarget: {fileID: 7223391506650030822}
 --- !u!1 &2883201800502405045
 GameObject:
   m_ObjectHideFlags: 0

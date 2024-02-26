@@ -36,7 +36,7 @@ namespace Hex.Grid.DetailQueue
             
             _cellInfoHolder = Instantiate(previewPrefab, previewAnchor);
             _cellInfoHolder.SpawnUnit(unitData);
-            _cellInfoHolder.ToggleInfo(isNext);
+            _cellInfoHolder.ToggleUnitInfo(isNext);
             
             var renderers = GetComponentsInChildren<MeshRenderer>();
             foreach (var r in renderers)
