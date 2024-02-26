@@ -58,12 +58,6 @@ namespace Hex.Grid.Cell
 
 		public void SetEnemyAttackPower(int power)
 		{
-			if (power <= 0)
-			{
-				enemyPowerText.gameObject.SetActive(false);
-				return;
-			}
-			
 			enemyPowerText.gameObject.SetActive(true);
 			enemyPowerText.text = power.ToString();
 			cachedEnemyPower = power;

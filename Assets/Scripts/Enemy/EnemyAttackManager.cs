@@ -181,7 +181,6 @@ namespace Hex.Enemy
 
 			foreach (var ship in allShips)
 			{
-				if (ship.CurrentAttackDamage == 0) continue;
 				_targetingShips++;
 				PlayTargetSequence(ship, () => OnTargetingFinished(ship));
 			}
