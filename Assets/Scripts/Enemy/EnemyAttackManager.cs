@@ -62,10 +62,19 @@ namespace Hex.Enemy
 
 		private HexGrid _grid;
 		private BattleData _battleData;
+		
+		private int _spawningShips;
+		private int _targetingShips;
+		
+		private bool _shipsSpawning;
+		private bool _shipsMoving;
+		private bool _shipsAttacking;
 
 		public Action AttackResolved;
 
 		public bool IsAttackPhase => _ui.TurnsBeforeAttack == 0;
+		private bool CanResolveAttack => !_shipsSpawning && !_shipsMoving && !_shipsAttacking;
+		
 		public void ResetTurns() => _ui.ResetTurns();
 
 		public void Initialize(HexGrid grid, BattleData battleData)
@@ -76,8 +85,10 @@ namespace Hex.Enemy
 			_playerHealthBar.SetHealthToMax(50);;
 
 			_battleData = battleData;
+			_shipsSpawning = true;
 			foreach (var enemy in _battleData.Enemies)
 			{
+				_spawningShips++;
 				StartCoroutine(SpawnShip(enemy));
 			}
 		}
@@ -113,7 +124,17 @@ namespace Hex.Enemy
 			
 			targetCell.InfoHolder.HoldEnemyAttack(newShip.CurrentAttackDamage, false);
 
-			PlayTargetSequence(newShip, UpdateDamagePreview);
+			PlayTargetSequence(newShip, OnShipSpawned);
+
+			void OnShipSpawned()
+			{
+				UpdateDamagePreview();
+				_spawningShips--;
+				if (_spawningShips <= 0)
+				{
+					_shipsSpawning = false;
+				}
+			}
 		}
 
 		private void DestroyShip(EnemyShip ship)
@@ -127,6 +148,7 @@ namespace Hex.Enemy
 		
 		private async Task MoveShips()
 		{
+			_shipsMoving = true;
 			var allShips = _shipsByCoord.Values.ToList();
 			var moveTasks = new List<Task>();
 			foreach (var ship in allShips)
@@ -156,65 +178,73 @@ namespace Hex.Enemy
 			}
 
 			await Task.WhenAll(moveTasks);
-			
+
 			foreach (var ship in allShips)
 			{
 				if (ship.CurrentAttackDamage == 0) continue;
-				PlayTargetSequence(ship, () => ship.TargetingCell.InfoHolder.ToggleEnemyAttack(true));
+				_targetingShips++;
+				PlayTargetSequence(ship, () => OnTargetingFinished(ship));
+			}
+			if (_targetingShips <= 0)
+			{
+				_shipsMoving = false;
+			}
+			
+			void OnTargetingFinished(EnemyShip ship)
+			{
+				ship.TargetingCell.InfoHolder.ToggleEnemyAttack(true);
+				_targetingShips--;
+				if (_targetingShips <= 0)
+				{
+					_shipsMoving = false;
+				}
 			}
 		}
 
 		private async void ResolveAttacks()
 		{
+			if (!CanResolveAttack) return;
+
+			_shipsAttacking = true;
 			var resolutionTasks = new List<Task>();
 			var cumulativePlayerDamageTaken = 0;
 			var enemyDamageTaken = new Dictionary<EnemyShip, int>();
 			var cellsToResolve = new List<HexCellInfoHolder>();
-			
-			var cellsByRow = _grid.GetCellsByXPosRounded();
-			foreach (var row in cellsByRow)
+
+			foreach (var (_, enemyShip) in _shipsByCoord)
 			{
-				foreach (var cell in row.Value)
+				var targetingCell = enemyShip.TargetingCell;
+				var isCellHoldingUnit = targetingCell.HoldingUnit;
+				
+				// Clear the targeting visual effect
+				enemyShip.ClearTargetInstance();
+
+				AttackResultType attackResult;
+
+				var powerDifference = targetingCell.InfoHolder.PowerDifference;
+				switch (powerDifference)
 				{
-					var cellHoldingUint = cell.HoldingUnit;
-					if (!cell.HoldingEnemyAttack) continue; // Cell does not contain enemy attack
-					
-					if (!_shipsByCoord.TryGetValue(cell.Coordinates, out var enemyShip))
-					{
-						Debug.LogError("Ship not found when resolving attack");
-						continue;
-					}
-					
-					// Clear the targeting visual effect
-					enemyShip.ClearTargetInstance();
-
-					AttackResultType attackResult;
-
-					var powerDifference = cell.InfoHolder.PowerDifference;
-					if (powerDifference > 0)
-					{
+					case > 0:
 						// Player unit is stronger
 						enemyDamageTaken[enemyShip] = powerDifference;
-						attackResult = AttackResultType.ContestedPlayerWin;
-					}
-					else if (powerDifference < 0)
-					{
+						attackResult = enemyShip.IsAttacking ? AttackResultType.ContestedPlayerWin : AttackResultType.SoloPlayer;
+						break;
+					case < 0:
 						// Enemy Attack is stronger
 						cumulativePlayerDamageTaken += powerDifference;
-						attackResult = cellHoldingUint ? AttackResultType.ContestedEnemyWin : AttackResultType.SoloEnemy;
-					}
-					else
-					{
+						attackResult = isCellHoldingUnit ? AttackResultType.ContestedEnemyWin : AttackResultType.SoloEnemy;
+						break;
+					default:
 						attackResult = AttackResultType.ContestedTie;
-					}
-					
-					cellsToResolve.Add(cell.InfoHolder);
-
-					cell.InfoHolder.ToggleEnemyAttack(false);
-					
-					var attackInfo = new EnemyAttackInfo(enemyShip);
-					resolutionTasks.Add(_attackSequencer.PlayBeamSequence(attackInfo, attackResult, null));
+						break;
 				}
+					
+				cellsToResolve.Add(targetingCell.InfoHolder);
+
+				targetingCell.InfoHolder.ToggleEnemyAttack(false);
+					
+				var attackInfo = new EnemyAttackInfo(enemyShip);
+				resolutionTasks.Add(_attackSequencer.PlayBeamSequence(attackInfo, attackResult, null));
 			}
 
 			await Task.WhenAll(resolutionTasks);
@@ -241,6 +271,7 @@ namespace Hex.Enemy
 			UpdateDamagePreview();
 
 			AttackResolved?.Invoke();
+			_shipsAttacking = false;
 		}
 
 		public void UpdateDamagePreview()

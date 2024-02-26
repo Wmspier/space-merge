@@ -26,6 +26,8 @@ namespace Hex.Enemy
 
 		public void DealDamage(int amount) => CurrentHealth -= amount;
 
+		public bool IsAttacking => CurrentAttackDamage > 0;
+
 		public EnemyShip(EnemyShipInstance shipInstance, HexCell targetingCell, Vector3 startingWorldSpacePos, BattleData.BattleEnemy data, List<int> attackPattern)
 		{
 			ShipInstance = shipInstance;
