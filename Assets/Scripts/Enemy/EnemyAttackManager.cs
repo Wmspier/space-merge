@@ -72,10 +72,7 @@ namespace Hex.Enemy
 
 		public Action AttackResolved;
 
-		public bool IsAttackPhase => _ui.TurnsBeforeAttack == 0;
 		private bool CanResolveAttack => !_shipsSpawning && !_shipsMoving && !_shipsAttacking;
-		
-		public void ResetTurns() => _ui.ResetTurns();
 
 		public void Initialize(HexGrid grid, BattleData battleData)
 		{
@@ -266,7 +263,6 @@ namespace Hex.Enemy
 				cell.ResolveAttack();
 			}
 			
-			_ui.ResetTurns();
 			await MoveShips();
 			UpdateDamagePreview();
 

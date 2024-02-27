@@ -71,7 +71,7 @@ namespace Hex.Managers
         {
             // Don't try to place when hand is empty
             // Can only place detail on empty tiles
-            if (_battleModel.IsHandEmpty || cell.InfoHolder.HeldPlayerUnit || _attackManager.IsAttackPhase)
+            if (_battleModel.IsHandEmpty || cell.InfoHolder.HeldPlayerUnit)
             {
                 return;
             }

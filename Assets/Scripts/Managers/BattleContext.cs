@@ -35,7 +35,6 @@ namespace Hex.Managers
 			
 			_playerUnitManager.Initialize();
             
-			_enemyAttackManager.ResetTurns();
 			_enemyAttackManager.Initialize(_gridInteractionManager.Grid, _testBattle);
 			_enemyAttackManager.AttackResolved = OnAttackResolved;
 			
