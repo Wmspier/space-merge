@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hex.Enemy;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace Hex.Sequencers
 		[SerializeField] private ParticleSystem _impactEnemyEffect;
 		[SerializeField] private ParticleSystem _impactPlayerEffect;
 		
+		[SerializeField] private List<float> _beamScaleByCellRow;
 		
 		public async Task PlayBeamSequence(EnemyAttackInfo attackInfo, AttackResultType result, Action<EnemyAttackInfo> onImpact)
 		{
@@ -40,8 +42,12 @@ namespace Hex.Sequencers
 				return;
 			}
 			
+			var scale = _beamScaleByCellRow[Mathf.Min(_beamScaleByCellRow.Count - 1, attackInfo.TargetCell.Coordinates.x-1)];
+
 			var beamEffectInstance = Instantiate(effectPrefab, _vfxAnchor);
-			beamEffectInstance.transform.position = attackInfo.OriginPosition;
+			var beamTransform = beamEffectInstance.transform;
+			beamTransform.position = attackInfo.OriginPosition;
+			beamTransform.localScale = new Vector3(1, scale, 1);
 			
 			await Task.Delay((int)beamEffectInstance.GetFloat("Duration") * 1000);
 			Destroy(beamEffectInstance.gameObject);

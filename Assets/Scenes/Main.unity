@@ -2062,6 +2062,12 @@ MonoBehaviour:
     type: 3}
   _impactPlayerEffect: {fileID: 8739684128680943573, guid: f82d411839f40403e825a8650c618fbf,
     type: 3}
+  _beamScaleByCellRow:
+  - 1
+  - 0.884
+  - 0.768
+  - 0.655
+  - 0.539
 --- !u!1 &370491496
 GameObject:
   m_ObjectHideFlags: 0
