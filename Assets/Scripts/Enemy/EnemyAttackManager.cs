@@ -96,7 +96,8 @@ namespace Hex.Enemy
 		public void Dispose()
 		{
 			foreach (var (_, ship) in _shipsByCoord)
-			{
+			{;
+				ship.Dispose();
 				Destroy(ship.ShipInstance.gameObject);
 			}
 			_shipsByCoord.Clear();
