@@ -32,12 +32,22 @@ namespace Hex.Grid.Cell
         [SerializeField] private GameObject outlineBottomLeft;
         [SerializeField] private GameObject outlineBottomRight;
         [SerializeField] private GameObject outlineLeft;
+        
+        [Header("Move Arrows")]
+        [SerializeField] private MeshRenderer moveArrow;
+        [SerializeField] private GameObject moveArrowTopLeft;
+        [SerializeField] private GameObject moveArrowTopRight;
+        [SerializeField] private GameObject moveArrowRight;
+        [SerializeField] private GameObject moveArrowBottomLeft;
+        [SerializeField] private GameObject moveArrowBottomRight;
+        [SerializeField] private GameObject moveArrowLeft;
 
         private Material _outlineMaterial;
         private bool _arrowOverHex;
         private Vector3 _originLocal;
 
         private readonly Dictionary<HexCellDirection, GameObject> _outlineByDirection = new();
+        private readonly Dictionary<HexCellDirection, GameObject> _moveArrowByDirection = new();
 
         public int3 Coordinates { get; private set; }
 
@@ -68,6 +78,14 @@ namespace Hex.Grid.Cell
             _outlineByDirection[HexCellDirection.BottomLeft] = outlineBottomLeft;
             _outlineByDirection[HexCellDirection.Left] = outlineLeft;
             _outlineByDirection[HexCellDirection.TopLeft] = outlineTopLeft;
+            
+            _moveArrowByDirection[HexCellDirection.TopLeft] = moveArrowTopLeft;
+            _moveArrowByDirection[HexCellDirection.TopRight] = moveArrowTopRight;
+            _moveArrowByDirection[HexCellDirection.Right] = moveArrowRight;
+            _moveArrowByDirection[HexCellDirection.BottomRight] = moveArrowBottomRight;
+            _moveArrowByDirection[HexCellDirection.BottomLeft] = moveArrowBottomLeft;
+            _moveArrowByDirection[HexCellDirection.Left] = moveArrowLeft;
+            _moveArrowByDirection[HexCellDirection.TopLeft] = moveArrowTopLeft;
 
             foreach (var (_, o) in _outlineByDirection)
             {
@@ -108,6 +126,21 @@ namespace Hex.Grid.Cell
                 }
                 _outlineByDirection[direction].SetActive(false);
             }
+        }
+
+        public void ToggleMoveArrow(bool visible, HexCell nextCell = null)
+        {
+            foreach (var o in _moveArrowByDirection)
+            {
+                o.Value.SetActive(false);
+            } 
+            if (nextCell == null)
+            {
+                return;
+            }
+            
+            var direction = this.GetDirectionOfNeighbor(nextCell);
+            _moveArrowByDirection[direction].SetActive(visible);
         }
         
         public bool CanPulse = true;

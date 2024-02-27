@@ -57,6 +57,20 @@ namespace Hex.Util
 		    return (createsUpgrade, finalPower, finalRarity);
 	    }
 	    
+	    public static bool IsValidMerge(IEnumerable<HexCell> cells)
+	    {
+		    var (_, finalPower, _) = TryCombineUnits(cells);
+		    return finalPower > 0;
+	    }
+
+	    public static bool IsValidMove(List<HexCell> cells)
+	    {
+		    return cells.Count > 1 &&
+		           !cells.Last().HoldingUnit && 
+		           cells.GetRange(0, cells.Count-1)
+			           .All(c => c.HoldingUnit);
+	    }
+	    
        // // This is a very expensive check
        // public static bool CanAnyCombineOnGrid(List<HexCell> cellsInGrid, HexDetailConfiguration config)
        // {

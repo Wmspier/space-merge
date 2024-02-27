@@ -10,7 +10,8 @@ namespace Hex.Model
 		public readonly List<UnitData> Deck = new();
 		public readonly List<UnitData> Discard = new();
 		
-		
 		public bool IsHandEmpty => Hand.Count == 0;
+
+		public int RemainingUnitMoves;
 	}
 }

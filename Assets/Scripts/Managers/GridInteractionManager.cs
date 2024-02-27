@@ -7,6 +7,7 @@ using Hex.Enemy;
 using Hex.Grid;
 using Hex.Grid.Cell;
 using Hex.Model;
+using Hex.UI;
 using Hex.Util;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -19,6 +20,7 @@ namespace Hex.Managers
         [Space]
         [SerializeField] private HexGridInteractionHandler _interactionHandler;
         [SerializeField] private HexGrid grid;
+        [SerializeField] private GridMoveUI moveUi;
 
         [Space] 
         [Header("Cell Selecting")] 
@@ -32,6 +34,7 @@ namespace Hex.Managers
         [SerializeField] private float mergeUpgradePulseIntensity = 1.5f;
 
         private BattleModel _battleModel;
+        private BattleConfig _battleConfig;
 
         public Func<UnitData> SpawnUnit;
         public event Action GridStateChanged;
@@ -46,7 +49,7 @@ namespace Hex.Managers
             _interactionHandler.SetSelectionMode(SelectionMode.Outline);
             
             _interactionHandler.CellClicked += TryPlaceUnit;
-            _interactionHandler.CellsDragReleased += TryCombineCells;
+            _interactionHandler.CellsDragReleased += OnCellDragReleased;
             _interactionHandler.CellsDragContinue += OnCellsDragContinued;
             
             grid.Load();
@@ -59,7 +62,7 @@ namespace Hex.Managers
             _interactionHandler.BlockInteractions = true;
 
             _interactionHandler.CellClicked -= TryPlaceUnit;
-            _interactionHandler.CellsDragReleased -= TryCombineCells;
+            _interactionHandler.CellsDragReleased -= OnCellDragReleased;
             _interactionHandler.CellsDragContinue -= OnCellsDragContinued;
         }
         #endregion
@@ -81,17 +84,73 @@ namespace Hex.Managers
             GridStateChanged?.Invoke();
         }
         
-        private async void TryCombineCells(List<HexCell> cells)
+        private void OnCellDragReleased(List<HexCell> cells)
         {
             // Check if the cells can combine
             var (resultsInUpgrade, finalPower, finalRarity) = HexGameUtil.TryCombineUnits(cells);
+
+            var isValidMerge = finalPower > 0;
+            var isValidMove = HexGameUtil.IsValidMove(cells) && _battleModel.RemainingUnitMoves > 0;
             
-            // Invalid combine
-            if (finalPower <= 0)
+            if(isValidMerge) DoMerge(cells, resultsInUpgrade, finalPower, finalRarity);
+
+            if (isValidMove)
             {
-                return;
+                // More than a simple move
+                if (cells.Count > 2)
+                {
+                    // Check if cells must be merged, then moved
+                    var subChain = cells.GetRange(0, cells.Count - 1);
+                    (resultsInUpgrade, finalPower, finalRarity) = HexGameUtil.TryCombineUnits(subChain);
+                    if (finalPower > 0)
+                    {
+                        DoMerge(cells, resultsInUpgrade, finalPower, finalRarity);
+                    }
+                    DoMove(subChain[^1], cells[^1]);
+                }
+                else
+                {
+                    // Simple move
+                    DoMove(cells[^2], cells[^1]);
+                }
+            }
+        }
+        
+        private void OnCellsDragContinued(List<HexCell> cellsInChain)
+        {
+            // Clear all move arrows
+            foreach (var cell in cellsInChain)
+            {
+                cell.ToggleMoveArrow(false);
             }
             
+            // Check if the cells can combine
+            var (resultsInUpgrade,finalPower, _) = HexGameUtil.TryCombineUnits(cellsInChain);
+            var validMerge = finalPower > 0;
+            var validMove = HexGameUtil.IsValidMove(cellsInChain) && _battleModel.RemainingUnitMoves > 0;
+            
+            // Iterate through all cells and set their outline color
+            foreach (var cell in cellsInChain)
+            {
+                cell.SetOutlineColor(validMerge || validMove ? cellOutlineCanCombine : cellOutlineCannotCombine);
+                cell.UI.ToggleMergeCanvas(false);
+            }
+
+            // This is a merge
+            if (validMerge)
+            {
+                var finalCell = cellsInChain.Last();
+                finalCell.UI.ToggleMergeCanvas(true);
+                finalCell.UI.SetMergeInfo(finalPower, resultsInUpgrade);
+            }
+            else if (validMove)
+            {
+                cellsInChain[^2].ToggleMoveArrow(true, cellsInChain[^1]);
+            }
+        }
+        
+        private async void DoMerge(List<HexCell> cells, bool resultsInUpgrade, int finalPower, int finalRarity)
+        {
             var firstUnit = cells.First().InfoHolder.HeldPlayerUnit;
             var last = cells.Last();
             
@@ -99,7 +158,7 @@ namespace Hex.Managers
                 
             foreach (var c in cells)
             {
-                tasks.Add(MoveAndCombineDetail(c, last, c != last));
+                tasks.Add(MoveAndCombineUnit(c, last, c != last));
             }
                 
             await Task.WhenAll(tasks);
@@ -111,27 +170,15 @@ namespace Hex.Managers
             GridStateChanged?.Invoke();
         }
 
-        private void OnCellsDragContinued(List<HexCell> cells)
+        private async void DoMove(HexCell fromCell, HexCell toCell)
         {
-            // Check if the cells can combine
-            var (resultsInUpgrade,finalPower, _) = HexGameUtil.TryCombineUnits(cells);
+            toCell.InfoHolder.ResolveCombine(fromCell.InfoHolder.PlayerPower, fromCell.InfoHolder.PlayerRarity, false, fromCell.InfoHolder.HeldPlayerUnit);
+            await MoveAndCombineUnit(fromCell, toCell, true);
 
-            // Iterate through all cells and set their outline color
-            foreach (var cell in cells)
-            {
-                cell.SetOutlineColor(finalPower > 0 ? cellOutlineCanCombine : cellOutlineCannotCombine);
-                cell.UI.ToggleMergeCanvas(false);
-            }
-
-            // Invalid combine, don't show any merge info
-            if (finalPower == -1) return;
-
-            var finalCell = cells.Last();
-            finalCell.UI.ToggleMergeCanvas(true);
-            finalCell.UI.SetMergeInfo(finalPower, resultsInUpgrade);
+            moveUi.SetCount(--_battleModel.RemainingUnitMoves);
         }
         
-        private static async Task MoveAndCombineDetail(HexCell fromCell, HexCell toCell, bool removeAsResult)
+        private static async Task MoveAndCombineUnit(HexCell fromCell, HexCell toCell, bool removeAsResult)
         {
             const float lerpTimeSeconds = .25f;
             var startPosition = fromCell.InfoHolder.UnitAnchor.position;

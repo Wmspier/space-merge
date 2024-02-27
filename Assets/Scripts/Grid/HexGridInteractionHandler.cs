@@ -130,6 +130,7 @@ namespace Hex.Grid
             {
                 var last = _dragSelectedCells.Last();
                 last.ToggleOutline(false);
+                last.ToggleMoveArrow(false);
                 last.UI.ToggleMergeCanvas(false);
                 
                 _dragSelectedCells.Remove(last);
@@ -213,6 +214,7 @@ namespace Hex.Grid
             foreach (var cell in _dragSelectedCells)
             {
                 cell.ToggleOutline(false);
+                cell.ToggleMoveArrow(false);
                 cell.UI.ToggleMergeCanvas(false);
             }
             _dragSelectedCells.Clear();

@@ -16,7 +16,7 @@ namespace Hex.Managers
 		[SerializeField] private int startingHandSize = 4;
 		
 		[SerializeField] private DeckPreviewQueue deckPreviewQueue;
-		[SerializeField] private GameUI gameUI;
+		[SerializeField] private BattleUI _battleUI;
 
 		private BattleModel _battleModel;
 		
@@ -41,7 +41,7 @@ namespace Hex.Managers
 			_battleModel.Discard.Clear();
 			
 			deckPreviewQueue.gameObject.SetActive(false);
-			gameUI.PreviewQueueUI.gameObject.SetActive(false);
+			_battleUI.QueueUI.gameObject.SetActive(false);
 		}
 		
 		public void SetupPreviewQueue()
@@ -50,8 +50,8 @@ namespace Hex.Managers
 			deckPreviewQueue.GeneratePreviewQueue();
 			deckPreviewQueue.gameObject.SetActive(true);
             
-			gameUI.PreviewQueueUI.Initialize(_battleModel.Hand.FirstOrDefault(), _battleModel.Hand.Count);
-			gameUI.PreviewQueueUI.gameObject.SetActive(true);
+			_battleUI.QueueUI.Initialize(_battleModel.Hand.FirstOrDefault(), _battleModel.Hand.Count);
+			_battleUI.QueueUI.gameObject.SetActive(true);
 		}
 		
 		private void FillInitialDeck()
@@ -89,7 +89,7 @@ namespace Hex.Managers
 
 		private void OnDetailDequeued()
 		{
-			gameUI.PreviewQueueUI.SetNextAndDecrement(_battleModel.Hand.FirstOrDefault(), _battleModel.Hand.Count);
+			_battleUI.QueueUI.SetNextAndDecrement(_battleModel.Hand.FirstOrDefault(), _battleModel.Hand.Count);
 		}
 		
 		public void DrawNewHand()

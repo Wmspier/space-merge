@@ -14,14 +14,18 @@ namespace Hex.Managers
 		[SerializeField] private PlayerUnitManager _playerUnitManager;
 
 		[Header("UI")]
-		[SerializeField] private GameUI _gameUI;
+		[SerializeField] private BattleUI _battleUI;
 
 		[Header("Debug")] 
 		[SerializeField] private BattleData _testBattle;
+		[SerializeField] private BattleConfig _testConfig;
 		
 		public void StartBattle()
 		{
-			var battleModel = new BattleModel();
+			var battleModel = new BattleModel
+			{
+				RemainingUnitMoves = _testConfig.UnitMovesPerBattle
+			};
 			ApplicationManager.RegisterResource(battleModel);
 			
 			_gridInteractionManager.GridStateChanged += _enemyAttackManager.UpdateDamagePreview;
@@ -35,14 +39,15 @@ namespace Hex.Managers
 			_enemyAttackManager.Initialize(_gridInteractionManager.Grid, _testBattle);
 			_enemyAttackManager.AttackResolved = OnAttackResolved;
 			
-			_gameUI.gameObject.SetActive(true);
+			_battleUI.gameObject.SetActive(true);
+			_battleUI.MoveUI.Initialize(battleModel.RemainingUnitMoves);
 		}
 
 		public void Dispose()
 		{
 			_gridInteractionManager.GridStateChanged -= _enemyAttackManager.UpdateDamagePreview;
 			
-			_gameUI.gameObject.SetActive(false);
+			_battleUI.gameObject.SetActive(false);
 
 			_gridInteractionManager.Dispose();
 			_enemyAttackManager.Dispose();
