@@ -24,7 +24,8 @@ namespace Hex.Managers
 		{
 			var battleModel = new BattleModel
 			{
-				RemainingUnitMoves = _testConfig.UnitMovesPerBattle
+				RemainingUnitMoves = _testConfig.UnitMovesPerBattle,
+				MaxMergeCount =  _testConfig.MaxMergeCount
 			};
 			ApplicationManager.RegisterResource(battleModel);
 			
@@ -40,6 +41,7 @@ namespace Hex.Managers
 			
 			_battleUI.gameObject.SetActive(true);
 			_battleUI.MoveUI.Initialize(battleModel.RemainingUnitMoves);
+			_battleUI.PlayerHealthBar.SetHealthToMax(_testConfig.PlayerStartingHealth);
 		}
 
 		public void Dispose()

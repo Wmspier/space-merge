@@ -87,7 +87,7 @@ namespace Hex.Managers
         private void OnCellDragReleased(List<HexCell> cells)
         {
             // Check if the cells can combine
-            var (resultsInUpgrade, finalPower, finalRarity) = HexGameUtil.TryCombineUnits(cells);
+            var (resultsInUpgrade, finalPower, finalRarity) = HexGameUtil.TryCombineUnits(cells, _battleModel.MaxMergeCount);
 
             var isValidMerge = finalPower > 0;
             var isValidMove = HexGameUtil.IsValidMove(cells) && _battleModel.RemainingUnitMoves > 0;
@@ -101,7 +101,7 @@ namespace Hex.Managers
                 {
                     // Check if cells must be merged, then moved
                     var subChain = cells.GetRange(0, cells.Count - 1);
-                    (resultsInUpgrade, finalPower, finalRarity) = HexGameUtil.TryCombineUnits(subChain);
+                    (resultsInUpgrade, finalPower, finalRarity) = HexGameUtil.TryCombineUnits(subChain, _battleModel.MaxMergeCount);
                     if (finalPower > 0)
                     {
                         DoMerge(cells, resultsInUpgrade, finalPower, finalRarity);
@@ -125,7 +125,7 @@ namespace Hex.Managers
             }
             
             // Check if the cells can combine
-            var (resultsInUpgrade,finalPower, _) = HexGameUtil.TryCombineUnits(cellsInChain);
+            var (resultsInUpgrade,finalPower, _) = HexGameUtil.TryCombineUnits(cellsInChain, _battleModel.MaxMergeCount);
             var validMerge = finalPower > 0;
             var validMove = HexGameUtil.IsValidMove(cellsInChain) && _battleModel.RemainingUnitMoves > 0;
             

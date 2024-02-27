@@ -8,11 +8,17 @@ namespace Hex.Util
     {
 	    public const int MaxRarityZeroBased = 2;
 	    
-	    public static (bool createsUpgrade, int finalPower, int finalRarity) TryCombineUnits(IEnumerable<HexCell> toCombine)
+	    public static (bool createsUpgrade, int finalPower, int finalRarity) TryCombineUnits(IEnumerable<HexCell> toCombine, int maxMergeCount)
 	    {
 		    var hexCells = toCombine as HexCell[] ?? toCombine.ToArray();
 		    // Can't combine if list has one or fewer cells or there are any empty spaces
 		    if (hexCells.Length <= 1 || hexCells.Any(c => c.InfoHolder.HeldPlayerUnit == null))
+		    {
+			    return (false, -1, -1);
+		    }
+		    
+		    // Can't combine if beyond max merge count
+		    if (hexCells.Length > maxMergeCount)
 		    {
 			    return (false, -1, -1);
 		    }
@@ -57,9 +63,9 @@ namespace Hex.Util
 		    return (createsUpgrade, finalPower, finalRarity);
 	    }
 	    
-	    public static bool IsValidMerge(IEnumerable<HexCell> cells)
+	    public static bool IsValidMerge(IEnumerable<HexCell> cells, int maxMergeCount)
 	    {
-		    var (_, finalPower, _) = TryCombineUnits(cells);
+		    var (_, finalPower, _) = TryCombineUnits(cells, maxMergeCount);
 		    return finalPower > 0;
 	    }
 

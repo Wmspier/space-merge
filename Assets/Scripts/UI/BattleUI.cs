@@ -8,6 +8,7 @@ namespace Hex.UI
         [field: SerializeField] public TopBarUI TopBarUI { get; private set; }
         [field: SerializeField] public DeckQueueUI QueueUI { get; private set; }
         [field: SerializeField] public GridMoveUI MoveUI { get; private set; }
+        [field: SerializeField] public HealthBar PlayerHealthBar { get; private set; }
 
         public Action ResetPressed;
     }

@@ -13,5 +13,6 @@ namespace Hex.Model
 		public bool IsHandEmpty => Hand.Count == 0;
 
 		public int RemainingUnitMoves;
+		public int MaxMergeCount;
 	}
 }

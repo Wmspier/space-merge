@@ -4662,6 +4662,7 @@ MonoBehaviour:
   <TopBarUI>k__BackingField: {fileID: 183852980}
   <QueueUI>k__BackingField: {fileID: 1301337791}
   <MoveUI>k__BackingField: {fileID: 1448713361}
+  <PlayerHealthBar>k__BackingField: {fileID: 1049620593}
 --- !u!95 &1400717080
 Animator:
   serializedVersion: 7
