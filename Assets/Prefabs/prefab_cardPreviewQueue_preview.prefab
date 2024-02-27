@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 470857170633898419}
   - component: {fileID: 9181230991757155261}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: prefab_cardPreviewQueue_preview
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -82,7 +82,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 470857170928712514}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PreviewAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: 470857172158470108}
   - component: {fileID: 470857172158470109}
   - component: {fileID: 470857172158470110}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}

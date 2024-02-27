@@ -53,6 +53,8 @@ namespace Hex.Grid.DetailQueue
             newPreview.transform.Reset();
             newPreview.ApplyPreview(unitData, previewIndex == 0);
             newPreview.transform.position = previewPosition;
+            newPreview.gameObject.SetLayer(gameObject.layer, true, true);
+            
             _previewQueue.Enqueue(newPreview);
 
             return Task.CompletedTask;

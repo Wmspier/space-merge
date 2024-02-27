@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Threading.Tasks;
 using Hex.Data;
+using Hex.Extensions;
 using Hex.Grid.Cell;
 using Hex.Util;
 using UnityEngine;
@@ -42,6 +43,11 @@ namespace Hex.Grid.DetailQueue
             foreach (var r in renderers)
             {
                 r.shadowCastingMode = ShadowCastingMode.Off;
+            }
+
+            if (transform.parent != null)
+            {
+                gameObject.SetLayer(transform.parent.gameObject.layer, true, true);
             }
 
             // if (!applyScale) return;

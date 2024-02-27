@@ -10,6 +10,7 @@ namespace Hex.UI
     {
         [SerializeField] private TMP_Text nextCardText;
         [SerializeField] private TMP_Text remainingCardsText;
+        [SerializeField] private RectTransform textRoot;
 
         public void Initialize(UnitData nextUnit, int remainingTiles)
         {
@@ -17,14 +18,12 @@ namespace Hex.UI
             remainingCardsText.gameObject.SetActive(true);
             nextCardText.text = nextUnit.UniqueId;
             
-            remainingCardsText.text = $"{remainingTiles} Unit(s) Left";
-            remainingCardsText.gameObject.GetComponent<RectTransform>().pivot = new Vector2(0, .5f);
-            remainingCardsText.alignment = TextAlignmentOptions.MidlineLeft;
+            remainingCardsText.text = remainingTiles.ToString();
         }
 
         public async Task SetNextAndDecrement(UnitData nextUnit, int remainingTiles)
         {
-            var t = transform;
+            var t = textRoot.transform;
             const float lerpTimeSeconds = .15f;
             // Grow
             await MathUtil.DoInterpolation(lerpTimeSeconds, Grow);
@@ -33,27 +32,26 @@ namespace Hex.UI
             if (nextUnit == null)
             {
                 nextCardText.gameObject.SetActive(false);
-                remainingCardsText.text = $"Out of Units";
             }
             else
             {
                 nextCardText.gameObject.SetActive(true);
                 nextCardText.text = nextUnit.UniqueId;
-                remainingCardsText.text = $"{remainingTiles} Unit(s) Left";
             }
+            remainingCardsText.text = remainingTiles.ToString();
             
             // Shrink
             await MathUtil.DoInterpolation(lerpTimeSeconds, Shrink);
 
             void Grow(float progress)
             {
-                var scale = Mathf.SmoothStep(1f, 1.25f, progress);
+                var scale = Mathf.SmoothStep(1f, 1.03f, progress);
                 t.localScale = new Vector3(scale, scale, scale);
             }
 
             void Shrink(float progress)
             {
-                var scale = Mathf.SmoothStep(1.25f, 1f, progress);
+                var scale = Mathf.SmoothStep(1.03f, 1f, progress);
                 t.localScale = new Vector3(scale, scale, scale);
             }
         }

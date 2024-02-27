@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: aa03fc10ee25b4fdaa50839cfe082a7c
+guid: 2a130df029c5e47cd9bea24e17776508
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Game Of Squids
+  - Anta
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
