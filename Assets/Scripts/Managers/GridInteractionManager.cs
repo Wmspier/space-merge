@@ -78,8 +78,6 @@ namespace Hex.Managers
             
             cell.InfoHolder.SpawnUnit(SpawnUnit?.Invoke());
             cell.Impact();
-
-            grid.Save(GameMode.Merge);
             
             GridStateChanged?.Invoke();
         }

@@ -1,7 +1,4 @@
 namespace Hex.Model
 {
-    public class ApplicationModel
-    {
-        public GameMode ActiveMode;
-    }
+    public class ApplicationModel { }
 }

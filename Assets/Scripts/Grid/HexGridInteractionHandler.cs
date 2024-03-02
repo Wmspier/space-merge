@@ -109,7 +109,7 @@ namespace Hex.Grid
                 switch (_selectionMode)
                 {
                     case SelectionMode.Path:
-                        lineDrawer.AddCellToLine(cell);
+                        if(lineDrawer != null) lineDrawer.AddCellToLine(cell);
                         break;
                     case SelectionMode.Outline:
                         UpdateDragOutline();
@@ -138,7 +138,7 @@ namespace Hex.Grid
                 switch (_selectionMode)
                 {
                     case SelectionMode.Path:
-                        lineDrawer.RemoveFromEnd();
+                        if(lineDrawer != null) lineDrawer.RemoveFromEnd();
                         break;
                     case SelectionMode.Outline:
                         UpdateDragOutline();
@@ -159,7 +159,7 @@ namespace Hex.Grid
             switch (_selectionMode)
             {
                 case SelectionMode.Path:
-                    lineDrawer.AddCellToLine(cell);
+                    if(lineDrawer != null) lineDrawer.AddCellToLine(cell);
                     break;
                 case SelectionMode.Outline:
                     UpdateDragOutline();
@@ -218,7 +218,7 @@ namespace Hex.Grid
                 cell.UI.ToggleMergeCanvas(false);
             }
             _dragSelectedCells.Clear();
-            lineDrawer.Clear();
+            if(lineDrawer != null) lineDrawer.Clear();
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Hex.Extensions;
 using Hex.Grid.Cell;
-using Hex.Managers;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
@@ -13,15 +12,8 @@ namespace Hex.Grid
 {
     public class HexGrid : MonoBehaviour
     {
-        public enum GridShape
-        {
-            Hex,
-            Rectangle
-        }
-
         [Header("Debug")]
         [SerializeField] public bool showGizmos;
-        [SerializeField] public GridShape gridShape;
 
         [Header("Hex")]
         [SerializeField][Range(2, 10)] private int numEdgeCells;
@@ -63,12 +55,18 @@ namespace Hex.Grid
          
         #endregion
 
-        public bool Load(GameMode mode = GameMode.Merge, bool immediateDestroy = false)
+        public virtual bool Load(bool immediateDestroy = false, List<HexCellDefinition> definitions = null)
         {
             DestroyGrid(immediateDestroy);
-            
-            var savedGrid = LocalSaveManager.LoadGridFromDisk(mode);
-            if (savedGrid == null)
+
+            if (definitions != null)
+            {
+                foreach (var def in definitions)
+                {
+                    CreateCellForHexGrid(def.Coordinates.x, def.Coordinates.y, def.Coordinates.z, (CellState)def.State);
+                }
+            }
+            else
             {
                 var gridSize = Mathf.Max(1, numEdgeCells - 1);
                 for (var i = -gridSize; i < gridSize + 1; i += 1) {
@@ -79,34 +77,17 @@ namespace Hex.Grid
                             }
                         }
                     }
-                }
-            }
-            else
-            {
-                foreach (var cell in savedGrid)
-                {
-                    CreateCellForHexGrid(
-                        cell.Coordinates.x, 
-                        cell.Coordinates.y, 
-                        cell.Coordinates.z,
-                        cell.Detail);
-                }
+                }  
             }
             
             RegisterCellNeighbors();
             GridInitialized?.Invoke();
-            return savedGrid != null;
+            return false;
         }
         
-        private void CreateCellForHexGrid(int x, int y, int z, int? initialDetail = null)
+        private void CreateCellForHexGrid(int x, int y, int z, CellState? initialState = null)
         {
             var coordOffset = numEdgeCells;
-            if (initialDetail.HasValue)
-            {
-                x -= coordOffset;
-                y -= coordOffset;
-                z -= coordOffset;
-            }
             
             var cell = Instantiate(hexCellPrefab);
             var offsetX = x + coordOffset;
@@ -130,6 +111,11 @@ namespace Hex.Grid
             (cellTransform = cell.transform).SetParent(cellsAnchor, false);
             cellTransform.localPosition = position;
             cell.SetLocalOrigin(position);
+
+            if (initialState.HasValue)
+            {
+                cell.ApplyState(initialState.Value);
+            }
         }
 
         private void RegisterCellNeighbors()
@@ -148,22 +134,6 @@ namespace Hex.Grid
                             }
                         }
             }
-        }
-
-        public void Save(GameMode mode)=> LocalSaveManager.SerializeAndSaveGridToDisk(mode, GetCellDefinitions());
-
-        private List<HexCellDefinition> GetCellDefinitions()
-        {
-            var definitions = new List<HexCellDefinition>();
-            foreach (var (_, cell) in Registry)
-            {
-                definitions.Add(new HexCellDefinition
-                {
-                    Coordinates = cell.Coordinates
-                });
-            }
-
-            return definitions;
         }
 
         private void DestroyGrid(bool immediate = false)
@@ -187,7 +157,7 @@ namespace Hex.Grid
         [ContextMenu("Clear Grid")]
         public void ForceClear() => DestroyGrid(true);
         [ContextMenu("Spawn Grid")]
-        public void SpawnGrid() => Load(GameMode.Merge, true);
+        public void SpawnGrid() => Load(true);
         
         private void OnDrawGizmos()
         {
@@ -209,21 +179,7 @@ namespace Hex.Grid
                 var cell = kvp.Value;
                 var labelPosition = cell.transform.position;
                 labelPosition.y = 1;
-                switch (gridShape)
-                {
-                    case GridShape.Hex:
-                    {
-                        Handles.Label(labelPosition, $"({cell.Coordinates.x}, {cell.Coordinates.y}, {cell.Coordinates.z})", style);
-                        break;
-                    }
-                    case GridShape.Rectangle:
-                    {
-                        Handles.Label(labelPosition, $"({cell.Coordinates.x}, {cell.Coordinates.z})", style);
-                        break;
-                    }
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                Handles.Label(labelPosition, $"({cell.Coordinates.x}, {cell.Coordinates.y}, {cell.Coordinates.z})", style);
             }
         }
         #endif

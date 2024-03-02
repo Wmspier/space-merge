@@ -28,10 +28,8 @@ namespace Hex.Managers
             splashUI.SetActive(false);
         }
 
-        private void GoToBattle(GameMode mode)
+        private void GoToBattle()
         {
-            ApplicationManager.Model.ActiveMode = mode;
-            
             mainMenuUI.gameObject.SetActive(false);
             gridRoot.SetActive(true);
             _battleContext.StartBattle();

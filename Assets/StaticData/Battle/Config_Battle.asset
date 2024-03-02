@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <UnitMovesPerBattle>k__BackingField: 5
   <MaxMergeCount>k__BackingField: 2
-  <PlayerStartingHealth>k__BackingField: 50
+  <PlayerStartingHealth>k__BackingField: 25

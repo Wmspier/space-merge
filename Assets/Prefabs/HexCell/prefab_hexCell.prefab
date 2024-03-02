@@ -1299,6 +1299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57fd7f1d39cb4ba18c1f89298a00b9b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <PrimaryMesh>k__BackingField: {fileID: 213965815446898031}
   outline: {fileID: 3874730582830497561}
   outlineTopLeft: {fileID: 5266897155670724660}
   outlineTopRight: {fileID: 8938981486607034733}
@@ -1306,7 +1307,6 @@ MonoBehaviour:
   outlineBottomLeft: {fileID: 101390932017505405}
   outlineBottomRight: {fileID: 8446977772239197626}
   outlineLeft: {fileID: 6358633976841364567}
-  moveArrow: {fileID: 0}
   moveArrowTopLeft: {fileID: 754466647270988106}
   moveArrowTopRight: {fileID: 387186451054759239}
   moveArrowRight: {fileID: 8164132938340513810}

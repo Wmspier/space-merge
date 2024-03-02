@@ -19,11 +19,20 @@ namespace Hex.Grid.Cell
         Left
     }
     
+    public enum CellState
+    {
+        Playable,
+        Unplayable,
+        Disabled
+    }
+    
     [RequireComponent(typeof(HexCellInfoHolder))]
     public class HexCell : MonoBehaviour
     {
 		private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
 		
+        [field: SerializeField] public MeshRenderer PrimaryMesh { get; private set; }
+        
         [Header("Outlines")]
         [SerializeField] private MeshRenderer outline;
         [SerializeField] private GameObject outlineTopLeft;
@@ -34,7 +43,6 @@ namespace Hex.Grid.Cell
         [SerializeField] private GameObject outlineLeft;
         
         [Header("Move Arrows")]
-        [SerializeField] private MeshRenderer moveArrow;
         [SerializeField] private GameObject moveArrowTopLeft;
         [SerializeField] private GameObject moveArrowTopRight;
         [SerializeField] private GameObject moveArrowRight;
@@ -50,6 +58,7 @@ namespace Hex.Grid.Cell
         private readonly Dictionary<HexCellDirection, GameObject> _moveArrowByDirection = new();
 
         public int3 Coordinates { get; private set; }
+        public CellState State { get; private set; }
 
         public List<HexCell> Neighbors { get; } = new ();
 
@@ -102,6 +111,8 @@ namespace Hex.Grid.Cell
         }
 
         public void ApplyCoordinates(int x, int y, int z) => Coordinates = new int3(x, y, z);
+        public void ApplyState(CellState state) => State = state;
+        
         public void SetLocalOrigin(Vector3 origin) => _originLocal = origin;
         
         public void ToggleOutline(bool visible, List<HexCell> connectedCells = null)

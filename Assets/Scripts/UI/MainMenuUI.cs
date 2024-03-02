@@ -8,12 +8,11 @@ namespace Hex.UI
     public class MainMenuUI : MonoBehaviour
     {
         [SerializeField] private List<BottomBarTab> tabs;
-        [SerializeField] private BasicButton mergeButton;
-        [SerializeField] private BasicButton battleButton;
+        [SerializeField] private BasicButton playButton;
         [SerializeField] private GameObject playButtonRoot;
         [SerializeField] private TopBarUI topBarUI;
 
-        public Action<GameMode> PlayPressed;
+        public Action PlayPressed;
         
         private void Awake()
         {
@@ -26,8 +25,7 @@ namespace Hex.UI
                 }
             }
 
-            mergeButton.Button.onClick.AddListener(() => PlayPressed?.Invoke(GameMode.Merge));
-            battleButton.Button.onClick.AddListener(() => PlayPressed?.Invoke(GameMode.Battle));
+            playButton.Button.onClick.AddListener(() => PlayPressed?.Invoke());
         }
 
         private void OnEnable() 

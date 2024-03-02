@@ -10,7 +10,7 @@ namespace Hex.Grid.Cell
         private const char StringDelimiter = ',';
         
         public int3 Coordinates;
-        public int Detail;
+        public int State;
 
         public override string ToString()
         {
@@ -21,7 +21,7 @@ namespace Hex.Grid.Cell
             stringBuilder.Append(StringDelimiter);
             stringBuilder.Append(Coordinates.z);
             stringBuilder.Append(StringDelimiter);
-            stringBuilder.Append(Detail);
+            stringBuilder.Append(State);
             return stringBuilder.ToString();
         }
 
@@ -36,7 +36,7 @@ namespace Hex.Grid.Cell
                     int.Parse(contents[0]), 
                     int.Parse(contents[1]), 
                     int.Parse(contents[2])),
-                Detail = int.Parse(contents[3])
+                State = int.Parse(contents[3])
             };
         }
     }
