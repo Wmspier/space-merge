@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Hex.Extensions;
 using Hex.Grid.Cell;
+using Hex.Tools;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace Hex.Grid
         [SerializeField] public bool showGizmos;
 
         [Header("Hex")]
-        [SerializeField][Range(2, 10)] private int numEdgeCells;
+        [SerializeField][Range(2, 10)] protected int numEdgeCells;
         [SerializeField] private HexCell hexCellPrefab;
 
         [Space] 
@@ -55,7 +56,13 @@ namespace Hex.Grid
          
         #endregion
 
-        public virtual bool Load(bool immediateDestroy = false, List<HexCellDefinition> definitions = null)
+        public void LoadFromFile()
+        {
+            var loadedLevel = LevelEditorUtility.LoadLevel("Test");
+            Load(true, loadedLevel);
+        }
+        
+        public virtual void Load(bool immediateDestroy = false, List<HexCellDefinition> definitions = null, bool forceSpawnCells = false)
         {
             DestroyGrid(immediateDestroy);
 
@@ -63,6 +70,8 @@ namespace Hex.Grid
             {
                 foreach (var def in definitions)
                 {
+                    var state = (CellState)def.State;
+                    if (state != CellState.Playable && !forceSpawnCells) continue;
                     CreateCellForHexGrid(def.Coordinates.x, def.Coordinates.y, def.Coordinates.z, (CellState)def.State);
                 }
             }
@@ -82,14 +91,14 @@ namespace Hex.Grid
             
             RegisterCellNeighbors();
             GridInitialized?.Invoke();
-            return false;
         }
         
         private void CreateCellForHexGrid(int x, int y, int z, CellState? initialState = null)
         {
-            var coordOffset = numEdgeCells;
-            
             var cell = Instantiate(hexCellPrefab);
+            
+            // This offset assures coordinates remain in the positive numbers
+            var coordOffset = numEdgeCells;
             var offsetX = x + coordOffset;
             var offsetY = y + coordOffset;
             var offsetZ = z + coordOffset;

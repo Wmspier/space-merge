@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Hex.Grid;
 using Hex.Grid.Cell;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Hex.Tools
@@ -15,40 +16,43 @@ namespace Hex.Tools
 
 		[SerializeField] private EditorHexGridInteractionHandler _interactionHandler;
 
-		[SerializeField] private string TestFileName;
-
+		public string LevelFileName { get; set; }
+		
 		private void Awake()
 		{
 			_interactionHandler.CellClicked += OnCellClicked;
 			_interactionHandler.CellsDragContinue += OnCellDragContinue;
 
-			if (LevelEditorUtility.LevelExists(TestFileName))
-			{
-				Load(true, LevelEditorUtility.LoadLevel(TestFileName));
-			}
-			else
-			{
-				Load(true);
-			}
+			ForceClear();
 		}
 
-		public override bool Load(bool immediateDestroy = false, List<HexCellDefinition> definitions = null)
+		public override void Load(bool immediateDestroy = false, List<HexCellDefinition> definitions = null, bool forceSpawnCells = true)
 		{
-			var baseLoad = base.Load(immediateDestroy, definitions);
+			base.Load(immediateDestroy, definitions, forceSpawnCells);
 
 			foreach (var (coord, cell) in Registry)
 			{
 				SetCellMaterialByState(cell, cell.State);
 			}
+		}
 
-			return baseLoad;
+		public void LoadFromFile(string fileName)
+		{
+			if (LevelEditorUtility.LevelExists(fileName))
+			{
+				Debug.Log($"Found level {fileName}. Loading");
+				Load(true, LevelEditorUtility.LoadLevel(fileName));
+			}
+			else
+			{
+				Debug.LogError($"Failed to find file with name: {fileName}");
+			}
 		}
 		
-		[ContextMenu("Save Grid")]
-		public void Save()
+		public void Save(string fileName)
 		{
-			LevelEditorUtility.SaveLevel(TestFileName, GetCellDefinitions());
-			Debug.Log($"Grid Saved: {TestFileName}");
+			LevelEditorUtility.SaveLevel(fileName, GetCellDefinitions());
+			Debug.Log($"Grid Saved: {fileName}");
 		}
 
 		private List<HexCellDefinition> GetCellDefinitions()
@@ -58,7 +62,7 @@ namespace Hex.Tools
 			{
 				definitions.Add(new HexCellDefinition
 				{
-					Coordinates = coord,
+					Coordinates = new int3(coord.x - numEdgeCells, coord.y - numEdgeCells, coord.z - numEdgeCells),
 					State = (int)cell.State
 				});
 			}

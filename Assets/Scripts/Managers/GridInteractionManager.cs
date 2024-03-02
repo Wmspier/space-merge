@@ -32,6 +32,10 @@ namespace Hex.Managers
 
         [SerializeField] private float mergePulseIntensity = .75f;
         [SerializeField] private float mergeUpgradePulseIntensity = 1.5f;
+        
+        [Space]
+        [Header("Debug")]
+        [SerializeField] public bool testFileLoading;
 
         private BattleModel _battleModel;
         private BattleConfig _battleConfig;
@@ -52,7 +56,8 @@ namespace Hex.Managers
             _interactionHandler.CellsDragReleased += OnCellDragReleased;
             _interactionHandler.CellsDragContinue += OnCellsDragContinued;
             
-            grid.Load();
+            if(testFileLoading) grid.LoadFromFile();
+            else grid.Load();
 
             _battleModel = ApplicationManager.GetResource<BattleModel>();
         }
