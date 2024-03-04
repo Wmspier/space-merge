@@ -27,6 +27,10 @@ namespace Hex.Grid
         
         public Dictionary<int3, HexCell> Registry { get; } = new();
 
+        public List<List<HexCell>> CellsByColumn { get; } = new();
+        
+        private int Diameter => numEdgeCells * 2 - 1;
+        
         #region Grid Accessing
          
         public HexCell GetCenterCell() => Registry[new int3(numEdgeCells, numEdgeCells, numEdgeCells)];
@@ -37,23 +41,6 @@ namespace Hex.Grid
             return allCells[Random.Range(0, allCells.Count)];
         }
          
-        public Dictionary<double, List<HexCell>> GetCellsByXPosRounded()
-        {
-            var cellsByXPosRounded = new Dictionary<double, List<HexCell>>();
-            foreach (var (_, cell) in Registry)
-            {
-                var roundedXPos = Math.Round(cell.transform.position.x, 3);
-                if (!cellsByXPosRounded.TryGetValue(roundedXPos, out _))
-                {
-                    cellsByXPosRounded[roundedXPos] = new List<HexCell>();
-                }
-                
-                cellsByXPosRounded[roundedXPos].Add(cell);
-            }
- 
-            return cellsByXPosRounded;
-        }
-         
         #endregion
 
         public void LoadFromFile()
@@ -61,10 +48,27 @@ namespace Hex.Grid
             var loadedLevel = LevelEditorUtility.LoadLevel("Test");
             Load(true, loadedLevel);
         }
+
+        // Used for sorting cells into columns
+        private int _currentRow;
+        private int _indexInRow;
+        private void InitializeColumnMap()
+        {
+            _currentRow = -1;
+            _indexInRow = 0;
+            
+            CellsByColumn.Clear();
+            var numRows = Diameter * 2 - 1;
+            for (var i = 0; i < numRows; i++)
+            {
+                CellsByColumn.Add(new List<HexCell>());
+            }
+        }
         
         public virtual void Load(bool immediateDestroy = false, List<HexCellDefinition> definitions = null, bool forceSpawnCells = false)
         {
             DestroyGrid(immediateDestroy);
+            InitializeColumnMap();
 
             if (definitions != null)
             {
@@ -92,12 +96,12 @@ namespace Hex.Grid
             RegisterCellNeighbors();
             GridInitialized?.Invoke();
         }
-        
+
         private void CreateCellForHexGrid(int x, int y, int z, CellState? initialState = null)
         {
             var cell = Instantiate(hexCellPrefab);
             
-            // This offset assures coordinates remain in the positive numbers
+            // This offset ensures coordinates remain in the positive numbers
             var coordOffset = numEdgeCells;
             var offsetX = x + coordOffset;
             var offsetY = y + coordOffset;
@@ -125,6 +129,18 @@ namespace Hex.Grid
             {
                 cell.ApplyState(initialState.Value);
             }
+
+            // Determine the column row of the cell
+            var startingColumnIndex = Mathf.Abs(offsetX - numEdgeCells);
+            if (_currentRow == -1 || _currentRow != offsetX)
+            {
+                _currentRow = offsetX;
+                _indexInRow = 0;
+            }
+
+            var columnIndex = startingColumnIndex + _indexInRow;
+            _indexInRow += 2;
+            CellsByColumn[columnIndex].Add(cell);
         }
 
         private void RegisterCellNeighbors()
@@ -191,6 +207,6 @@ namespace Hex.Grid
                 Handles.Label(labelPosition, $"({cell.Coordinates.x}, {cell.Coordinates.y}, {cell.Coordinates.z})", style);
             }
         }
-        #endif
+#endif
     }
 }

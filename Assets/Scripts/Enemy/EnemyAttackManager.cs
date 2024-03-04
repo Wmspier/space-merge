@@ -149,18 +149,20 @@ namespace Hex.Enemy
 			_shipsMoving = true;
 			var allShips = _shipsByCoord.Values.ToList();
 			var moveTasks = new List<Task>();
+			var newTargetCells = new List<HexCell>();
 			foreach (var ship in allShips)
 			{
-				var cellsByXPos = _grid.GetCellsByXPosRounded()
-					.Where(kvp => !kvp.Value.Any(c => _shipsByCoord.Keys.Contains(c.Coordinates)))
-					.Where(kvp => kvp.Value.Any(c => c.Coordinates.x == 1))
+				var unoccupiedCellsByColumn = _grid.CellsByColumn
+					.Where(cells => !cells.Any(c => _shipsByCoord.Keys.Contains(c.Coordinates))) // No cells where ships currently are
+					.Where(cells => !cells.Any(c => newTargetCells.Contains(c))) // No cells where ships will move to
 					.ToList()
 					.Shuffle();
 				
-				// Pick the first column (list should be shuffled)
-				var cellsInRow = cellsByXPos[0].Value;
+				// Pick the first column
+				var cellsInRow = unoccupiedCellsByColumn[0];
 				// Pick a random cell in this row
 				var randomCell = cellsInRow.Shuffle().First();
+				newTargetCells.Add(randomCell);
 
 				// Change ship position in map
 				var oldCoord = ship.CurrentPosition;
