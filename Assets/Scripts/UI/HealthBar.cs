@@ -45,6 +45,7 @@ namespace Hex.UI
 			_previewFillBar.gameObject.SetActive(false);
 			_previewText.gameObject.SetActive(false);
 			if(_previewTextAnchor != null) _previewTextAnchor.SetActive(false);
+			if(_showPreviewInline) SetText();
 		}
 		
 		public void ShowPreview(int previewAmount)

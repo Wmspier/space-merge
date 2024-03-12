@@ -179,6 +179,8 @@ namespace Hex.Managers
             await MoveAndCombineUnit(fromCell, toCell, true);
 
             moveUi.SetCount(--_battleModel.RemainingUnitMoves);
+            
+            GridStateChanged?.Invoke();
         }
         
         private static async Task MoveAndCombineUnit(HexCell fromCell, HexCell toCell, bool removeAsResult)
