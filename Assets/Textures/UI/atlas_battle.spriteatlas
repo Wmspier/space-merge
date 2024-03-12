@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: atlas_resources
+  m_Name: atlas_battle
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -36,7 +36,7 @@ SpriteAtlas:
       m_ForceMaximumCompressionQuality_BC6H_BC7: 0
     packingSettings:
       serializedVersion: 2
-      padding: 8
+      padding: 4
       blockOffset: 1
       allowAlphaSplitting: 0
       enableRotation: 1
@@ -45,29 +45,17 @@ SpriteAtlas:
     secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
-    - {fileID: 2800000, guid: 290dc2d38c185423282e0913561213ae, type: 3}
-    - {fileID: 2800000, guid: 2ebaf6134790245cab748eb164b895b3, type: 3}
-    - {fileID: 2800000, guid: f9df380ed0f394bfa972cb8d7c124d20, type: 3}
-    - {fileID: 2800000, guid: db02f3842acc348f798683729a033ece, type: 3}
+    - {fileID: 21300000, guid: db02f3842acc348f798683729a033ece, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
     packedSpriteRenderDataKeys:
-    - 2ebaf6134790245cab748eb164b895b3: 21300000
-    - 290dc2d38c185423282e0913561213ae: 21300000
     - db02f3842acc348f798683729a033ece: 21300000
-    - f9df380ed0f394bfa972cb8d7c124d20: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 2ebaf6134790245cab748eb164b895b3, type: 3}
-  - {fileID: 21300000, guid: 290dc2d38c185423282e0913561213ae, type: 3}
   - {fileID: 21300000, guid: db02f3842acc348f798683729a033ece, type: 3}
-  - {fileID: 21300000, guid: f9df380ed0f394bfa972cb8d7c124d20, type: 3}
   m_PackedSpriteNamesToIndex:
-  - tex_resource_coin_gold
-  - tex_resource_gem_new
   - tex_battle_damagePointer
-  - tex_resource_coin_silver
   m_RenderDataMap: {}
-  m_Tag: atlas_resources
+  m_Tag: atlas_battle
   m_IsVariant: 0

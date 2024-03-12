@@ -494,12 +494,12 @@ MonoBehaviour:
   _previewFillBar: {fileID: 862746856523563377}
   _previewText: {fileID: 2035132290972174605}
   _previewTextAnchor: {fileID: 7420383460368386427}
+  _previewTextColor: {r: 0, g: 0, b: 0, a: 0}
   _text: {fileID: 2543745923658149910}
   _secondaryFillTimeSeconds: 2
   _currentHealthTextSize: 100
-  _totalHealthTextSize: 75
-  _showTotalHealth: 1
   _showPreviewFill: 1
+  _showPreviewInline: 1
 --- !u!1 &5614109014812606288
 GameObject:
   m_ObjectHideFlags: 0
@@ -593,7 +593,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
+  m_fontSize: 37.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

@@ -102,7 +102,7 @@ namespace Hex.Editor
                 source.height,
                 0,
                 RenderTextureFormat.ARGB32,
-                RenderTextureReadWrite.Linear);
+                RenderTextureReadWrite.sRGB);
  
             Graphics.Blit(source, tmp);
             RenderTexture previous = RenderTexture.active;

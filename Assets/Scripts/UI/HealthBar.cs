@@ -7,17 +7,19 @@ namespace Hex.UI
 {
 	public class HealthBar : MonoBehaviour
 	{
+		private const string DamagePointerSprite = "<sprite=\"Battle\" name=\"damage_pointer\">";
+		
 		[SerializeField] private RectTransform _fillBar;
 		[SerializeField] private RectTransform _secondaryFillBar;
 		[SerializeField] private RectTransform _previewFillBar;
 		[SerializeField] private TMP_Text _previewText;
 		[SerializeField] private GameObject _previewTextAnchor;
+		[SerializeField] private Color _previewTextColor;
 		[SerializeField] private TMP_Text _text;
 		[SerializeField] private float _secondaryFillTimeSeconds = 1f;
 		[SerializeField][Range(1,100)] private int _currentHealthTextSize;
-		[SerializeField][Range(1,100)] private int _totalHealthTextSize;
-		[SerializeField] private bool _showTotalHealth = true;
 		[SerializeField] private bool _showPreviewFill = true;
+		[SerializeField] private bool _showPreviewInline = true;
 
 		private int _totalHealth = 100;
 		private int _currentHealth = 100;
@@ -48,8 +50,7 @@ namespace Hex.UI
 		public void ShowPreview(int previewAmount)
 		{
 			 if (_showPreviewFill) _previewFillBar.gameObject.SetActive(true);
-			 if(_previewTextAnchor != null) _previewTextAnchor.SetActive(true);
-			_previewText.gameObject.SetActive(true);
+			 if(_previewTextAnchor != null && !_showPreviewInline) _previewTextAnchor.SetActive(true);
 			
 			// Rect transforms don't like anchor Min/Max diffs of smaller than .07f
 			var previewPercentage = Mathf.Max(0.07f,previewAmount / (float)_totalHealth);
@@ -60,7 +61,19 @@ namespace Hex.UI
 			_previewFillBar.anchorMin = new Vector2(previewMinX, 0);
 			_previewFillBar.anchorMax = new Vector2(previewMaxX, 1);
 
-			_previewText.text = $"-{previewAmount}";
+			if (_showPreviewInline)
+			{
+				_textBuilder.Clear();
+				_textBuilder.Append($"<size={_currentHealthTextSize}%>{_currentHealth}</size>");
+				_textBuilder.Append($" {DamagePointerSprite} ");
+				_textBuilder.Append($"<color=#{ColorUtility.ToHtmlStringRGB(_previewTextColor)}>{Mathf.Max(0, _currentHealth - previewAmount)}</color>");
+				_text.text = _textBuilder.ToString();
+			}
+			else
+			{
+				_previewText.gameObject.SetActive(true);
+				_previewText.text = $"-{previewAmount}";
+			}
 		}
 		
 		private void SetText(string currentHealthOverride = null)
@@ -68,14 +81,7 @@ namespace Hex.UI
 			var currentHealth = currentHealthOverride ?? _currentHealth.ToString();
 			
 			_textBuilder.Clear();
-			if (_showTotalHealth)
-			{
-				_textBuilder.Append($"<size={_currentHealthTextSize}%>{currentHealth}</size><size={_totalHealthTextSize}%>/{_totalHealth}</size>");
-			}
-			else
-			{
-				_textBuilder.Append($"<size={_currentHealthTextSize}%>{currentHealth}</size>");
-			}
+			_textBuilder.Append($"<size={_currentHealthTextSize}%>{currentHealth}</size>");
 			_text.text = _textBuilder.ToString();
 		}
 		
