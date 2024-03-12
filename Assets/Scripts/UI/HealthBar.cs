@@ -11,6 +11,7 @@ namespace Hex.UI
 		[SerializeField] private RectTransform _secondaryFillBar;
 		[SerializeField] private RectTransform _previewFillBar;
 		[SerializeField] private TMP_Text _previewText;
+		[SerializeField] private GameObject _previewTextAnchor;
 		[SerializeField] private TMP_Text _text;
 		[SerializeField] private float _secondaryFillTimeSeconds = 1f;
 		[SerializeField][Range(1,100)] private int _currentHealthTextSize;
@@ -41,11 +42,13 @@ namespace Hex.UI
 		{
 			_previewFillBar.gameObject.SetActive(false);
 			_previewText.gameObject.SetActive(false);
+			if(_previewTextAnchor != null) _previewTextAnchor.SetActive(false);
 		}
 		
 		public void ShowPreview(int previewAmount)
 		{
 			 if (_showPreviewFill) _previewFillBar.gameObject.SetActive(true);
+			 if(_previewTextAnchor != null) _previewTextAnchor.SetActive(true);
 			_previewText.gameObject.SetActive(true);
 			
 			// Rect transforms don't like anchor Min/Max diffs of smaller than .07f
