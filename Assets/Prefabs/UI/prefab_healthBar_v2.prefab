@@ -494,7 +494,7 @@ MonoBehaviour:
   _previewFillBar: {fileID: 862746856523563377}
   _previewText: {fileID: 2035132290972174605}
   _previewTextAnchor: {fileID: 7420383460368386427}
-  _previewTextColor: {r: 0, g: 0, b: 0, a: 0}
+  _previewTextColor: {r: 1, g: 0.7647059, b: 0, a: 1}
   _text: {fileID: 2543745923658149910}
   _secondaryFillTimeSeconds: 2
   _currentHealthTextSize: 100

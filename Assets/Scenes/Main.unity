@@ -460,21 +460,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1704793990054197055, guid: bb78f6a60c6ce41b7a17600d44bec466,
         type: 3}
-      propertyPath: _previewTextColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1704793990054197055, guid: bb78f6a60c6ce41b7a17600d44bec466,
-        type: 3}
-      propertyPath: _previewTextColor.g
-      value: 0.7647059
-      objectReference: {fileID: 0}
-    - target: {fileID: 1704793990054197055, guid: bb78f6a60c6ce41b7a17600d44bec466,
-        type: 3}
-      propertyPath: _previewTextColor.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1704793990054197055, guid: bb78f6a60c6ce41b7a17600d44bec466,
-        type: 3}
       propertyPath: _secondaryFillTimeSeconds
       value: 3
       objectReference: {fileID: 0}

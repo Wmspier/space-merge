@@ -67,7 +67,7 @@ namespace Hex.UI
 				_textBuilder.Clear();
 				_textBuilder.Append($"<size={_currentHealthTextSize}%>{_currentHealth}</size>");
 				_textBuilder.Append($" {DamagePointerSprite} ");
-				_textBuilder.Append($"<color=#{ColorUtility.ToHtmlStringRGB(_previewTextColor)}>{Mathf.Max(0, _currentHealth - previewAmount)}</color>");
+				_textBuilder.Append($"<b><color=#{ColorUtility.ToHtmlStringRGB(_previewTextColor)}>{Mathf.Max(0, _currentHealth - previewAmount)}</color></b>");
 				_text.text = _textBuilder.ToString();
 			}
 			else

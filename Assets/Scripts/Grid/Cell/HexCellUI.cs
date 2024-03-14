@@ -41,6 +41,8 @@ namespace Hex.Grid.Cell
 		{
 			if(mergeCanvasRoot != null) ToggleMergeCanvas(false);
 			if(attackCanvasRoot != null) ToggleAttackCanvas(false);
+
+			if(resultDirection != null) resultDirection.material = new Material(resultDirection.material);
 		}
 
 		private void PositionAttackCanvas()
@@ -111,17 +113,21 @@ namespace Hex.Grid.Cell
 			else if (powerDiff > 0)
 			{
 				resultDirection.gameObject.SetActive(true);
-				resultText.color = playerPowerText.color;
-				resultDirection.color = playerPowerText.color;
-				resultDirection.transform.rotation = Quaternion.Euler(0, 0, 0);
+				// resultText.color = playerPowerText.color;
+				var color = playerPowerText.color;
+				color.a = .5f;
+				resultDirection.material.color = color;
+				resultDirection.transform.rotation = Quaternion.Euler(45, 0, -90);
 			}
 			// Enemy winning
 			else
 			{
 				resultDirection.gameObject.SetActive(true);
-				resultText.color = enemyPowerText.color;
-				resultDirection.color = enemyPowerText.color;
-				resultDirection.transform.rotation = Quaternion.Euler(180, 0, 0);
+				// resultText.color = enemyPowerText.color;
+				var color = enemyPowerText.color;
+				color.a = .5f;
+				resultDirection.material.color = color;
+				resultDirection.transform.rotation = Quaternion.Euler(45, 0, 90);
 			}
 		}
 	}
