@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace Hex.Grid.Cell
 		[SerializeField] private List<GameObject> rarityObjects;
 		
 		[Header("Attack UI")]
-		[SerializeField] private GameObject attackCanvasRoot;
+		[SerializeField] private CanvasGroup attackCanvasRoot;
 		[SerializeField] private TMP_Text enemyPowerText;
 		[SerializeField] private TMP_Text playerPowerText;
 		[SerializeField] private TMP_Text resultText;
@@ -33,7 +34,7 @@ namespace Hex.Grid.Cell
 
 		public void ToggleAttackCanvas(bool visible)
 		{
-			attackCanvasRoot.SetActive(visible);
+			attackCanvasRoot.DOFade(visible ? 1 : 0, .5f);
 			PositionAttackCanvas();
 		}
 
@@ -41,8 +42,6 @@ namespace Hex.Grid.Cell
 		{
 			if(mergeCanvasRoot != null) ToggleMergeCanvas(false);
 			if(attackCanvasRoot != null) ToggleAttackCanvas(false);
-
-			if(resultDirection != null) resultDirection.material = new Material(resultDirection.material);
 		}
 
 		private void PositionAttackCanvas()
@@ -116,7 +115,7 @@ namespace Hex.Grid.Cell
 				// resultText.color = playerPowerText.color;
 				var color = playerPowerText.color;
 				color.a = .5f;
-				resultDirection.material.color = color;
+				resultDirection.color = color;
 				resultDirection.transform.rotation = Quaternion.Euler(45, 0, -90);
 			}
 			// Enemy winning
@@ -126,7 +125,7 @@ namespace Hex.Grid.Cell
 				// resultText.color = enemyPowerText.color;
 				var color = enemyPowerText.color;
 				color.a = .5f;
-				resultDirection.material.color = color;
+				resultDirection.color = color;
 				resultDirection.transform.rotation = Quaternion.Euler(45, 0, 90);
 			}
 		}
