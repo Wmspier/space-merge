@@ -621,7 +621,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 999
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ac9a688aab69847b5ac3c74c4b218881, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: a6f41894bc8ca4f24969c2840aa21334, type: 2}
@@ -2584,6 +2584,7 @@ GameObject:
   - component: {fileID: 2494425155933914137}
   - component: {fileID: 7595381315664762068}
   - component: {fileID: 5212142865625962701}
+  - component: {fileID: 8422005982134510403}
   m_Layer: 5
   m_Name: Direction
   m_TagString: Untagged
@@ -2648,6 +2649,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!111 &8422005982134510403
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7463175452403995861}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 7400000, guid: 9be56fc3eea70420e9065c6f93a0e12f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 9be56fc3eea70420e9065c6f93a0e12f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0
 --- !u!1 &7501716550965760463
 GameObject:
   m_ObjectHideFlags: 0
