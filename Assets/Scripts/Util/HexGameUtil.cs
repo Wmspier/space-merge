@@ -66,8 +66,7 @@ namespace Hex.Util
 			    if (cell.InfoHolder.PlayerRarity == currentRarity &&
 			        masterCellIndex != index &&
 			        cell.InfoHolder.HeldPlayerUnit == masterUnit &&
-			        currentRarity < MaxRarityZeroBased &&
-			        !masterUnit.IsSupport)
+			        currentRarity < MaxRarityZeroBased)
 			    {
 				    createsUpgrade = true;
 				    currentRarity++;

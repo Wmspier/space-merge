@@ -85,6 +85,13 @@ namespace Hex.Grid.Cell
 			while (finalRarity > PlayerRarity)
 			{
 				var nextRarity = HeldPlayerUnit.NextRarity;
+				if (nextRarity == null)
+				{
+					nextRarity = HeldPlayerUnit;
+					ClearUnit();
+					SpawnUnit(nextRarity, newPower, newShield);
+					break;
+				}
 				
 				ClearUnit();
 				SpawnUnit(nextRarity, newPower, newShield);
