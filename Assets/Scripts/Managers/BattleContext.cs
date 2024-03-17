@@ -3,6 +3,7 @@ using Hex.Data;
 using Hex.Enemy;
 using Hex.Model;
 using Hex.UI;
+using Hex.UI.Popup;
 using UnityEngine;
 
 namespace Hex.Managers
@@ -15,6 +16,7 @@ namespace Hex.Managers
 
 		[Header("UI")]
 		[SerializeField] private BattleUI _battleUI;
+		[SerializeField] private PopupBattleResult _battleResultPopupPrefab;
 
 		[Header("Debug")] 
 		[SerializeField] private BattleData _testBattle;
@@ -36,12 +38,13 @@ namespace Hex.Managers
 			
 			_playerUnitManager.Initialize();
             
-			_enemyAttackManager.Initialize(_gridInteractionManager.Grid, _testBattle);
+			_enemyAttackManager.Initialize(_gridInteractionManager.Grid, _testBattle, OnAllEnemiesDestroyed);
 			_enemyAttackManager.AttackResolved = OnAttackResolved;
 			
 			_battleUI.gameObject.SetActive(true);
 			_battleUI.MoveUI.Initialize(battleModel.RemainingUnitMoves);
 			_battleUI.PlayerHealthBar.SetHealthToMax(_testConfig.PlayerStartingHealth);
+			_battleUI.PlayerHealthBar.SetDepletedAction(OnPlayerHealthDepleted);
 		}
 
 		public void Dispose()
@@ -60,6 +63,38 @@ namespace Hex.Managers
 		private void OnAttackResolved()
 		{
 			_playerUnitManager.DrawNewHand();
+		}
+
+		private void OnAllEnemiesDestroyed()
+		{
+			var resultPopup = Instantiate(_battleResultPopupPrefab);
+			resultPopup.ShowAsVictory(OnResultContinuePressed);
+
+			var popupsUI = ApplicationManager.GetResource<PopupsUI>();
+			popupsUI.gameObject.SetActive(true);
+			popupsUI.RegisterPopup(resultPopup);
+			popupsUI.ToggleInputBlock(true);
+		}
+
+		private void OnPlayerHealthDepleted()
+		{
+			var resultPopup = Instantiate(_battleResultPopupPrefab);
+			resultPopup.ShowAsDefeat(OnResultContinuePressed);
+
+			var popupsUI = ApplicationManager.GetResource<PopupsUI>();
+			popupsUI.gameObject.SetActive(true);
+			popupsUI.RegisterPopup(resultPopup);
+			popupsUI.ToggleInputBlock(true);
+		}
+
+		private static void OnResultContinuePressed()
+		{
+			var popupsUI = ApplicationManager.GetResource<PopupsUI>();
+			popupsUI.ToggleInputBlock(false);
+			popupsUI.gameObject.SetActive(false);
+			popupsUI.UnregisterAndDestroy<PopupBattleResult>();
+			
+			ApplicationManager.GetResource<NavigationManager>().GoToMainMenu();
 		}
 	}
 }

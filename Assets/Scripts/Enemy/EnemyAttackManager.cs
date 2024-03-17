@@ -44,7 +44,8 @@ namespace Hex.Enemy
 	
 	public class EnemyAttackManager : MonoBehaviour
 	{
-		[SerializeField] private EnemyAttackUI _ui;
+		[SerializeField] private EnemyAttackUI _attackUi;
+		[SerializeField] private EnemyCountUI _countUi;
 		[SerializeField] private HealthBar _playerHealthBar;
 		[SerializeField] private EnemyShipSpawner _shipSpawner;
 		[SerializeField] private EnemyHealthBarManager _enemyHealthBarManager;
@@ -57,7 +58,6 @@ namespace Hex.Enemy
 		[SerializeField] private float _attackTextDisplayDelaySeconds = 2f;
 		[SerializeField] private AttackSequencer _attackSequencer;
 
-		//private readonly Dictionary<int3, EnemyAttackInfo> _attacksByCoord = new();
 		private readonly Dictionary<int3, EnemyShip> _shipsByCoord = new();
 
 		private HexGrid _grid;
@@ -70,14 +70,19 @@ namespace Hex.Enemy
 		private bool _shipsMoving;
 		private bool _shipsAttacking;
 
+		private Action _allEnemiesDestroyed;
+
 		public Action AttackResolved;
 
 		private bool CanResolveAttack => !_shipsSpawning && !_shipsMoving && !_shipsAttacking;
 
-		public void Initialize(HexGrid grid, BattleData battleData)
+		public void Initialize(HexGrid grid, BattleData battleData, Action allEnemiesDestroyedCallback)
 		{
 			_grid = grid;
-			_ui.ResolveAttackPressed = ResolveAttacks;
+			_allEnemiesDestroyed = allEnemiesDestroyedCallback;
+			
+			_attackUi.ResolveAttackPressed = ResolveAttacks;
+			_countUi.UpdateCount(battleData.Enemies.Count);
 			
 			_playerHealthBar.SetHealthToMax(50);;
 
@@ -142,6 +147,10 @@ namespace Hex.Enemy
 			_enemyHealthBarManager.DestroyEnemy(ship);
 			ship.TargetingCell.InfoHolder.ClearEnemyAttack();
 			ship.Dispose();
+			
+			_countUi.UpdateCount(_shipsByCoord.Count);
+			
+			if(_shipsByCoord.Count == 0) _allEnemiesDestroyed?.Invoke();
 		}
 		
 		private async Task MoveShips()

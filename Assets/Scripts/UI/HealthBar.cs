@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Text;
 using TMPro;
@@ -27,6 +28,7 @@ namespace Hex.UI
 		private readonly StringBuilder _textBuilder = new();
 
 		private Coroutine _modificationCoroutine;
+		private Action _healthDepleted;
 
 		public void SetHealthToMax(int? totalOverride = null)
 		{
@@ -40,6 +42,8 @@ namespace Hex.UI
 			SetText();
 		}
 
+		public void SetDepletedAction(Action healthDepleted) => _healthDepleted = healthDepleted;
+		
 		public void HidePreview()
 		{
 			_previewFillBar.gameObject.SetActive(false);
@@ -99,6 +103,8 @@ namespace Hex.UI
 			var changeTime = _secondaryFillTimeSeconds * Mathf.Abs(change) / _totalHealth;
 			_modificationCoroutine = StartCoroutine(ModifyInternal(_displayedHealth, _currentHealth, changeTime));
 			SetText();
+			
+			if(_currentHealth <= 0) _healthDepleted?.Invoke();
 		}
 
 		private IEnumerator ModifyInternal(int fromValue, int toValue, float time)
