@@ -10,5 +10,6 @@ namespace Hex.Data
 		[field: SerializeField] public int BaseRarity { get; private set; }
 		[field: SerializeField] public GameObject Prefab { get; private set; }
 		[field: SerializeField] public UnitData NextRarity { get; private set; }
+		[field: SerializeField] public bool IsSupport { get; private set; }
 	}
 }

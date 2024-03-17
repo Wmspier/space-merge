@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Hex.Data;
 using Hex.Grid.Cell;
 
 namespace Hex.Util
@@ -8,24 +9,25 @@ namespace Hex.Util
     {
 	    public const int MaxRarityZeroBased = 2;
 	    
-	    public static (bool createsUpgrade, int finalPower, int finalShield, int finalRarity) TryCombineUnits(IEnumerable<HexCell> toCombine, int maxMergeCount)
+	    public static (UnitData masterUnit, bool createsUpgrade, int finalPower, int finalShield, int finalRarity) TryCombineUnits(IEnumerable<HexCell> toCombine, int maxMergeCount)
 	    {
 		    var hexCells = toCombine as HexCell[] ?? toCombine.ToArray();
 		    // Can't combine if list has one or fewer cells or there are any empty spaces
 		    if (hexCells.Length <= 1 || hexCells.Any(c => c.InfoHolder.HeldPlayerUnit == null))
 		    {
-			    return (false, -1, -1, -1);
+			    return (null, false, -1, -1, -1);
 		    }
 		    
 		    // Can't combine if beyond max merge count
 		    if (hexCells.Length > maxMergeCount)
 		    {
-			    return (false, -1, -1, -1);
+			    return (null, false, -1, -1, -1);
 		    }
 
 		    var createsUpgrade = false;
-		    var masterCellId = hexCells.First().InfoHolder.HeldPlayerUnit.UniqueId;
-		    var masterCellRarity = hexCells.First().InfoHolder.PlayerRarity;
+		    UnitData masterUnit = null;
+		    int masterCellIndex = -1;
+		    var masterCellRarity = -1;
 		    var finalPower = 0;
 		    var finalShield = 0;
 		    var finalRarity = masterCellRarity;
@@ -34,6 +36,15 @@ namespace Hex.Util
 		    for (var index = 0; index < hexCells.Length; index++)
 		    {
 			    var cell = hexCells[index];
+			    
+			    if (masterUnit == null || masterUnit.IsSupport && !cell.InfoHolder.IsSupportUnit)
+			    {
+				    masterUnit = cell.InfoHolder.HeldPlayerUnit;
+				    masterCellIndex = index;
+				    masterCellRarity = masterUnit.BaseRarity;
+				    finalRarity = masterCellRarity;
+				    currentRarity = masterCellRarity;
+			    }
 			    if (index == 0)
 			    {
 				    finalPower += cell.InfoHolder.PlayerPower;
@@ -42,7 +53,7 @@ namespace Hex.Util
 			    }
 
 			    // Can't combine lower rarities with higher rarities
-			    if (cell.InfoHolder.PlayerRarity > currentRarity) return (false, -1, -1, -1); 
+			    if (cell.InfoHolder.PlayerRarity > currentRarity) return (null, false, -1, -1, -1); 
 
 			    // Add the cells power/shield to the resulting power/shield
 			    finalPower += cell.InfoHolder.PlayerPower;
@@ -53,8 +64,10 @@ namespace Hex.Util
 			    // and the master cell is not at max rarity,
 			    // this cell creates an upgrade and doubles the final power
 			    if (cell.InfoHolder.PlayerRarity == currentRarity &&
-			        cell.InfoHolder.HeldPlayerUnit.UniqueId == masterCellId &&
-			        currentRarity < MaxRarityZeroBased)
+			        masterCellIndex != index &&
+			        cell.InfoHolder.HeldPlayerUnit == masterUnit &&
+			        currentRarity < MaxRarityZeroBased &&
+			        !masterUnit.IsSupport)
 			    {
 				    createsUpgrade = true;
 				    currentRarity++;
@@ -64,13 +77,13 @@ namespace Hex.Util
 			    }
 		    }
 
-		    return (createsUpgrade, finalPower, finalShield, finalRarity);
+		    return (masterUnit, createsUpgrade, finalPower, finalShield, finalRarity);
 	    }
 	    
 	    public static bool IsValidMerge(IEnumerable<HexCell> cells, int maxMergeCount)
 	    {
-		    var (_, finalPower, finalShield, _) = TryCombineUnits(cells, maxMergeCount);
-		    return finalPower > 0;
+		    var (_, _, finalPower, _, _) = TryCombineUnits(cells, maxMergeCount);
+		    return finalPower >= 0;
 	    }
 
 	    public static bool IsValidMove(List<HexCell> cells)

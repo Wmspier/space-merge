@@ -25,6 +25,8 @@ namespace Hex.Grid.Cell
 		}
 		
 		public void ToggleEnemyAttack(bool visible) => _ui.ToggleAttackCanvas(visible);
+
+		public bool IsSupportUnit => HeldPlayerUnit.IsSupport;
 		
 		private void Awake()
 		{
