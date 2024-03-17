@@ -8,25 +8,26 @@ namespace Hex.Util
     {
 	    public const int MaxRarityZeroBased = 2;
 	    
-	    public static (bool createsUpgrade, int finalPower, int finalRarity) TryCombineUnits(IEnumerable<HexCell> toCombine, int maxMergeCount)
+	    public static (bool createsUpgrade, int finalPower, int finalShield, int finalRarity) TryCombineUnits(IEnumerable<HexCell> toCombine, int maxMergeCount)
 	    {
 		    var hexCells = toCombine as HexCell[] ?? toCombine.ToArray();
 		    // Can't combine if list has one or fewer cells or there are any empty spaces
 		    if (hexCells.Length <= 1 || hexCells.Any(c => c.InfoHolder.HeldPlayerUnit == null))
 		    {
-			    return (false, -1, -1);
+			    return (false, -1, -1, -1);
 		    }
 		    
 		    // Can't combine if beyond max merge count
 		    if (hexCells.Length > maxMergeCount)
 		    {
-			    return (false, -1, -1);
+			    return (false, -1, -1, -1);
 		    }
 
 		    var createsUpgrade = false;
 		    var masterCellId = hexCells.First().InfoHolder.HeldPlayerUnit.UniqueId;
 		    var masterCellRarity = hexCells.First().InfoHolder.PlayerRarity;
 		    var finalPower = 0;
+		    var finalShield = 0;
 		    var finalRarity = masterCellRarity;
 		    var currentRarity = masterCellRarity;
 
@@ -36,14 +37,16 @@ namespace Hex.Util
 			    if (index == 0)
 			    {
 				    finalPower += cell.InfoHolder.PlayerPower;
+				    finalShield += cell.InfoHolder.PlayerShield;
 				    continue;
 			    }
 
 			    // Can't combine lower rarities with higher rarities
-			    if (cell.InfoHolder.PlayerRarity > currentRarity) return (false, -1, -1); 
+			    if (cell.InfoHolder.PlayerRarity > currentRarity) return (false, -1, -1, -1); 
 
-			    // Add the cells power to the resulting power
+			    // Add the cells power/shield to the resulting power/shield
 			    finalPower += cell.InfoHolder.PlayerPower;
+			    finalShield += cell.InfoHolder.PlayerShield;
 			    
 			    // If the cell shares a rarity with the rarity at this point in the merge,
 			    // and the cell shares the same type as the master,
@@ -57,15 +60,16 @@ namespace Hex.Util
 				    currentRarity++;
 				    finalRarity = currentRarity;
 				    finalPower *= 2;
+				    finalShield *= 2;
 			    }
 		    }
 
-		    return (createsUpgrade, finalPower, finalRarity);
+		    return (createsUpgrade, finalPower, finalShield, finalRarity);
 	    }
 	    
 	    public static bool IsValidMerge(IEnumerable<HexCell> cells, int maxMergeCount)
 	    {
-		    var (_, finalPower, _) = TryCombineUnits(cells, maxMergeCount);
+		    var (_, finalPower, finalShield, _) = TryCombineUnits(cells, maxMergeCount);
 		    return finalPower > 0;
 	    }
 

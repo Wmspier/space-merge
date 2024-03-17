@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Battle_Debug
   m_EditorClassIdentifier: 
   <Enemies>k__BackingField:
-  - <StartingHealth>k__BackingField: 25
+  - <StartingHealth>k__BackingField: 20
     <StartingPosition>k__BackingField:
       x: 3
       y: 3
       z: 3
-  - <StartingHealth>k__BackingField: 45
+  - <StartingHealth>k__BackingField: 20
     <StartingPosition>k__BackingField:
       x: 2
       y: 2
       z: 5
-  <AttackPattern>k__BackingField: 0100000002000000000000000400000006000000000000000a0000000c0000000e000000
+  <AttackPattern>k__BackingField: 020000000400000000000000080000000c0000000000000014000000180000001c000000

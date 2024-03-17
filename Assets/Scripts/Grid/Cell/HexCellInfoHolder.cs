@@ -13,6 +13,7 @@ namespace Hex.Grid.Cell
 		public UnitData HeldPlayerUnit { get; private set; }
 		public int EnemyPower { get; private set; } = -1;
 		public int PlayerPower { get; private set; }
+		public int PlayerShield { get; private set; }
 		public int PlayerRarity { get; private set; }
 
 		private Vector3 _unitAnchorOrigin;
@@ -30,7 +31,7 @@ namespace Hex.Grid.Cell
 			_unitAnchorOrigin = UnitAnchor.localPosition;
 		}
 
-		public void SpawnUnit(UnitData unitData, int? withPower = null)
+		public void SpawnUnit(UnitData unitData, int? withPower = null, int? withShield = null)
 		{
 			if (HeldPlayerUnit != null)
 			{
@@ -48,10 +49,12 @@ namespace Hex.Grid.Cell
 			Instantiate(unitData.Prefab, UnitAnchor);
 			
 			PlayerPower = withPower ?? HeldPlayerUnit.BasePower;
+			PlayerShield = withShield ?? HeldPlayerUnit.BaseShield;
 			PlayerRarity = HeldPlayerUnit.BaseRarity;
 			
 			_ui.ToggleUnitInfoCanvas(true);
 			_ui.SetPlayerPower(PlayerPower);
+			_ui.SetPlayerShield(PlayerShield);
 			_ui.SetRarityBaseZero(PlayerRarity);
 		}
 
@@ -62,12 +65,12 @@ namespace Hex.Grid.Cell
 			_ui.SetEnemyAttackPower(attackPower);
 		}
 		
-		public void ResolveCombine(int newPower, int finalRarity, bool resultsInUpgrade, UnitData finalUnitData)
+		public void ResolveCombine(int newPower, int newShield, int finalRarity, bool resultsInUpgrade, UnitData finalUnitData)
 		{
-			Debug.Log($"Resolving Combine: NewPower={newPower} | FinalRarity={finalRarity} | ResultsInUpgrade={resultsInUpgrade}");
+			Debug.Log($"Resolving Combine: NewPower={newPower} | NewShield={newShield} | FinalRarity={finalRarity} | ResultsInUpgrade={resultsInUpgrade}");
 			
 			ClearUnit();
-			SpawnUnit(finalUnitData, newPower);
+			SpawnUnit(finalUnitData, newPower, newShield);
 
 			if (!resultsInUpgrade || PlayerRarity == HexGameUtil.MaxRarityZeroBased)
 			{
@@ -82,7 +85,7 @@ namespace Hex.Grid.Cell
 				var nextRarity = HeldPlayerUnit.NextRarity;
 				
 				ClearUnit();
-				SpawnUnit(nextRarity, newPower);
+				SpawnUnit(nextRarity, newPower, newShield);
 			}
 			
 			PlayerRarity = finalRarity;
@@ -102,8 +105,15 @@ namespace Hex.Grid.Cell
 			}
 			else
 			{
-				PlayerPower -= EnemyPower;
+				// Remove incoming power from shield first
+				var incomingPower = EnemyPower;
+				incomingPower -= PlayerShield;
+				
+				PlayerShield = Mathf.Max(0, PlayerShield - EnemyPower);
+				if(incomingPower > 0) PlayerPower -= incomingPower;
+				
 				_ui.SetPlayerPower(PlayerPower);
+				_ui.SetPlayerShield(PlayerShield);
 			}
 		}
 
@@ -111,12 +121,14 @@ namespace Hex.Grid.Cell
 		{
 			HeldPlayerUnit = null;
 			PlayerPower = 0;
+			PlayerShield = 0;
 			PlayerRarity = -1;
 
 			UnitAnchor.DestroyAllChildGameObjects();
 			UnitAnchor.localPosition = _unitAnchorOrigin;
 			
 			_ui.SetPlayerPower(PlayerPower);
+			_ui.SetPlayerShield(PlayerShield);
 			_ui.SetRarityBaseZero(PlayerRarity);
 		}
 

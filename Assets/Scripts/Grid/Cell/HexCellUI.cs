@@ -10,11 +10,13 @@ namespace Hex.Grid.Cell
 		[Header("Merge UI")]
 		[SerializeField] private GameObject mergeCanvasRoot;
 		[SerializeField] private TMP_Text newPowerText;
+		[SerializeField] private TMP_Text newShieldText;
 		[SerializeField] private TMP_Text upgradeText;
 		
 		[Header("Unit Info UI")] 
 		[SerializeField] private GameObject unitInfoCanvasRoot;
 		[SerializeField] private TMP_Text powerText;
+		[SerializeField] private TMP_Text shieldText;
 		[SerializeField] private List<GameObject> rarityObjects;
 		
 		[Header("Attack UI")]
@@ -24,8 +26,9 @@ namespace Hex.Grid.Cell
 		[SerializeField] private TMP_Text resultText;
 		[SerializeField] private UnityEngine.UI.Image resultDirection;
 
-		private int cachedPlayerPower;
-		private int cachedEnemyPower;
+		private int _cachedPlayerPower;
+		private int _cachedPlayerShield;
+		private int _cachedEnemyPower;
 		
 		private readonly RaycastHit[] _hitBuffer = new RaycastHit[10];
 		
@@ -61,7 +64,7 @@ namespace Hex.Grid.Cell
 		{
 			enemyPowerText.gameObject.SetActive(true);
 			enemyPowerText.text = power.ToString();
-			cachedEnemyPower = power;
+			_cachedEnemyPower = power;
 			
 			UpdateAttackDisplay();
 		}
@@ -71,9 +74,17 @@ namespace Hex.Grid.Cell
 			powerText.gameObject.SetActive(true);
 			powerText.text = power.ToString();
 			powerText.gameObject.SetActive(power > 0);
-			cachedPlayerPower = power;
+			_cachedPlayerPower = power;
 
 			UpdateAttackDisplay();
+		}
+		
+		public void SetPlayerShield(int shield)
+		{
+			shieldText.gameObject.SetActive(true);
+			shieldText.text = shield.ToString();
+			shieldText.gameObject.SetActive(shield > 0);
+			_cachedPlayerShield = shield;
 		}
 
 		public void SetRarityBaseZero(int rarityIndex)
@@ -95,10 +106,10 @@ namespace Hex.Grid.Cell
 			// Cell does not contain enemy attack so don't show attack info
 			if (attackCanvasRoot == null) return;
 			
-			playerPowerText.text = cachedPlayerPower.ToString();
-			enemyPowerText.text = cachedEnemyPower.ToString();
+			playerPowerText.text = _cachedPlayerPower.ToString();
+			enemyPowerText.text = _cachedEnemyPower.ToString();
 
-			var powerDiff = cachedPlayerPower - cachedEnemyPower;
+			var powerDiff = _cachedPlayerPower - _cachedEnemyPower;
 
 			resultText.text = Mathf.Abs(powerDiff).ToString();
 			
