@@ -16,5 +16,10 @@ namespace Hex.Enemy
 		{
 			_resolveAttackButton.onClick.AddListener(() => ResolveAttackPressed?.Invoke());
 		}
+
+		private void Update()
+		{
+			if (Input.GetKeyUp(KeyCode.Space)) ResolveAttackPressed?.Invoke();
+		}
 	}
 }
