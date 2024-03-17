@@ -69,7 +69,7 @@ namespace Hex.Util
 			        currentRarity < MaxRarityZeroBased)
 			    {
 				    createsUpgrade = true;
-				    currentRarity++;
+				    if(!masterUnit.IsSupport) currentRarity++;
 				    finalRarity = currentRarity;
 				    finalPower *= 2;
 				    finalShield *= 2;
