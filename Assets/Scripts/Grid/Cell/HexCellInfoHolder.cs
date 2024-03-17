@@ -105,7 +105,7 @@ namespace Hex.Grid.Cell
 		
 		public void ResolveAttack()
 		{
-			var powerDifference = PlayerPower - EnemyPower;
+			var powerDifference = PlayerPower + PlayerShield - EnemyPower;
 			
 			if (powerDifference <= 0)
 			{
