@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: BasicUnit_Red_0
   m_EditorClassIdentifier: 
   <UniqueId>k__BackingField: Unit_Red
-  <BasePower>k__BackingField: 1
+  <BasePower>k__BackingField: 3
+  <BaseShield>k__BackingField: 0
   <BaseRarity>k__BackingField: 0
   <Prefab>k__BackingField: {fileID: 1757021540552548034, guid: c53987878d901498db8e1c3d190da1fb,
     type: 3}

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <UniqueId>k__BackingField: Unit_Green
   <BasePower>k__BackingField: 16
+  <BaseShield>k__BackingField: 1
   <BaseRarity>k__BackingField: 2
   <Prefab>k__BackingField: {fileID: 1757021540552548034, guid: 5857f00a3d08747a1b8fccc20f797449,
     type: 3}
