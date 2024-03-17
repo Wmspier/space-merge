@@ -3811,6 +3811,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d21d8fd4e6c534eb78cd8ede747e9533, type: 2}
   - {fileID: 11400000, guid: d21d8fd4e6c534eb78cd8ede747e9533, type: 2}
   - {fileID: 11400000, guid: d21d8fd4e6c534eb78cd8ede747e9533, type: 2}
+  - {fileID: 11400000, guid: d21d8fd4e6c534eb78cd8ede747e9533, type: 2}
+  - {fileID: 11400000, guid: 7bb65bcf17baf4a088c32945043ae1fd, type: 2}
   startingHandSize: 6
   deckPreviewQueue: {fileID: 1378272704}
   _battleUI: {fileID: 1400717077}
