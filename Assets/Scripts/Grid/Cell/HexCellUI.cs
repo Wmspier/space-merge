@@ -16,7 +16,9 @@ namespace Hex.Grid.Cell
 		[Header("Unit Info UI")] 
 		[SerializeField] private GameObject unitInfoCanvasRoot;
 		[SerializeField] private TMP_Text powerText;
+		[SerializeField] private GameObject powerRoot;
 		[SerializeField] private TMP_Text shieldText;
+		[SerializeField] private GameObject shieldRoot;
 		[SerializeField] private List<GameObject> rarityObjects;
 		
 		[Header("Attack UI")]
@@ -71,9 +73,8 @@ namespace Hex.Grid.Cell
 
 		public void SetPlayerPower(int power)
 		{
-			powerText.gameObject.SetActive(true);
+			powerRoot.gameObject.SetActive(power > 0);
 			powerText.text = power.ToString();
-			powerText.gameObject.SetActive(power > 0);
 			_cachedPlayerPower = power;
 
 			UpdateAttackDisplay();
@@ -81,9 +82,8 @@ namespace Hex.Grid.Cell
 		
 		public void SetPlayerShield(int shield)
 		{
-			shieldText.gameObject.SetActive(true);
+			shieldRoot.gameObject.SetActive(shield > 0);
 			shieldText.text = shield.ToString();
-			shieldText.gameObject.SetActive(shield > 0);
 			_cachedPlayerShield = shield;
 		}
 
@@ -123,7 +123,6 @@ namespace Hex.Grid.Cell
 			else if (powerDiff > 0)
 			{
 				resultDirection.gameObject.SetActive(true);
-				// resultText.color = playerPowerText.color;
 				var color = playerPowerText.color;
 				color.a = .5f;
 				resultDirection.color = color;
@@ -133,7 +132,6 @@ namespace Hex.Grid.Cell
 			else
 			{
 				resultDirection.gameObject.SetActive(true);
-				// resultText.color = enemyPowerText.color;
 				var color = enemyPowerText.color;
 				color.a = .5f;
 				resultDirection.color = color;
