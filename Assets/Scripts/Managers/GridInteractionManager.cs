@@ -128,7 +128,7 @@ namespace Hex.Managers
             }
             
             // Check if the cells can combine
-            var (_, resultsInUpgrade,finalPower, _, _) = HexGameUtil.TryCombineUnits(cellsInChain, _battleModel.MaxMergeCount);
+            var (_, resultsInUpgrade,finalPower, finalShield, _) = HexGameUtil.TryCombineUnits(cellsInChain, _battleModel.MaxMergeCount);
             var validMerge = finalPower >= 0;
             var validMove = HexGameUtil.IsValidMove(cellsInChain) && _battleModel.RemainingUnitMoves > 0;
             
@@ -144,7 +144,7 @@ namespace Hex.Managers
             {
                 var finalCell = cellsInChain.Last();
                 finalCell.UI.ToggleMergeCanvas(true);
-                finalCell.UI.SetMergeInfo(finalPower, resultsInUpgrade);
+                finalCell.UI.SetMergeInfo(finalPower, finalShield, resultsInUpgrade);
             }
             else if (validMove)
             {

@@ -8,10 +8,7 @@ namespace Hex.Grid.Cell
 	public class HexCellUI : MonoBehaviour
 	{
 		[Header("Merge UI")]
-		[SerializeField] private GameObject mergeCanvasRoot;
-		[SerializeField] private TMP_Text newPowerText;
-		[SerializeField] private TMP_Text newShieldText;
-		[SerializeField] private TMP_Text upgradeText;
+		[SerializeField] private HexCellMergeUI mergeUI;
 		
 		[Header("Unit Info UI")] 
 		[SerializeField] private GameObject unitInfoCanvasRoot;
@@ -34,7 +31,7 @@ namespace Hex.Grid.Cell
 		
 		private readonly RaycastHit[] _hitBuffer = new RaycastHit[10];
 		
-		public void ToggleMergeCanvas(bool visible) => mergeCanvasRoot.SetActive(visible);
+		public void ToggleMergeCanvas(bool visible) => mergeUI.gameObject.SetActive(visible);
 		public void ToggleUnitInfoCanvas(bool visible) => unitInfoCanvasRoot.SetActive(visible);
 
 		public void ToggleAttackCanvas(bool visible)
@@ -45,7 +42,7 @@ namespace Hex.Grid.Cell
 
 		private void Awake()
 		{
-			if(mergeCanvasRoot != null) ToggleMergeCanvas(false);
+			if(mergeUI != null) ToggleMergeCanvas(false);
 			if(attackCanvasRoot != null) ToggleAttackCanvas(false);
 		}
 
@@ -95,10 +92,9 @@ namespace Hex.Grid.Cell
 			}
 		}
 
-		public void SetMergeInfo(int finalPower, bool resultsInUpgrade)
+		public void SetMergeInfo(int finalPower, int finalShield, bool resultsInUpgrade)
 		{
-			newPowerText.text = finalPower.ToString();
-			upgradeText.gameObject.SetActive(resultsInUpgrade);
+			mergeUI.ShowWithInfo(finalPower, finalShield, resultsInUpgrade);
 		}
 
 		private void UpdateAttackDisplay()
