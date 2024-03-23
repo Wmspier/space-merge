@@ -23,60 +23,95 @@ namespace Hex.Util
 		    {
 			    return (null, false, -1, -1, -1);
 		    }
-
+		    
 		    var createsUpgrade = false;
-		    UnitData masterUnit = null;
-		    int masterCellIndex = -1;
-		    var masterCellRarity = -1;
-		    var finalPower = 0;
-		    var finalShield = 0;
-		    var finalRarity = masterCellRarity;
-		    var currentRarity = masterCellRarity;
 
+			// Group cells into potential upgrade groups
+		    var upgradeGroups = new List<List<HexCell>>();
+		    var upgradeGroupIndex = 0;
+		    
 		    for (var index = 0; index < hexCells.Length; index++)
 		    {
 			    var cell = hexCells[index];
-			    
-			    if (masterUnit == null || masterUnit.IsSupport && !cell.InfoHolder.IsSupportUnit)
+			    // first cell, add to first potential upgrade group
+			    if (upgradeGroupIndex == 0 && index == 0)
 			    {
-				    masterUnit = cell.InfoHolder.HeldPlayerUnit;
-				    masterCellIndex = index;
-				    masterCellRarity = masterUnit.BaseRarity;
-				    finalRarity = masterCellRarity;
-				    currentRarity = masterCellRarity;
-			    }
-			    if (index == 0)
-			    {
-				    finalPower += cell.InfoHolder.PlayerPower;
-				    finalShield += cell.InfoHolder.PlayerShield;
+				    upgradeGroups.Add(new List<HexCell>{cell});
 				    continue;
 			    }
 
-			    // Can't combine lower rarities with higher rarities
-			    if (cell.InfoHolder.PlayerRarity > currentRarity) return (null, false, -1, -1, -1); 
+			    var currentUpgradeGroup = upgradeGroups[upgradeGroupIndex];
 
-			    // Add the cells power/shield to the resulting power/shield
-			    finalPower += cell.InfoHolder.PlayerPower;
-			    finalShield += cell.InfoHolder.PlayerShield;
-			    
-			    // If the cell shares a rarity with the rarity at this point in the merge,
-			    // and the cell shares the same type as the master,
-			    // and the master cell is not at max rarity,
-			    // this cell creates an upgrade and doubles the final power
-			    if (cell.InfoHolder.PlayerRarity == currentRarity &&
-			        masterCellIndex != index &&
-			        cell.InfoHolder.HeldPlayerUnit == masterUnit &&
-			        currentRarity < MaxRarityZeroBased)
+			    // Cell is the same as the last, they are in the same upgrade group
+			    if (cell.InfoHolder.HoldingSameUnitType(currentUpgradeGroup.Last()))
 			    {
-				    createsUpgrade = true;
-				    // if(!masterUnit.IsSupport) currentRarity++;
-				    finalRarity = currentRarity;
-				    finalPower *= 2;
-				    finalShield *= 2;
+				    currentUpgradeGroup.Add(cell);
+			    }
+			    // Cell is different, place in a new potential upgrade group
+			    else
+			    {
+				    upgradeGroupIndex++;
+				    upgradeGroups.Add(new List<HexCell>{cell});
 			    }
 		    }
 
-		    return (masterUnit, createsUpgrade, finalPower, finalShield, finalRarity);
+		    // Iterate through upgrade groups and collapse them into single units
+		    var collapsedHexCells = new (HexCell hexCells, UnitData data, int power, int shield)[upgradeGroups.Count];
+		    for (var index = 0; index < upgradeGroups.Count; index++)
+		    {
+			    var group = upgradeGroups[index];
+			    // Upgrade group contains one unit, so nothing to combine
+			    if (group.Count == 1)
+			    {
+				    var cell = group.First();
+				    collapsedHexCells[index] = (cell, cell.InfoHolder.HeldPlayerUnit, cell.InfoHolder.PlayerPower,
+					    cell.InfoHolder.PlayerShield);
+			    }
+			    else
+			    {
+				    var combinedPower = 0;
+				    var combinedShield = 0;
+				    foreach (var cell in group)
+				    {
+					    combinedPower += cell.InfoHolder.PlayerPower;
+					    combinedShield += cell.InfoHolder.PlayerShield;
+				    }
+
+				    var masterCell = group.First();
+				    combinedPower *= 2;
+				    combinedShield *= 2;
+				    collapsedHexCells[index] = (masterCell, masterCell.InfoHolder.HeldPlayerUnit, combinedPower, combinedShield);
+				    createsUpgrade = true;
+			    }
+		    }
+		    
+		    UnitData masterUnit = null;
+		    var finalPower = 0;
+		    var finalShield = 0;
+
+			// Iterate through all collapsed cells to find the master unit and the final power/shield
+		    for (var index = 0; index < collapsedHexCells.Length; index++)
+		    {
+			    var (cell, _, power, shield) = collapsedHexCells[index];
+			    
+			    // Master unit not set or was support unit
+			    if (masterUnit == null || masterUnit.IsSupport && !cell.InfoHolder.IsSupportUnit)
+			    {
+				    masterUnit = cell.InfoHolder.HeldPlayerUnit;
+			    }
+			    if (index == 0)
+			    {
+				    finalPower += power;
+				    finalShield += shield;
+				    continue;
+			    }
+
+			    // Add the cells power/shield to the resulting power/shield
+			    finalPower += power;
+			    finalShield += shield;
+		    }
+
+		    return (masterUnit, createsUpgrade, finalPower, finalShield, -1);
 	    }
 	    
 	    public static bool IsValidMerge(IEnumerable<HexCell> cells, int maxMergeCount)

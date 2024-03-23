@@ -153,5 +153,11 @@ namespace Hex.Grid.Cell
 			ClearUnit();
 			ClearEnemyAttack();
 		}
+
+		public bool HoldingSameUnitType(HexCell other)
+		{
+			return HeldPlayerUnit != null && other.HoldingUnit &&
+			       HeldPlayerUnit.UniqueId == other.InfoHolder.HeldPlayerUnit.UniqueId;
+		}
 	}
 }

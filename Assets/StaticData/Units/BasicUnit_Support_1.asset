@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4701a9cb2484c2e94d658509b442a9d, type: 3}
   m_Name: BasicUnit_Support_1
   m_EditorClassIdentifier: 
-  <UniqueId>k__BackingField: Unit_Support
+  <UniqueId>k__BackingField: Unit_Support_Shield
   <BasePower>k__BackingField: 0
   <BaseShield>k__BackingField: 1
   <BaseRarity>k__BackingField: 0
