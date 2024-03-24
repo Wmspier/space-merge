@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using Hex.Data;
 using Hex.Extensions;
 using Hex.Grid;
@@ -57,6 +58,7 @@ namespace Hex.Enemy
 		[SerializeField] private List<float> _targetingScaleByCellRow;
 		[SerializeField] private float _attackTextDisplayDelaySeconds = 2f;
 		[SerializeField] private AttackSequencer _attackSequencer;
+		[SerializeField] private Camera _mainCamera;
 
 		private readonly Dictionary<int3, EnemyShip> _shipsByCoord = new();
 
@@ -119,10 +121,9 @@ namespace Hex.Enemy
 			var newShipInstance = _shipSpawner.SpawnShip(enemyData, out var originPosition);
 			var newShip = new EnemyShip(newShipInstance, targetCell, originPosition, enemyData, _battleData.AttackPattern);
 			_shipsByCoord[enemyData.StartingPosition] = newShip;
-			
-			_enemyHealthBarManager.SpawnEnemyHealthBar(newShip);
 
 			yield return newShip.PlayEnter();
+			_enemyHealthBarManager.SpawnEnemyHealthBar(newShip);
 			yield return new WaitForSeconds(.5f);
 			
 			targetCell.InfoHolder.AssignEnemyAttack(newShip.CurrentAttackDamage, false);
@@ -252,7 +253,7 @@ namespace Hex.Enemy
 				targetingCell.InfoHolder.ToggleEnemyAttack(false);
 					
 				var attackInfo = new EnemyAttackInfo(enemyShip);
-				resolutionTasks.Add(_attackSequencer.PlayBeamSequence(attackInfo, attackResult, null));
+				resolutionTasks.Add(_attackSequencer.PlayBeamSequence(attackInfo, attackResult, _ => DoCameraShake()));
 			}
 
 			await Task.WhenAll(resolutionTasks);
@@ -338,6 +339,11 @@ namespace Hex.Enemy
 			ship.TargetingCell.UI.ToggleAttackCanvas(true);
 			
 			completeAction?.Invoke();
+		}
+
+		private void DoCameraShake()
+		{
+			_mainCamera.transform.DOShakePosition(.75f, new Vector3(.5f, .5f, .5f));
 		}
 	}
 }

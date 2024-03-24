@@ -9,9 +9,6 @@ namespace Hex.Enemy
 	{
 		[SerializeField] private EnemyPlanePositions _planePositions;
 		[SerializeField] private Transform _shipAnchor;
-		
-		[SerializeField] private EnemyShipInstance _enemyShipPrefabSmall;
-		[SerializeField] private EnemyShipInstance _enemyShipPrefabLarge;
 
 		public EnemyShipInstance SpawnShip(BattleData.BattleEnemy enemyData, out Vector3 originPosition)
 		{
@@ -29,38 +26,6 @@ namespace Hex.Enemy
 			shipTransform.position = position;
 			originPosition = position;
 
-			return shipInstance;
-		}
-		
-		public EnemyShipInstance SpawnSmallShip(int3 coord, out Vector3 originPosition)
-		{
-			if (!_planePositions.Positions.TryGetValue(coord, out var position))
-			{
-				Debug.LogError($"Failed to find position to spawn ship: {coord}");
-				originPosition = Vector3.zero;
-				return null;
-			}
-
-			var shipInstance = Instantiate(_enemyShipPrefabSmall, _shipAnchor);
-			shipInstance.transform.Reset();
-			shipInstance.transform.position = position;
-			originPosition = position;
-
-			return shipInstance;
-		}
-		
-		public EnemyShipInstance SpawnBigShip(int3 coord)
-		{
-			if (!_planePositions.Positions.TryGetValue(coord, out var position))
-			{
-				Debug.LogError($"Failed to find position to spawn ship: {coord}");
-				return null;
-			}
-
-			var shipInstance = Instantiate(_enemyShipPrefabLarge, _shipAnchor);
-			shipInstance.transform.Reset();
-			shipInstance.transform.position = position;
-			
 			return shipInstance;
 		}
 

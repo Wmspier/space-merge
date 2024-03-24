@@ -59,13 +59,21 @@ namespace Hex.Enemy
 		
 		public IEnumerator PlayEnter()
 		{
-			var enterOrigin = CurrentWorldSpacePosition;
-			enterOrigin.y += 50f;
+			var startPos = CurrentWorldSpacePosition;
+			startPos.z += 400;
+			startPos.y -= 280f;
 
-			ShipInstance.transform.position = enterOrigin;
-			var tween = ShipInstance.transform.DOMove(CurrentWorldSpacePosition, 1.5f).SetEase(Ease.InOutCubic);
-
-			while (tween.IsActive() && tween.IsPlaying())
+			var warpStopPos = CurrentWorldSpacePosition;
+			warpStopPos.z += 2.5f;
+			warpStopPos.y -= 1.5f;
+			
+			ShipInstance.transform.position = startPos;
+			var sequence = DOTween.Sequence();
+			sequence.Append(ShipInstance.transform.DOMove(warpStopPos, .15f).SetEase(Ease.InOutCubic).SetDelay(.25f));
+			sequence.Append(ShipInstance.transform.DOMove(CurrentWorldSpacePosition, 1.5f));
+			sequence.Play();
+			
+			while (sequence.IsActive() && sequence.IsPlaying())
 			{
 				yield return null;
 			}
