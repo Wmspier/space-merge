@@ -343,7 +343,11 @@ namespace Hex.Enemy
 
 		private void DoCameraShake()
 		{
-			_mainCamera.transform.DOShakePosition(.75f, new Vector3(.5f, .5f, .5f));
+			var originalPosition = _mainCamera.transform.position;
+			var sequence = DOTween.Sequence();
+			sequence.Append(_mainCamera.transform.DOShakePosition(.75f, new Vector3(.5f, .5f, .5f)));
+			sequence.Append(_mainCamera.transform.DOMove(originalPosition, .25f));
+			sequence.Play();
 		}
 	}
 }
