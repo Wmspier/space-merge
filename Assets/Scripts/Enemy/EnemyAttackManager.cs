@@ -125,7 +125,7 @@ namespace Hex.Enemy
 			yield return newShip.PlayEnter();
 			yield return new WaitForSeconds(.5f);
 			
-			targetCell.InfoHolder.HoldEnemyAttack(newShip.CurrentAttackDamage, false);
+			targetCell.InfoHolder.AssignEnemyAttack(newShip.CurrentAttackDamage, false);
 
 			PlayTargetSequence(newShip, OnShipSpawned);
 
@@ -217,7 +217,7 @@ namespace Hex.Enemy
 			var resolutionTasks = new List<Task>();
 			var cumulativePlayerDamageTaken = 0;
 			var enemyDamageTaken = new Dictionary<EnemyShip, int>();
-			var cellsToResolve = new List<HexCellInfoHolder>();
+			var cellsToResolve = new List<HexCell>();
 
 			foreach (var (_, enemyShip) in _shipsByCoord)
 			{
@@ -229,7 +229,7 @@ namespace Hex.Enemy
 
 				AttackResultType attackResult;
 
-				var powerDifference = targetingCell.InfoHolder.PowerDifference;
+				var powerDifference = targetingCell.InfoHolder.PlayerPower - enemyShip.CurrentAttackDamage;
 				switch (powerDifference)
 				{
 					case > 0:
@@ -247,7 +247,7 @@ namespace Hex.Enemy
 						break;
 				}
 					
-				cellsToResolve.Add(targetingCell.InfoHolder);
+				cellsToResolve.Add(targetingCell);
 
 				targetingCell.InfoHolder.ToggleEnemyAttack(false);
 					
@@ -271,7 +271,8 @@ namespace Hex.Enemy
 
 			foreach (var cell in cellsToResolve)
 			{
-				cell.ResolveAttack();
+				var enemyDamage = _shipsByCoord[cell.Coordinates].CurrentAttackDamage;
+				cell.InfoHolder.ResolveAttack(enemyDamage);
 			}
 			
 			await MoveShips();
@@ -283,7 +284,7 @@ namespace Hex.Enemy
 
 		public void UpdateDamagePreview()
 		{
-			var totalPlayerDamageTaken = GridUtility.GetTotalPlayerDamageTaken(_grid);
+			var totalPlayerDamageTaken = GridUtility.GetTotalPlayerDamageTaken(_grid, this);
 			
 			// Update player total damage preview
 			if (totalPlayerDamageTaken > 0)
@@ -310,6 +311,16 @@ namespace Hex.Enemy
 					bar.ShowPreview(difference);
 				}
 			}
+		}
+
+		public int GetEnemyDamageForCoord(int3 coord)
+		{
+			if (_shipsByCoord.TryGetValue(coord, out var ship))
+			{
+				return ship.CurrentAttackDamage;
+			}
+
+			return -1;
 		}
 
 		private async void PlayTargetSequence(EnemyShip ship, Action completeAction)

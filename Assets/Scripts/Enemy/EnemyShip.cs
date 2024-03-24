@@ -80,7 +80,7 @@ namespace Hex.Enemy
 		{
 			TargetingCell.InfoHolder.ClearEnemyAttack();
 			TargetingCell = newTarget;
-			TargetingCell.InfoHolder.HoldEnemyAttack(CurrentAttackDamage, false);
+			TargetingCell.InfoHolder.AssignEnemyAttack(CurrentAttackDamage, false);
 
 			CurrentPosition = newTarget.Coordinates;
 			

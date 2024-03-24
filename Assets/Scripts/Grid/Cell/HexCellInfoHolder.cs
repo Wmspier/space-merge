@@ -11,7 +11,6 @@ namespace Hex.Grid.Cell
 		
 		[field: SerializeField] public Transform UnitAnchor { get; private set; }
 		public UnitData HeldPlayerUnit { get; private set; }
-		public int EnemyPower { get; private set; } = -1;
 		public int PlayerPower { get; private set; }
 		public int PlayerShield { get; private set; }
 		public int PlayerRarity { get; private set; }
@@ -60,9 +59,8 @@ namespace Hex.Grid.Cell
 			_ui.SetRarityBaseZero(PlayerRarity);
 		}
 
-		public void HoldEnemyAttack(int attackPower, bool andShow = true)
+		public void AssignEnemyAttack(int attackPower, bool andShow = true)
 		{
-			EnemyPower = attackPower;
 			_ui.ToggleAttackCanvas(andShow);
 			_ui.SetEnemyAttackPower(attackPower);
 		}
@@ -101,11 +99,9 @@ namespace Hex.Grid.Cell
 			_ui.SetRarityBaseZero(PlayerRarity);
 		}
 
-		public int PowerDifference => PlayerPower - EnemyPower;
-		
-		public void ResolveAttack()
+		public void ResolveAttack(int enemyPower)
 		{
-			var powerDifference = PlayerPower + PlayerShield - EnemyPower;
+			var powerDifference = PlayerPower + PlayerShield - enemyPower;
 			
 			if (powerDifference <= 0)
 			{
@@ -115,10 +111,10 @@ namespace Hex.Grid.Cell
 			else
 			{
 				// Remove incoming power from shield first
-				var incomingPower = EnemyPower;
+				var incomingPower = enemyPower;
 				incomingPower -= PlayerShield;
 				
-				PlayerShield = Mathf.Max(0, PlayerShield - EnemyPower);
+				PlayerShield = Mathf.Max(0, PlayerShield - enemyPower);
 				if(incomingPower > 0) PlayerPower -= incomingPower;
 				
 				_ui.SetPlayerPower(PlayerPower);
@@ -143,15 +139,8 @@ namespace Hex.Grid.Cell
 
 		public void ClearEnemyAttack()
 		{
-			EnemyPower = 0;
-			_ui.SetEnemyAttackPower(EnemyPower);
+			_ui.SetEnemyAttackPower(0);
 			_ui.ToggleAttackCanvas(false);
-		}
-		
-		public void Clear()
-		{
-			ClearUnit();
-			ClearEnemyAttack();
 		}
 
 		public bool HoldingSameUnitType(HexCell other)

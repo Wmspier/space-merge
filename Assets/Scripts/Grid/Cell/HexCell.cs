@@ -70,7 +70,6 @@ namespace Hex.Grid.Cell
 
         public Transform SurfaceAnchor => InfoHolder.UnitAnchor;
 
-        public bool HoldingEnemyAttack => InfoHolder.EnemyPower > 0;
         public bool HoldingUnit => InfoHolder.HeldPlayerUnit != null;
 
         private void Awake()
