@@ -116,7 +116,7 @@ namespace Hex.Enemy
 			}
 			
 			var targetCell = _grid.Registry[enemyData.StartingPosition];
-			var newShipInstance = _shipSpawner.SpawnSmallShip(targetCell.Coordinates, out var originPosition);
+			var newShipInstance = _shipSpawner.SpawnShip(enemyData, out var originPosition);
 			var newShip = new EnemyShip(newShipInstance, targetCell, originPosition, enemyData, _battleData.AttackPattern);
 			_shipsByCoord[enemyData.StartingPosition] = newShip;
 			
@@ -162,7 +162,7 @@ namespace Hex.Enemy
 			foreach (var ship in allShips)
 			{
 				var unoccupiedCellsByColumn = _grid.CellsByColumn
-					.Where(cells => !cells.Any(c => _shipsByCoord.Keys.Contains(c.Coordinates))) // No cells where ships currently are
+					.Where(cells => cells.All(c => !_shipsByCoord.Values.Any(s => s.DoesOccupyCoord(c.Coordinates)))) // No cells where ships currently are
 					.Where(cells => !cells.Any(c => newTargetCells.Contains(c))) // No cells where ships will move to
 					.ToList()
 					.Shuffle();

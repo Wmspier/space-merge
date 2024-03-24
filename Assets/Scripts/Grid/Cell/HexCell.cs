@@ -65,7 +65,6 @@ namespace Hex.Grid.Cell
         public void RegisterNeighbor(HexCell cell) => Neighbors.Add(cell);
 
         public HexCellInfoHolder InfoHolder { get; private set; }
-
         public HexCellUI UI { get; private set; }
 
         public Transform SurfaceAnchor => InfoHolder.UnitAnchor;

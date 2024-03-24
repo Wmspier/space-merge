@@ -65,6 +65,35 @@ namespace Hex.Grid.Cell
 			_ui.SetEnemyAttackPower(attackPower);
 		}
 		
+		public void ClearEnemyAttack()
+		{
+			_ui.SetEnemyAttackPower(0);
+			_ui.ToggleAttackCanvas(false);
+		}
+
+		public void ResolveAttack(int enemyPower)
+		{
+			var powerDifference = PlayerPower + PlayerShield - enemyPower;
+			
+			if (powerDifference <= 0)
+			{
+				// Unit is destroyed
+				ClearUnit();
+			}
+			else
+			{
+				// Remove incoming power from shield first
+				var incomingPower = enemyPower;
+				incomingPower -= PlayerShield;
+				
+				PlayerShield = Mathf.Max(0, PlayerShield - enemyPower);
+				if(incomingPower > 0) PlayerPower -= incomingPower;
+				
+				_ui.SetPlayerPower(PlayerPower);
+				_ui.SetPlayerShield(PlayerShield);
+			}
+		}
+		
 		public void ResolveCombine(int newPower, int newShield, int finalRarity, bool resultsInUpgrade, UnitData finalUnitData)
 		{
 			Debug.Log($"Resolving Combine: NewPower={newPower} | NewShield={newShield} | FinalRarity={finalRarity} | ResultsInUpgrade={resultsInUpgrade}");
@@ -99,29 +128,6 @@ namespace Hex.Grid.Cell
 			_ui.SetRarityBaseZero(PlayerRarity);
 		}
 
-		public void ResolveAttack(int enemyPower)
-		{
-			var powerDifference = PlayerPower + PlayerShield - enemyPower;
-			
-			if (powerDifference <= 0)
-			{
-				// Unit is destroyed
-				ClearUnit();
-			}
-			else
-			{
-				// Remove incoming power from shield first
-				var incomingPower = enemyPower;
-				incomingPower -= PlayerShield;
-				
-				PlayerShield = Mathf.Max(0, PlayerShield - enemyPower);
-				if(incomingPower > 0) PlayerPower -= incomingPower;
-				
-				_ui.SetPlayerPower(PlayerPower);
-				_ui.SetPlayerShield(PlayerShield);
-			}
-		}
-
 		public void ClearUnit()
 		{
 			HeldPlayerUnit = null;
@@ -135,12 +141,6 @@ namespace Hex.Grid.Cell
 			_ui.SetPlayerPower(PlayerPower);
 			_ui.SetPlayerShield(PlayerShield);
 			_ui.SetRarityBaseZero(PlayerRarity);
-		}
-
-		public void ClearEnemyAttack()
-		{
-			_ui.SetEnemyAttackPower(0);
-			_ui.ToggleAttackCanvas(false);
 		}
 
 		public bool HoldingSameUnitType(HexCell other)

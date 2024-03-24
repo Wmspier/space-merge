@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a6a08e56ba94b52b87f6bef3141cf24, type: 3}
-  m_Name: Battle_Debug
+  m_Name: Battle_Debug 1
   m_EditorClassIdentifier: 
   <Enemies>k__BackingField:
   - <StartingHealth>k__BackingField: 20
@@ -18,13 +18,13 @@ MonoBehaviour:
       x: 3
       y: 3
       z: 3
-    <ShipPrefab>k__BackingField: {fileID: 6233256602082074500, guid: 1dc01a97fac6347ea83a881455673f93,
+    <ShipPrefab>k__BackingField: {fileID: 2387754403960560509, guid: 2345f7050fc9a4f4da3986a1ecb19c3d,
       type: 3}
   - <StartingHealth>k__BackingField: 20
     <StartingPosition>k__BackingField:
-      x: 2
-      y: 2
+      x: 1
+      y: 3
       z: 5
     <ShipPrefab>k__BackingField: {fileID: 6233256602082074500, guid: 1dc01a97fac6347ea83a881455673f93,
       type: 3}
-  <AttackPattern>k__BackingField: 040000000a00000000000000100000000a0000000000000018000000100000000000000020000000
+  <AttackPattern>k__BackingField: 01000000010000000000000001000000010000000000000001000000010000000000000001000000

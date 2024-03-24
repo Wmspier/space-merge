@@ -1,3 +1,4 @@
+using Hex.Data;
 using Hex.Extensions;
 using Unity.Mathematics;
 using UnityEngine;
@@ -11,6 +12,25 @@ namespace Hex.Enemy
 		
 		[SerializeField] private EnemyShipInstance _enemyShipPrefabSmall;
 		[SerializeField] private EnemyShipInstance _enemyShipPrefabLarge;
+
+		public EnemyShipInstance SpawnShip(BattleData.BattleEnemy enemyData, out Vector3 originPosition)
+		{
+			var coord = enemyData.StartingPosition;
+			if (!_planePositions.Positions.TryGetValue(coord, out var position))
+			{
+				Debug.LogError($"Failed to find position to spawn ship: {coord}");
+				originPosition = Vector3.zero;
+				return null;
+			}
+
+			var shipInstance = Instantiate(enemyData.ShipPrefab, _shipAnchor);
+			Transform shipTransform;
+			(shipTransform = shipInstance.transform).Reset();
+			shipTransform.position = position;
+			originPosition = position;
+
+			return shipInstance;
+		}
 		
 		public EnemyShipInstance SpawnSmallShip(int3 coord, out Vector3 originPosition)
 		{

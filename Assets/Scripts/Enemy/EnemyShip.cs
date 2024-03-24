@@ -22,6 +22,7 @@ namespace Hex.Enemy
 		[field: SerializeField] public HexCell TargetingCell { get; private set; }
 
 		private readonly List<int> _attackPattern;
+		private readonly List<int3> _occupiedCoordinates = new();
 		private int _lifeTimeCount;
 
 		public void DealDamage(int amount) => CurrentHealth -= amount;
@@ -88,5 +89,20 @@ namespace Hex.Enemy
 
 			return ShipInstance.transform.DOMove(CurrentWorldSpacePosition, 1f).SetEase(Ease.InOutCubic).AsyncWaitForCompletion();
 		}
+
+		public List<int3> GetOccupiedCoordinates()
+		{
+			_occupiedCoordinates.Clear();
+			_occupiedCoordinates.Add(CurrentPosition);
+			foreach (var coord in ShipInstance.OccupiedRelativeCoordinates)
+			{
+				var occupiedCoord = CurrentPosition + coord;
+				_occupiedCoordinates.Add(occupiedCoord);
+			}
+
+			return _occupiedCoordinates;
+		}
+
+		public bool DoesOccupyCoord(int3 coord) => GetOccupiedCoordinates().Contains(coord);
 	}
 }
